@@ -5,7 +5,9 @@ on:
     branches:
       - "**"
     paths:
-      - charts/execserver
+      - .github/workflows/helm_execserver_tests.yml
+      - charts/execserver/**
+      - tests/execserver/**
 
 env:
   terraform_version: "v1.1.5"
