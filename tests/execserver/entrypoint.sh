@@ -43,9 +43,4 @@ for service in $VALIDATION_SERVICES; do
 done
 
 tmux kill-session -t $TMUX_SESSION_NAME
-
 exit $code
-
-
-
-#kubectl -n $NAMESPACE port-forward svc/$SERVICE_NAME 8080:8080 &
