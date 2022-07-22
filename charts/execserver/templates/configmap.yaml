@@ -13,7 +13,7 @@ data:
         format: "console"
         # Set zerolog log level: trace, debug, info, warn, error, fatal, panic
         # default to "info".
-        level: {{ default info .Values.fylr.logger.level }}
+        level: {{ default "info" .Values.fylr.logger.level }}
         # timeFormat is the Go representation to format the time in the log output.
         # zerolog's time keeping resolution is always set to milliseconds by FYLR.
         # Use "", "UNIXMS" or "UNIXMICRO" to output a unix timestamp (json format only).
@@ -26,10 +26,12 @@ data:
         addHostname: true
       services:
         execserver:
+          addr: :8070
           tempDir: /tmp/fylr
           waitgroups:
             {{- range $k, $v := .Values.fylr.execserver.waitGroups }}
-            {{ $k }}: {{ $v -}}
+            {{ $k }}:
+              processes: {{ $v -}}
             {{ end }}
           services:
             {{ if .Values.fylr.execserver.services.node.enabled }}
@@ -61,7 +63,7 @@ data:
                     regex: "Version: ImageMagick 7..*?https://imagemagick.org"
                 fylr_metadata:
                   prog: "fylr_metadata"
-            {{ - end }}
+            {{ end }}
             {{ if .Values.fylr.execserver.services.ffmpeg.enabled }}
             ffmpeg:
               waitgroup: {{ .Values.fylr.execserver.services.ffmpeg.waitGroup | quote }}
@@ -96,7 +98,7 @@ data:
                     regex: "Version: ImageMagick 7..*?https://imagemagick.org"
                 fylr_metadata:
                   prog: "fylr_metadata"
-            {{ - end }}
+            {{ end }}
             {{ if .Values.fylr.execserver.services.soffice.enabled }}
             soffice:
               waitgroup: {{ .Values.fylr.execserver.services.soffice.waitGroup | quote }}
@@ -127,7 +129,7 @@ data:
                     regex: "Version: ImageMagick 7..*?https://imagemagick.org"
                 fylr_metadata:
                   prog: "fylr_metadata"
-            {{ - end }}
+            {{ end }}
             {{ if .Values.fylr.execserver.services.pdf2pages.enabled }}
             pdf2pages:
               waitgroup: {{ .Values.fylr.execserver.services.pdf2pages.waitGroup | quote }}
@@ -136,21 +138,21 @@ data:
                   prog: "pdf2pages"
                 fylr_metadata:
                   prog: "fylr_metadata"
-            {{ - end }}
+            {{ end }}
             {{ if .Values.fylr.execserver.services.xslt.enabled }}
             xslt:
               waitgroup: {{ .Values.fylr.execserver.services.xslt.waitGroup | quote }}
               commands:
                 xsltproc:
                   prog: "xsltproc"
-            {{ - end }}
+            {{ end }}
             {{ if .Values.fylr.execserver.services.copy.enabled }}
             copy:
               waitgroup: {{ .Values.fylr.execserver.services.copy.waitGroup | quote }}
               commands:
                 copy:
                   prog: "copy"
-            {{ - end }}
+            {{ end }}
             {{ if .Values.fylr.execserver.services.metadata.enabled }}
             metadata:
               waitgroup: {{ .Values.fylr.execserver.services.metadata.waitGroup | quote }}
@@ -165,7 +167,7 @@ data:
                     args:
                       - "-version"
                     regex: "ffprobe version 5[\\.0-9]+ Copyright"
-            {{ - end }}
+            {{ end }}
             {{ if .Values.fylr.execserver.services.iiif.enabled }}
             iiif:
               waitgroup: {{ .Values.fylr.execserver.services.iiif.waitGroup | quote }}
@@ -176,4 +178,4 @@ data:
                     args:
                       - "-version"
                     regex: "Version v*"
-            {{ - end }}
+            {{ end }}
