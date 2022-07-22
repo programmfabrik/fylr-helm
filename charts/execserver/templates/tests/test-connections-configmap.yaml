@@ -1,0 +1,42 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: "{{ include "execserver.fullname" . }}-test-connection"
+  labels:
+    {{- include "execserver.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": test
+data:
+    entrypoint.sh: |-
+      #!/bin/bash
+      set -e
+      set -x
+      apk update
+      apk upgrade
+      apk add curl jq
+      if [ -z "$SERVICE_ADDRESS" ]; then
+          echo "SERVICE_ADDRESS is not set"
+          exit 1
+      fi
+      if [ -z "$VALIDATION_SERVICES" ]; then
+          echo "VALIDATION_SERVICES is not set"
+          exit -1
+      fi
+      VALIDATION_SERVICES=$(sed -e "s/,/ /g" <<< "$VALIDATION_SERVICES")
+      echo $VALIDATION_SERVICES
+      code=0
+      # for services in VALIDATION_SERVICES echo
+      for SERVICE in $VALIDATION_SERVICES; do
+          echo "Validating service: $SERVICE"
+          rslt="$(curl -X GET http://$SERVICE_ADDRESS/job/$SERVICE)"
+          errorMessage=$(jq .Error <<< $rslt | sed -e 's/"//g' -e 's/\\//g')
+          statusCode=$(jq .Status <<< $rslt)
+          if [ "$errorMessage" == "Unknown service $SERVICE" ]; then
+              echo "Status code is: $statusCode"
+              echo "Error: $errorMessage"
+              code=-1
+          else
+              echo "Check for service [ $SERVICE ] passed"
+          fi
+      done
+      exit $code
