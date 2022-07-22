@@ -8,8 +8,21 @@ metadata:
     "helm.sh/hook": test
 spec:
   containers:
-    - name: wget
-      image: busybox
-      command: ['wget']
-      args: ['{{ include "execserver.fullname" . }}:{{ .Values.service.port }}']
+    - name: test-available-services
+      image: alpine:latest
+      command: [ '/bin/sh', '-c' ]
+      env:
+        - name: SERVICE_ADDRESS
+          value: "{{ include "execserver.fullname" . }}:{{ .Values.service.port }}"
+        - name: VALIDATION_SERVICES
+          value: "node,convert,ffmpeg,soffice,metadata,pdf2pages,xslt,copy,iiif"
+      args: [ "apk update", "&&", "apk upgrade", "&&", "apk add bash", "&&", "chmod +x /tmp/test-connection-config/entrypoint.sh", "&&", "bash /tmp/test-connection-config/entrypoint.sh" ]
+      volumeMounts:
+        - name: test-connection-config
+          mountPath: /tmp/test-connection-config
+          readOnly: false
+  volumes:
+    - name: test-connection-config
+      configMap:
+        name: "{{ include "execserver.fullname" . }}-test-connection"
   restartPolicy: Never
