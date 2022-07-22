@@ -5,10 +5,10 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: docker.fylr.io/fylr/fylr
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: "main"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -83,8 +83,10 @@ affinity: {}
 
 fylr:
   logger:
-    format: console # console or json
-    level: info # debug, info, warn, error, fatal, panic
+    # format can be: console or json
+    format: console
+    # level can be: debug, info, warn, error, fatal, panic
+    level: info
     timeFormat: "2006-01-02T15:04:05Z07:00"
     noColor: false
     addHostname: true
@@ -93,7 +95,7 @@ fylr:
       a: 1
       b: 1
       c: 1
-      #...
+      # ...
     services:
       node:
         enabled: true
