@@ -26,7 +26,7 @@ data:
         addHostname: true
       services:
         execserver:
-          addr: :8070
+          addr: :7070
           tempDir: /tmp/fylr
           waitgroups:
             {{- range $k, $v := .Values.fylr.execserver.waitGroups }}
