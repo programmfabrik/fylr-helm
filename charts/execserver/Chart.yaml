@@ -22,3 +22,8 @@ version: 1.0.0
 # follow Semantic Versioning. They should reflect the version the application is using.
 # It is recommended to use it with quotes.
 appVersion: "6.0.0"
+
+maintainers:
+  - name: leonsteinhaeuser
+    email: leon.steinhaeuser@fylr.io
+    url: https://github.com/leonsteinhaeuser
