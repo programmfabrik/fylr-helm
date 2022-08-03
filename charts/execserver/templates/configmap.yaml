@@ -24,6 +24,7 @@ data:
         noColor: false
         # add hostname to log output
         addHostname: true
+      resources: "/fylr/files/resources"
       services:
         execserver:
           addr: :7070
