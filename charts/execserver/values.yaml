@@ -105,6 +105,9 @@ fylr:
       c: 1
       # ...
     services:
+      python3:
+        enabled: true
+        waitGroup: b
       node:
         enabled: true
         waitGroup: b

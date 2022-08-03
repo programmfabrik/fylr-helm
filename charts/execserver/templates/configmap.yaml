@@ -35,6 +35,13 @@ data:
               processes: {{ $v -}}
             {{ end }}
           services:
+            {{ if .Values.fylr.execserver.services.python3.enabled }}
+            python3:
+              waitgroup: {{ .Values.fylr.execserver.services.python3.waitGroup | quote }}
+              commands:
+                python3:
+                  prog: "python3"
+            {{ - end }}
             {{ if .Values.fylr.execserver.services.node.enabled }}
             node:
               waitgroup: {{ .Values.fylr.execserver.services.node.waitGroup | quote }}
