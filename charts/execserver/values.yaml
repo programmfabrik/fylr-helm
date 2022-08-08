@@ -40,6 +40,14 @@ service:
   type: ClusterIP
   port: 8070
 
+monitoring:
+  service:
+    enabled: false
+    interval: "30s"
+  pod:
+    enabled: false
+    interval: "30s"
+
 ingress:
   enabled: false
   className: ""

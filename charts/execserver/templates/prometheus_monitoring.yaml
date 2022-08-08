@@ -1,0 +1,33 @@
+# service monitoring
+{{ if .Values.monitoring.service.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "execserver.fullname" . }}
+  labels:
+    {{- include "execserver.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "execserver.labels" . | nindent 6 }}
+  endpoints:
+  - port: http
+    {{ if .Values.monitoring.service.interval }}interval: {{ .Values.monitoring.service.interval }}{{ end }}
+{{ end }}
+
+# pod monitoring
+{{ if .Values.monitoring.pod.enabled }}
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: {{ include "execserver.fullname" . }}
+  labels:
+    {{- include "execserver.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "execserver.labels" . | nindent 6 }}
+  podMetricsEndpoints:
+  - port: http
+    {{ if .Values.monitoring.pod.interval }}interval: {{ .Values.monitoring.pod.interval }}{{ end }}
+{{ end }}
