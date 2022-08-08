@@ -41,14 +41,14 @@ data:
               commands:
                 python3:
                   prog: "python3"
-            {{ - end }}
+            {{ end }}
             {{ if .Values.fylr.execserver.services.node.enabled }}
             node:
               waitgroup: {{ .Values.fylr.execserver.services.node.waitGroup | quote }}
               commands:
                 node:
                   prog: "node"
-            {{- end }}
+            {{ end }}
             {{ if .Values.fylr.execserver.services.convert.enabled }}
             convert:
               waitgroup: {{ .Values.fylr.execserver.services.convert.waitGroup | quote }}
