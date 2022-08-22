@@ -142,8 +142,8 @@ data:
             pdf2pages:
               waitgroup: {{ .Values.fylr.execserver.services.pdf2pages.waitGroup | quote }}
               commands:
-                pdf2pages:
-                  prog: "pdf2pages"
+                fylr_pdf2pages:
+                  prog: "fylr_pdf2pages"
                 fylr_metadata:
                   prog: "fylr_metadata"
             {{ end }}
@@ -158,8 +158,8 @@ data:
             copy:
               waitgroup: {{ .Values.fylr.execserver.services.copy.waitGroup | quote }}
               commands:
-                copy:
-                  prog: "copy"
+                fylr_copy:
+                  prog: "fylr_copy"
             {{ end }}
             {{ if .Values.fylr.execserver.services.metadata.enabled }}
             metadata:
@@ -180,8 +180,8 @@ data:
             iiif:
               waitgroup: {{ .Values.fylr.execserver.services.iiif.waitGroup | quote }}
               commands:
-                iiif_im:
-                  prog: "iiif_im"
+                fylr_iiif:
+                  prog: "fylr_iiif"
                   startupCheck:
                     args:
                       - "-version"
