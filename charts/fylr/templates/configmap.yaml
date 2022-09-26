@@ -1,0 +1,90 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "fylr.fullname" . }}
+  labels:
+    {{- include "fylr.labels" . | nindent 4 }}
+data:
+  fylr.yml: |
+    fylr:
+      name: {{ include "fylr.fullname" . }}
+      externalURL: {{ .Values.fylr.externalURL }}
+      logger:
+        format: {{ .Values.fylr.logger.format }}
+        level: {{ .Values.fylr.logger.level }}
+        timeFormat: {{ .Values.fylr.logger.timeFormat }}
+        noColor: {{ .Values.fylr.logger.noColor }}
+        addHostname: {{ .Values.fylr.logger.addHostname }}
+      db:
+        maxOpenConns: {{ .Values.fylr.db.maxOpenConns }}
+        maxIdleConns: {{ .Values.fylr.db.maxIdleConns }}
+        init:
+          configFile: {{ .Values.fylr.db.init.configFile }}
+          {{ if .Values.fylr.db.init.config }}
+          config:
+            {{- toYaml .Values.fylr.db.init.config | nindent 10 }}
+          {{ else if .Values.fylr.db.init.locations }}
+            system:
+              config:
+                location_defaults:
+                  {{- range $key, $value := .Values.fylr.db.init.locations }}
+                  {{ if contains $value.mode "originals" }}
+                  originals: {{ $value.name | upper }}
+                  {{ end }}
+                  {{ if contains $value.mode "versions" }}
+                  versions: {{ $value.name | upper }}
+                  {{ end }}
+                  {{ if contains $value.mode "backups" }}
+                  backups: {{ $value.name | upper }}
+                  {{ end }}
+                  {{ end }}
+          {{ end }}
+      plugin:
+        paths:
+          {{- toYaml .Values.fylr.plugin.paths | nindent 8 }}
+        defaults:
+          {{- toYaml .Values.fylr.plugin.defaults | nindent 8 }}
+      allowpurge: {{ .Values.fylr.allowPurge }}
+      resources: "/fylr/files/resources"
+      elastic:
+        logger: {{ .Values.fylr.elastic.logger }}
+        parallel: {{ .Values.fylr.elastic.parallel }}
+        objectsPerJob: {{ .Values.fylr.elastic.objectsPerJob }}
+        maxMem: {{ .Values.fylr.elastic.maxMem }}
+        fielddata: {{ .Values.fylr.elastic.fielddata }}
+        addresses:
+          {{- toYaml .Values.fylr.elastic.addresses | nindent 8 }}
+      execserver:
+        parallel: {{ .Values.fylr.execserver.parallel }}
+        pluginJobTimeoutSec: {{ .Values.fylr.execserver.pluginJobTimeoutSec }}
+        connectTimeoutSec: {{ .Values.fylr.execserver.connectTimeoutSec }}
+        callbackBackendInternalURL: "http://{{ include "fylr.service.backend.name" . }}:{{ .Values.service.backend.port }}"
+        callbackApiInternalURL: "http://{{ include "fylr.service.api.name" . }}:{{ .Values.service.api.port }}"
+      services:
+        webapp:
+          addr: :8080
+          path: /fylr/files/webfrontend
+          oauth2:
+            clientID: {{ .Values.fylr.services.webapp.oauth2.clientID }}
+            clientSecret: {{ .Values.fylr.services.webapp.oauth2.clientSecret }}
+          reverseProxy:
+            api: "http://fylr-api:8081"
+            backend: "http://fylr-backend:8082"
+          {{- if .Values.fylr.services.webapp.basicAuth }}
+          basicAuth:
+            {{- toYaml .Values.fylr.services.webapp.basicAuth | nindent 12 }}
+          {{- end }}
+        api:
+          addr: :8081
+          oauth2Server:
+            signingSecret: {{ .Values.fylr.services.api.oauth2Server.signingSecret }}
+            clients:
+              {{- toYaml .Values.fylr.services.api.oauth2Server.clients | nindent 12 }}
+        backend:
+          addr: :8082
+          inspect:
+            backup:
+              path: /tmp/fylrctrl
+              fylrctl: fylrctl
+              psql: psql
+              sqlite3: sqlite3
