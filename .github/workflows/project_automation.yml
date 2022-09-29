@@ -6,6 +6,22 @@ on:
   pull_request:
     types:
       - opened
+  pull_request_target:
+    types:
+      - opened
+
+permissions:
+  actions: read
+  checks: read
+  contents: write
+  deployments: read
+  issues: write
+  discussions: read
+  packages: read
+  pages: read
+  pull-requests: write
+  security-events: read
+  statuses: read
 
 # map fields with customized labels
 env:
