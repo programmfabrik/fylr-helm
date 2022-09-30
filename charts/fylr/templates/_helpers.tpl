@@ -66,15 +66,15 @@ Create the name of the service account to use
 {{/*
 Service names
 */}}
-{{- define "fylr.service.webapp.name" -}}
+{{- define "fylr.service-webapp-name" -}}
 {{- printf "%s-%s" (include "fylr.fullname" .) "-webapp" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{- define "fylr.service.api.name" -}}
+{{- define "fylr.service-api-name" -}}
 {{- printf "%s-%s" (include "fylr.fullname" .) "-webapp" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{- define "fylr.service.backend.name" -}}
+{{- define "fylr.service-backend-name" -}}
 {{- printf "%s-%s" (include "fylr.fullname" .) "-webapp" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
