@@ -58,8 +58,8 @@ data:
         parallel: {{ .Values.fylr.execserver.parallel }}
         pluginJobTimeoutSec: {{ .Values.fylr.execserver.pluginJobTimeoutSec }}
         connectTimeoutSec: {{ .Values.fylr.execserver.connectTimeoutSec }}
-        callbackBackendInternalURL: "http://{{ include "fylr.service.backend.name" . }}:{{ .Values.service.backend.port }}"
-        callbackApiInternalURL: "http://{{ include "fylr.service.api.name" . }}:{{ .Values.service.api.port }}"
+        callbackBackendInternalURL: "http://{{ include "fylr.service-backend-name" . }}:{{ .Values.services.backend.port }}"
+        callbackApiInternalURL: "http://{{ include "fylr.service-api-name" . }}:{{ .Values.services.api.port }}"
       services:
         webapp:
           addr: :8080

@@ -36,7 +36,7 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-service:
+services:
   webapp:
     type: ClusterIP
     port: 8080
@@ -96,7 +96,7 @@ fylr:
   encryptionKey: "d4b207ce131411ed8c7300155dd22658"
   # set to true to allow /api/settings/purge. should be disabled for production!
   allowPurge: true
-  logging:
+  logger:
     # format is the format of the logs. Valid values are "json" and "console".
     format: "console"
     # level is the minimum level of logs to be logged. Valid values are "trace", "debug", "info", "warn", "error", "fatal", "panic".
