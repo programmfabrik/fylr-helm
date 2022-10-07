@@ -511,8 +511,8 @@ elasticsearch:
       enabled: true
       minReplicas: 3
       maxReplicas: 11
-      targetCPU: "80%"
-      targetMemory: "80%"
+      targetCPU: ""
+      targetMemory: ""
 
   ## @section Data node parameters
   data:
