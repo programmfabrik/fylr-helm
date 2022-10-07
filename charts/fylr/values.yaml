@@ -112,7 +112,14 @@ fylr:
     addHostname: true
   db:
     driver: "postgres"
-    dsn: "postgres://fylr:password@localhost:5432/fylr?sslmode=disable"
+    postgres:
+      host: "localhost"
+      port: 5432
+      user: "fylr"
+      password: "password"
+      database: "fylr"
+      sslmode: "disable"
+      options: ""
     # https://golang.org/pkg/database/sql/#DB.SetMaxOpenConns, default: 0
     # This has to be at 4 + execserver.parallel + elastic.parallel. Two of these
     # connections will be dedicated to a separate connection pool managing
