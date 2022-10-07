@@ -62,4 +62,7 @@ install-execserver:
 
 # install-fylr: installs the fylr
 install-fylr:
-	helm install fylr charts/fylr
+	helm install testinstance charts/fylr \
+		--namespace fylr \
+		--create-namespace \
+		-f charts/fylr/values.yaml
