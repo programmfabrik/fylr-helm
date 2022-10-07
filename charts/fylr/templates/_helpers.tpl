@@ -67,30 +67,30 @@ Create the name of the service account to use
 Service names
 */}}
 {{- define "fylr.service-webapp-name" -}}
-{{- printf "%s-%s" (include "fylr.fullname" .) "-webapp" | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" (include "fylr.fullname" .) "webapp" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{- define "fylr.service-api-name" -}}
-{{- printf "%s-%s" (include "fylr.fullname" .) "-api" | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" (include "fylr.fullname" .) "api" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{- define "fylr.service-backend-name" -}}
-{{- printf "%s-%s" (include "fylr.fullname" .) "-backend" | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" (include "fylr.fullname" .) "backend" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{/*
 Secret names
 */}}
 {{- define "fylr.secret.db.name" -}}
-{{- printf "%s-%s" (include "fylr.fullname" .) "-db" | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" (include "fylr.fullname" .) "db" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{- define "fylr.secret.elastic.name" -}}
-{{- printf "%s-%s" (include "fylr.fullname" .) "-elastic" | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" (include "fylr.fullname" .) "elastic" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{- define "fylr.secret.s3.name" -}}
-{{- printf "%s-%s" (include "fylr.fullname" .) "-s3" | trunc 63 | trimSuffix "-" }}
+{{- printf "%s-%s" (include "fylr.fullname" .) "s3" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 {{- define "fylr.default_s3_config" -}}
