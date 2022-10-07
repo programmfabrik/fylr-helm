@@ -49,13 +49,28 @@ spec:
             - name: CFG_FYLR_DB_DRIVER
               valueFrom:
                 secretKeyRef:
-                  name: fylr-db
+                  name: {{ include "fylr.secret.db.name" . }}
                   key: "driver"
             - name: CFG_FYLR_DB_DSN
               valueFrom:
                 secretKeyRef:
-                  name: fylr-db
+                  name: {{ include "fylr.secret.db.name" . }}
                   key: "dsn"
+            - name: CFG_FYLR_ELASTIC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.elastic.name" . }}
+                  key: "username"
+            - name: CFG_FYLR_ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.elastic.name" . }}
+                  key: "password"
+            - name: CFG_FYLR_ELASTIC_ADDRESSES
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.elastic.name" . }}
+                  key: "hosts"
           # mount s3 secrets as env vars
           envFrom:
             - secretRef:
