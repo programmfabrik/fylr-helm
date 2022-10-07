@@ -29,6 +29,11 @@ jobs:
         with:
           version: ${{ env.helm_version }}
 
+      - name: Add Helm repo
+        run: |
+          helm repo add minio https://charts.min.io/
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+
       # Python is required because `ct lint` runs Yamale (https://github.com/23andMe/Yamale) and
       # yamllint (https://github.com/adrienverge/yamllint) which require Python
       - name: Set up Python
@@ -77,6 +82,11 @@ jobs:
         uses: azure/setup-helm@v1
         with:
           version: ${{ env.helm_version }}
+
+      - name: Add Helm repo
+        run: |
+          helm repo add minio https://charts.min.io/
+          helm repo add bitnami https://charts.bitnami.com/bitnami
 
       - name: Install tmux
         run: |
