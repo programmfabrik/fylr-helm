@@ -20,8 +20,21 @@ data:
         maxIdleConns: {{ .Values.fylr.db.maxIdleConns }}
         init:
           configFile: {{ .Values.fylr.db.init.configFile }}
-          {{ if .Values.fylr.db.init.config }}
+          {{ if .Values.minio.enabled }}
+          # minio is enabled, use minio as the backend
+          {{- $baseConfig := include "fylr.default_s3_config" . | fromYaml -}}
+          {{- if .Values.fylr.db.init.config -}}
+          # the user has provided a custom config, merge it with the minio config
+          {{- $mergedConfig := mustMergeOverwrite (dict) .Values.fylr.db.init.config $baseConfig -}}
           config:
+            {{- toYaml $mergedConfig | nindent 10 }}
+          {{- else -}}
+          config:
+            {{- toYaml $baseConfig | nindent 10 }}
+          {{- end -}}
+          {{ else }}
+          config:
+          {{ if .Values.fylr.db.init.config }}
             {{- toYaml .Values.fylr.db.init.config | nindent 10 }}
           {{ else if .Values.fylr.db.init.locations }}
             system:
@@ -38,6 +51,7 @@ data:
                   backups: {{ $value.name | upper }}
                   {{ end }}
                   {{ end }}
+          {{ end }}
           {{ end }}
       plugin:
         paths:

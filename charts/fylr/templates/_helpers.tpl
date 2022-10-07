@@ -92,3 +92,12 @@ Secret names
 {{- define "fylr.secret.s3.name" -}}
 {{- printf "%s-%s" (include "fylr.fullname" .) "-s3" | trunc 63 | trimSuffix "-" }}
 {{- end }}
+
+{{- define "fylr.default_s3_config" -}}
+system:
+  config:
+    location_defaults:
+      originals: S3
+      versions: S3
+      backups: S3
+{{- end }}
