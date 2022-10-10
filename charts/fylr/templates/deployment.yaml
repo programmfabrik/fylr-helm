@@ -139,6 +139,16 @@ spec:
                 secretKeyRef:
                   name: {{ include "fylr.secret.elastic.name" . }}
                   key: "hosts"
+            - name: CFG_FYLR_SERVICES_API_OAUTH2SERVER_CLIENTS_webclient_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.oauth2.name" . }}
+                  key: "oauth2_server_clientsecret"
+            - name: CFG_FYLR_SERVICES_WEBAPP_OAUTH2_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.oauth2.name" . }}
+                  key: "oauth2_webapp_clientsecret"
           # mount s3 secrets as env vars
           envFrom:
             - secretRef:

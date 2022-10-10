@@ -93,6 +93,10 @@ Secret names
 {{- printf "%s-%s" (include "fylr.fullname" .) "s3" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
+{{- define "fylr.secret.oauth2.name" -}}
+{{- printf "%s-%s" (include "fylr.fullname" .) "oauth2" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
 {{- define "fylr.default_s3_config" -}}
 system:
   config:

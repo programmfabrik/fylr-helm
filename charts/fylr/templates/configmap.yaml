@@ -79,8 +79,7 @@ data:
           addr: :8080
           path: /fylr/files/webfrontend
           oauth2:
-            clientID: {{ .Values.fylr.services.webapp.oauth2.clientID }}
-            clientSecret: {{ .Values.fylr.services.webapp.oauth2.clientSecret }}
+            clientID: "webclient"
           reverseProxy:
             api: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
             backend: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
@@ -93,7 +92,18 @@ data:
           oauth2Server:
             signingSecret: {{ .Values.fylr.services.api.oauth2Server.signingSecret }}
             clients:
+              webclient:
+                redirectURIs:
+                  - {{ .Values.fylr.externalURL }}/oauth2/callback
+                scopes:
+                  - "read"
+                  - "write"
+                  - "offline"
+                public: false
+              # add custom clients
+              {{- if .Values.fylr.services.api.oauth2Server.clients }}
               {{- toYaml .Values.fylr.services.api.oauth2Server.clients | nindent 12 }}
+              {{- end }}
         backend:
           addr: :8082
           inspect:
