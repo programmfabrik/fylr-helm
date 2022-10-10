@@ -27,6 +27,72 @@ spec:
       serviceAccountName: {{ include "fylr.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: wait-for-db
+          image: busybox
+          env:
+            - name: postgres_host
+              {{ if (index .Values "postgresql-ha" "enabled") }}
+              value: "{{ .Release.Name }}-postgresql-ha-pgpool.{{ .Release.Namespace }}.svc"
+              {{ else }}
+              value: "{{ .Values.fylr.db.postgres.host }}"
+              {{ end }}
+            - name: postgres_port
+              {{ if (index .Values "postgresql-ha" "enabled") }}
+              value: "5432"
+              {{ else }}
+              value: "{{ .Values.fylr.db.postgres.port }}"
+              {{ end }}
+          command:
+          - 'sh'
+          - '-c'
+          - 'until nc -z -v -w30 $postgres_host $postgres_port; do echo waiting for postgres; sleep 5; done;'
+        - name: wait-for-elastic
+          image: busybox
+          env:
+            - name: elastic_address
+              {{ if .Values.elasticsearch.enabled }}
+              value: "{{ .Release.Name }}-elasticsearch.{{ .Release.Namespace }}.svc"
+              {{ else }}
+              # remove everything except the host
+              value: {{ mustRegexReplaceAll ":[0-9]+$" (mustRegexReplaceAll "^http[s]{0,1}://" (index .Values.fylr.elastic.hosts 0) "") "" }}
+              {{ end }}
+            - name: elastic_port
+              {{ if .Values.elasticsearch.enabled }}
+              value: "9200"
+              {{ else }}
+              # remove everything before the port
+              value: {{ mustRegexReplaceAll "^http[s]{0,1}://[a-zA-Z0-9-.]+:" (.Values.fylr.elastic.hosts 0) "" }}
+              {{ end }}
+          command:
+          - 'sh'
+          - '-c'
+          - 'until nc -z -v -w30 $elastic_address $elastic_port; do echo waiting for elasticsearch; sleep 5; done;'
+        # if internal s3 is enabled, or an external provider was configured, wait for it
+        {{ if or (.Values.minio.enabled) (.Values.fylr.db.init.locations) }}
+        - name: wait-for-s3
+          image: busybox
+          env:
+            - name: s3_endpoint
+              {{ if .Values.minio.enabled }}
+              value: "{{ index .Values.minio.ingress.hosts 0 }}"
+              {{ else }}
+              # remove everything except the host
+              value: {{ mustRegexReplaceAll ":[0-9]+$" (mustRegexReplaceAll "^http[s]{0,1}://" (index .Values.fylr.elastic.hosts 0) "") "" }}
+              {{ end }}
+            - name: s3_port
+              {{ if .Values.minio.enabled }}
+              value: "443"
+              {{ else }}
+              # remove everything before the port
+              {{ $port = mustRegexReplaceAll "^http[s]{0,1}://[a-zA-Z0-9-.]+:" (.Values.fylr.elastic.hosts 0) "" }}
+              value: {{ if $port "" }}"443"{{ else }}{{ $port }}{{ end }}
+              {{ end }}
+          command:
+          - 'sh'
+          - '-c'
+          - 'until nc -z -v -w30 $s3_endpoint $s3_port; do echo waiting for s3; sleep 5; done;'
+        {{ end }}
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
