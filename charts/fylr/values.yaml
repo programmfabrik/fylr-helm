@@ -90,7 +90,7 @@ affinity: {}
 
 fylr:
   # public external url of the server. This url needs to be fully qualified
-  externalURL: ""
+  externalURL: "https://fylr.localhost"
   # encryptionKey is used to AES-encrypt sensitive information before writing it
   # to the database. It must be 32 bytes long. Default is empty.
   encryptionKey: "d4b207ce131411ed8c7300155dd22658"
@@ -124,7 +124,7 @@ fylr:
     # This has to be at 4 + execserver.parallel + elastic.parallel. Two of these
     # connections will be dedicated to a separate connection pool managing
     # the sequences (Postgres only)
-    maxOpenConns: 10
+    maxOpenConns: 12
     # https://golang.org/pkg/database/sql/#DB.SetMaxIdleConns, default: 0
     # This has to be not more than maxOpenConns
     maxIdleConns: 0
