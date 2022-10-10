@@ -181,7 +181,7 @@ fylr:
     # "Color": ColorLogger prints the log message in a terminal-optimized plain text.
     # "Curl": CurlLogger prints the log message as a runnable curl command.
     # "JSON": JSONLogger prints the log message as JSON.
-    logger: "Text"
+    logger: ""
     # Where to find the Elastic search index settings. If you provide your own
     # file make sure to base it on the default
     # resources/index/index_settings.json which is included in the distribution.
@@ -369,6 +369,10 @@ postgresql-ha:
 elasticsearch:
   enabled: true
   clusterName: fylr
+  ## @param plugins Comma, semi-colon or space separated list of plugins to install at initialization
+  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/elasticsearch#environment-variables
+  ##
+  plugins: "analysis-icu"
   master:
     ## @param master.masterOnly Deploy the Elasticsearch master-elegible nodes as master-only nodes. Recommended for high-demand deployments.
     ## If you are
