@@ -72,8 +72,8 @@ data:
         parallel: {{ .Values.fylr.execserver.parallel }}
         pluginJobTimeoutSec: {{ .Values.fylr.execserver.pluginJobTimeoutSec }}
         connectTimeoutSec: {{ .Values.fylr.execserver.connectTimeoutSec }}
-        callbackBackendInternalURL: "http://{{ include "fylr.service-backend-name" . }}:{{ .Values.services.backend.port }}"
-        callbackApiInternalURL: "http://{{ include "fylr.service-api-name" . }}:{{ .Values.services.api.port }}"
+        callbackBackendInternalURL: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
+        callbackApiInternalURL: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
       services:
         webapp:
           addr: :8080
@@ -82,8 +82,8 @@ data:
             clientID: {{ .Values.fylr.services.webapp.oauth2.clientID }}
             clientSecret: {{ .Values.fylr.services.webapp.oauth2.clientSecret }}
           reverseProxy:
-            api: "http://fylr-api:8081"
-            backend: "http://fylr-backend:8082"
+            api: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
+            backend: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
           {{- if .Values.fylr.services.webapp.basicAuth }}
           basicAuth:
             {{- toYaml .Values.fylr.services.webapp.basicAuth | nindent 12 }}
