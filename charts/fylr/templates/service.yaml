@@ -9,7 +9,7 @@ spec:
   type: {{ .Values.services.webapp.type }}
   ports:
     - port: {{ .Values.services.webapp.port }}
-      targetPort: api
+      targetPort: webapp
       protocol: TCP
       name: webapp
   selector:
