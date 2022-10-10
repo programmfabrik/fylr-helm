@@ -75,14 +75,16 @@ spec:
           env:
             - name: s3_endpoint
               {{ if .Values.minio.enabled }}
-              value: "{{ index .Values.minio.ingress.hosts 0 }}"
+              # internal s3 service address
+              value: "{{ .Release.Name }}-minio.{{ .Release.Namespace }}.svc"
               {{ else }}
+              # user provided s3 endpoint
               # remove everything except the host
               value: {{ mustRegexReplaceAll ":[0-9]+$" (mustRegexReplaceAll "^http[s]{0,1}://" (index .Values.fylr.elastic.hosts 0) "") "" }}
               {{ end }}
             - name: s3_port
               {{ if .Values.minio.enabled }}
-              value: "443"
+              value: "9000"
               {{ else }}
               # remove everything before the port
               {{ $port = mustRegexReplaceAll "^http[s]{0,1}://[a-zA-Z0-9-.]+:" (.Values.fylr.elastic.hosts 0) "" }}
