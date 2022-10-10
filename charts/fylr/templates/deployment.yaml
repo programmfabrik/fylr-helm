@@ -34,7 +34,7 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           command: ["fylr"]
-          args: [ "server", "-c", "config/fylr.yaml", "--env-prefix", "CFG_FYLR_"]
+          args: [ "server", "-c", "config/fylr.yml", "--env-prefix", "CFG_FYLR_"]
           ports:
             - name: webapp
               containerPort: 8080
@@ -85,6 +85,13 @@ spec:
               port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /fylr/config
+              name: fylr-config
+      volumes:
+        - name: "fylr-config"
+          configMap:
+            name: {{ include "fylr.fullname" . }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
