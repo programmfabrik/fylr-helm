@@ -48,13 +48,13 @@ services:
     port: 8082
 
 ingress:
-  enabled: false
-  className: ""
+  enabled: true
+  className: "nginx"
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: chart-example.local
+    - host: fylr.localhost
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -90,7 +90,7 @@ affinity: {}
 
 fylr:
   # public external url of the server. This url needs to be fully qualified
-  externalURL: "https://fylr.localhost"
+  externalURL: "http://fylr.localhost"
   # encryptionKey is used to AES-encrypt sensitive information before writing it
   # to the database. It must be 32 bytes long. Default is empty.
   encryptionKey: "d4b207ce131411ed8c7300155dd22658"
