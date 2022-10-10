@@ -224,24 +224,27 @@ fylr:
         #    openssl rand -hex 16
         signingSecret: "d4b207ce131411ed8c7300155dd22658"
         # map with pre-configured client, use for the webapp
-        clients:
-          # client-id
-          web-client:
-            # clientSecret must be given as bcrypt hash
-            clientSecret: $2y$12$3ULi66opx7/YjgDLmaKsQeoEJVtGSz6BTRUEqyPGK2SMRi0pNNwlO
-            # this must point to the public URL or the webapp
-            # ending in /oauth2/callback
-            redirectURL: https://<external-url>/oauth2/callback
-            # the scopes this client needs to be granted
-            # offline is mandatory to issue refresh tokens
-            # others will be used in rights management
-            scopes: ["read", "write", "offline"]
+        # by default, we generate a random client secret for the "webapp" and assign it to the "webapp" client
+        clients: {}
+          # my-client-id:
+          #   # clientSecret must be given as bcrypt hash
+          #   clientSecret: $2y$04$81xGNnm8PS1uiIzjbos6Le3NzFaNB0goNqnBpOx7S/EyrayzJCNAq # foo
+          #   # this must point to the public URL or the webapp (/oauth2/callback)
+          #   redirectURIs:
+          #     - http://localhost/oauth2/callback
+          #   # the scopes this client needs to be granted
+          #   # offline is mandatory to issue refresh tokens
+          #   # others will be used in rights management
+          #   scopes:
+          #     - "read"
+          #     - "write"
+          #     - "offline"
+          #   # public, set to true if this client is publicly known
+          #   public: false
     webapp:
-      oauth2:
-        # clientID used to connect to oauth2 server
-        clientID: web-client
-        # clientSecret must be provided in clear
-        clientSecret: foo
+      # basicAuth is used to protect the webapp with basic auth.
+      # If set, the webapp is protected with basic auth. The format is
+      # username:password. The password must be a plaintext string.
       basicAuth: {}
 
 
