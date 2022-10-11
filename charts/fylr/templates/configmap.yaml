@@ -90,7 +90,6 @@ data:
         api:
           addr: :8081
           oauth2Server:
-            signingSecret: {{ .Values.fylr.services.api.oauth2Server.signingSecret }}
             clients:
               webclient:
                 redirectURIs:
