@@ -149,6 +149,16 @@ spec:
                 secretKeyRef:
                   name: {{ include "fylr.secret.oauth2.name" . }}
                   key: "oauth2WebappClientSecret"
+            - name: CFG_FYLR_ENCRYPTIONKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.utils" . }}
+                  key: "encryptionKey"
+            - name: CFG_FYLR_SERVICES_API_OAUTH2SERVER_SIGNINGSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.utils" . }}
+                  key: "signinSecret"
           # mount s3 secrets as env vars
           envFrom:
             - secretRef:
