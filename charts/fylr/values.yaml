@@ -91,9 +91,6 @@ affinity: {}
 fylr:
   # public external url of the server. This url needs to be fully qualified
   externalURL: "http://fylr.localhost"
-  # encryptionKey is used to AES-encrypt sensitive information before writing it
-  # to the database. It must be 32 bytes long. Default is empty.
-  encryptionKey: "d4b207ce131411ed8c7300155dd22658"
   # set to true to allow /api/settings/purge. should be disabled for production!
   allowPurge: true
   logger:
@@ -217,12 +214,6 @@ fylr:
   services:
     api:
       oauth2Server:
-        # This secret is used to sign authorize codes, access and refresh
-        # tokens. If unset, a random string is used. If multiple fylr server are
-        # serving the same instance, the signingSecret needs to be configured.
-        # The format is a 32-byte string.
-        #    openssl rand -hex 16
-        signingSecret: "d4b207ce131411ed8c7300155dd22658"
         # map with pre-configured client, use for the webapp
         # by default, we generate a random client secret for the "webapp" and assign it to the "webapp" client
         clients: {}
