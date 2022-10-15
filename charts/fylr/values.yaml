@@ -206,7 +206,6 @@ fylr:
     # addresses of the elastic servers
     addresses:
       - "http://localhost:9200"
-    # TODO: username and password must be set in the secret env config
     # username
     username: ""
     # password
