@@ -177,6 +177,10 @@ fylr:
         enabled: false
         # update_policy: automatic, always, never, defaults to automatic
         update: "never"
+      # not compatible with fylr
+      easydb-connector-plugin:
+        enabled: false
+        update: "never"
   elastic:
     # logger used for the elastic client
     # "Text": TextLogger prints the log message in plain text.
