@@ -108,7 +108,9 @@ fylr:
     # addHostname adds the hostname to the logs.
     addHostname: true
   db:
+    # driver will be ignored if postgresql-ha is enabled
     driver: "postgres"
+    # postgres will be ignored if postgresql-ha is enabled
     postgres:
       host: "localhost"
       port: 5432
@@ -116,14 +118,17 @@ fylr:
       password: "password"
       database: "fylr"
       sslmode: "disable"
-      options: ""
-    # https://golang.org/pkg/database/sql/#DB.SetMaxOpenConns, default: 0
+      # options is a map of additional options to be passed to the database connection string.
+      # See https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS
+      options: {}
+      #  sslcert: /fylr/files/certs/postgres-ca.crt
     # This has to be at 4 + execserver.parallel + elastic.parallel. Two of these
     # connections will be dedicated to a separate connection pool managing
     # the sequences (Postgres only)
+    # https://golang.org/pkg/database/sql/#DB.SetMaxOpenConns, default: 0
     maxOpenConns: 12
+    # maxIdleConns has to be not more than maxOpenConns
     # https://golang.org/pkg/database/sql/#DB.SetMaxIdleConns, default: 0
-    # This has to be not more than maxOpenConns
     maxIdleConns: 0
     # The init block is used to pre-fill the database when its created or purged.
     init:
