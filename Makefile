@@ -66,3 +66,11 @@ install-fylr:
 		--namespace fylr \
 		--create-namespace \
 		-f charts/fylr/values.yaml
+
+# uninstall-execserver: uninstalls the execserver chart
+uninstall-execserver:
+	helm uninstall execserver
+
+# uninstall-fylr: uninstalls the fylr chart
+uninstall-fylr:
+	helm uninstall testinstance -n fylr
