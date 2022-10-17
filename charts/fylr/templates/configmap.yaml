@@ -66,8 +66,6 @@ data:
         objectsPerJob: {{ .Values.fylr.elastic.objectsPerJob }}
         maxMem: {{ .Values.fylr.elastic.maxMem }}
         fielddata: {{ .Values.fylr.elastic.fielddata }}
-        addresses:
-          {{- toYaml .Values.fylr.elastic.addresses | nindent 8 }}
       execserver:
         parallel: {{ .Values.fylr.execserver.parallel }}
         pluginJobTimeoutSec: {{ .Values.fylr.execserver.pluginJobTimeoutSec }}
