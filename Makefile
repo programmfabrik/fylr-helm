@@ -65,7 +65,20 @@ install-fylr:
 	helm install testinstance charts/fylr \
 		--namespace fylr \
 		--create-namespace \
-		-f charts/fylr/values.yaml
+		-f charts/fylr/values.yaml \
+		--set minio.resources.requests.memory=128Mi \
+		--set minio.replicas=3 \
+		--set postgresql-ha.postgresql.resources.requests.memory=64Mi \
+		--set postgresql-ha.postgresql.resources.limits.memory=256Mi \
+		--set postgresql-ha.postgresql.replicaCount=1 \
+		--set elasticsearch.master.resources.requests.memory=64Mi \
+		--set elasticsearch.master.replicaCount=1 \
+		--set elasticsearch.data.resources.requests.memory=256Mi \
+		--set elasticsearch.data.replicaCount=1 \
+		--set elasticsearch.coordinating.resources.requests.memory=64Mi \
+		--set elasticsearch.coordinating.replicaCount=1 \
+		--set elasticsearch.ingest.resources.requests.memory=64Mi \
+		--set elasticsearch.ingest.replicaCount=1
 
 # uninstall-execserver: uninstalls the execserver chart
 uninstall-execserver:
