@@ -165,6 +165,11 @@ fylr:
               secretKey: "minio123"
               region: "us-east-1"
               useSSL: false
+              # Set to true if that storage location allows its download URLs to be
+              # exposed. For the kind "file" storage backend this is a dangerous
+              # setting and should be used for development purposes only. Default to
+              # false.
+              allowRedirect: false
 
   plugin:
     # paths is a list of paths to search for plugins. Defaults to the plugins directories for easydb and fylr.
