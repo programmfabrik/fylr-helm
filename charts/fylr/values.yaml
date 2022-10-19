@@ -246,11 +246,12 @@ fylr:
           #   # public, set to true if this client is publicly known
           #   public: false
     webapp:
-      # basicAuth is used to protect the webapp with basic auth.
-      # If set, the webapp is protected with basic auth. The format is
-      # username:password. The password must be a plaintext string.
+      # basicAuth is used to protect the web application with additional basic credentials.
+      # We expect a map of usernames and passwords in clear text.
       basicAuth: {}
-
+      #  myuser: mypassword
+      #  myuser2: mypassword2
+      #  ...
 
 # third party services
 
