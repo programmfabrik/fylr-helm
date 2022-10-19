@@ -54,7 +54,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: fylr.localhost
+    - host: localhost
       paths:
         - path: /
           pathType: ImplementationSpecific
@@ -90,7 +90,7 @@ affinity: {}
 
 fylr:
   # public external url of the server. This url needs to be fully qualified
-  externalURL: "http://fylr.localhost"
+  externalURL: "http://localhost"
   # set to true to allow /api/settings/purge. should be disabled for production!
   allowPurge: true
   logger:
