@@ -254,10 +254,15 @@ fylr:
 
 # third party services
 
-# -- minio deployment (s3 storage)
-# for more information see: https://github.com/minio/minio/tree/master/helm/minio
+# minio (s3 compatible storage)
+# If enabled and no change has been made, fylr uses the internal kubernetes mino service
+# fylr will use it for "assets", "versions" and "backups".
+# Even if you decide to make it available to the outside world, we still use the Kubernetes service.
+# This means that fylr does not expose the S3 URLs for "assets", "versions" and "backups".
+# Instead, the URLs point to fylr itself.
+#
+# For more information about minio and how to use it, see: https://github.com/minio/minio/tree/master/helm/minio
 minio:
-  # configuration from: https://github.com/minio/minio/blob/master/helm/minio/values.yaml
   enabled: true
   replicas: 3
   projectName: minio
