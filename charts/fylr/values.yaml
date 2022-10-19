@@ -227,12 +227,12 @@ fylr:
   services:
     api:
       oauth2Server:
-        # map with pre-configured client, use for the webapp
-        # by default, we generate a random client secret for the "webapp" and assign it to the "webapp" client
+        # additional oauth2 clients to be added to the oauth2 server.
+        # For the web application, we automatically generate a key pair and assign it to the oauth2 client.
         clients: {}
           # my-client-id:
-          #   # clientSecret must be given as bcrypt hash
-          #   clientSecret: $2y$04$81xGNnm8PS1uiIzjbos6Le3NzFaNB0goNqnBpOx7S/EyrayzJCNAq # foo
+          #   # secret must be given as bcrypt hash
+          #   secret: $2y$04$81xGNnm8PS1uiIzjbos6Le3NzFaNB0goNqnBpOx7S/EyrayzJCNAq # foo
           #   # this must point to the public URL or the webapp (/oauth2/callback)
           #   redirectURIs:
           #     - http://localhost/oauth2/callback
