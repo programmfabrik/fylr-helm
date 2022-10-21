@@ -224,6 +224,10 @@ fylr:
     # connectTimeout sets the maximum seconds the server will wait
     # until a worker gets a job. Defaults to 60 seconds.
     connectTimeoutSec: 240
+    # addresses represents a list of execserver services.
+    # If execserver.enabled is set to true, this option will be ignored.
+    # We expect the url in the format of "http://localhost:8080".
+    addresses: []
   services:
     api:
       oauth2Server:
@@ -252,6 +256,10 @@ fylr:
       #  myuser: mypassword
       #  myuser2: mypassword2
       #  ...
+
+execserver:
+  # TODO: add config for the execserver
+  enabled: true
 
 # third party services
 
