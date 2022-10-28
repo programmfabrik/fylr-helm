@@ -4,9 +4,9 @@ dependencies:
   version: 4.0.14
 - name: postgresql-ha
   repository: https://charts.bitnami.com/bitnami
-  version: 9.4.3
+  version: 9.4.6
 - name: elasticsearch
   repository: https://charts.bitnami.com/bitnami
   version: 19.4.2
-digest: sha256:1af48acab3a8b270dd3ec7c9be2f0a51841466dad7c8003613b5764856dde5f8
-generated: "2022-10-07T13:45:57.8090644+02:00"
+digest: sha256:72ad1de03523c77e78507b5fcfffe51cf61d4989e179928d8862e34037d560ea
+generated: "2022-10-25T09:54:41.0229949+02:00"
