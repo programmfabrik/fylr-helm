@@ -1,3 +1,4 @@
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -69,6 +70,7 @@ spec:
           - '-c'
           - 'until nc -z -v -w30 $elastic_address $elastic_port; do echo waiting for elasticsearch; sleep 5; done;'
         # if internal s3 is enabled, or an external provider was configured, wait for it
+        # TODO: check if we actually use s3 if that is the case we need this check, otherwise we don't need it
         {{ if or (.Values.minio.enabled) (.Values.fylr.db.init.locations) }}
         - name: wait-for-s3
           image: busybox
@@ -159,10 +161,9 @@ spec:
                 secretKeyRef:
                   name: {{ include "fylr.secret.utils" . }}
                   key: "signinSecret"
-          # mount s3 secrets as env vars
           envFrom:
             - secretRef:
-                name: {{ include "fylr.secret.s3.name" . }}
+                name: {{ include "fylr.secret.storage.name" . }}
           readinessProbe:
             httpGet:
               path: /healthz
@@ -188,10 +189,22 @@ spec:
           volumeMounts:
             - mountPath: /fylr/config
               name: fylr-config
+            {{ if .Values.fylr.db.init.config -}}
+            - name: fylr-init-config
+              mountPath: /fylr/files/init
+            {{- end }}
+            {{ include "fylr.deployment.volume.mounts" . | nindent 12 }}
       volumes:
         - name: "fylr-config"
           configMap:
             name: {{ include "fylr.fullname" . }}
+        {{ if .Values.fylr.db.init.config -}}
+        - name: "fylr-init-config"
+          secret:
+            secretName: {{ include "fylr.secret.init.name" . }}
+        {{- end }}
+        {{ include "fylr.deployment.volumes" . | nindent 8 -}}
+
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
