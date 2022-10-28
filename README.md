@@ -10,6 +10,11 @@ A Helm-Chart for the fylr application
 - A local Kubernetes cluster either via [Minikube](https://minikube.sigs.k8s.io/docs/start/), [Kind](https://kind.sigs.k8s.io/) or [Docker-Desktop](https://www.docker.com/products/docker-desktop/)
 - *Yamllint*, *Yamale* simply install these packages with `make dep-install`
 
+## Charts
+
+- [execserver](https://programmfabrik.github.io/fylr-helm/charts/execserver/)
+- [fylr](https://programmfabrik.github.io/fylr-helm/charts/fylr/)
+
 ## Lint charts
 
 ```bash
