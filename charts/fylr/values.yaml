@@ -7,7 +7,7 @@ replicaCount: 1
 image:
   repository: docker.fylr.io/fylr/fylr-server
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- Overrides the image tag whose default is the chart appVersion.
   tag: "v6.1.0-beta.8"
 
 imagePullSecrets: []
@@ -15,11 +15,11 @@ nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
+  # -- Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
+  # -- The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
@@ -89,29 +89,32 @@ tolerations: []
 affinity: {}
 
 fylr:
-  # public external url of the server. This url needs to be fully qualified
+  # -- public external url of the server. This url needs to be fully qualified
   externalURL: "http://localhost"
-  # set to true to allow /api/settings/purge. should be disabled for production!
+  # -- set to true to allow /api/settings/purge. should be disabled for production!
   allowPurge: true
   logger:
-    # format is the format of the logs. Valid values are "json" and "console".
+    # -- format is the format of the logs. Valid values are "json" and "console".
     format: "console"
-    # level is the minimum level of logs to be logged. Valid values are "trace", "debug", "info", "warn", "error", "fatal", "panic".
+    # -- level is the minimum level of logs to be logged. Valid values are "trace", "debug", "info", "warn", "error", "fatal", "panic".
     level: "info"
-    # timeFormat is the Go representation to format the time in the log output.
+    # -- timeFormat is the Go representation to format the time in the log output.
     # zerolog's time keeping resolution is always set to milliseconds by FYLR.
     # Use "", "UNIXMS" or "UNIXMICRO" to output a unix timestamp (json format only).
     # Defaults to "2006-01-02 15:04:05"
     timeFormat: "2006-01-02 15:04:05"
-    # noColor disables colorized output.
+    # -- noColor disables colorized output.
     noColor: false
-    # addHostname adds the hostname to the logs.
+    # -- addHostname adds the hostname to the logs.
     addHostname: true
 
   persistent:
     defaults:
+      # -- the storage definition for originals
       originals: "disk1"
+      # -- the storage definition for versions
       versions: "disk2"
+      # -- the storage definition for backups
       backups: "s3"
     definitions:
       s3:
@@ -176,96 +179,103 @@ fylr:
           size: 10Gi
 
   db:
-    # driver will be ignored if postgresql-ha is enabled
+    # -- driver will be ignored if postgresql-ha is enabled
     driver: "postgres"
-    # postgres will be ignored if postgresql-ha is enabled
+    # -- postgres will be ignored if postgresql-ha is enabled
     postgres:
+      # -- host is the host of the postgres server.
       host: "localhost"
+      # -- port is the port of the postgres server.
       port: 5432
+      # -- user is the user to use for the postgres connection.
       user: "fylr"
+      # -- password is the password to use for the postgres connection.
       password: "password"
+      # -- database is the database to use for the postgres connection.
       database: "fylr"
+      # -- sslmode is the sslmode to use for the postgres connection.
       sslmode: "disable"
-      # options is a map of additional options to be passed to the database connection string.
+      # -- options is a map of additional options to be passed to the database connection string.
       # See https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS
       options: {}
       #  sslcert: /fylr/files/certs/postgres-ca.crt
-    # This has to be at 4 + execserver.parallel + elastic.parallel. Two of these
+    # -- This has to be at 4 + execserver.parallel + elastic.parallel. Two of these
     # connections will be dedicated to a separate connection pool managing
     # the sequences (Postgres only)
     # https://golang.org/pkg/database/sql/#DB.SetMaxOpenConns, default: 0
     maxOpenConns: 12
-    # maxIdleConns has to be not more than maxOpenConns
+    # -- maxIdleConns has to be not more than maxOpenConns
     # https://golang.org/pkg/database/sql/#DB.SetMaxIdleConns, default: 0
     maxIdleConns: 0
-    # The init block is used to pre-fill the database when its created or purged.
+    # -- The init block is used to pre-fill the database when its created or purged.
     init:
-      # Inline base config. Works like configFile but used the inlined
+      # -- Inline base config. Works like configFile but used the inlined
       # baseconfig setting in this .yml file. Runs after configFile, so everything
       # in config overwrites settings from configFile. Default is empty.
       config: {}
 
   plugin:
-    # paths is a list of paths to search for plugins. Defaults to the plugins directories for easydb and fylr.
+    # -- paths is a list of paths to search for plugins. Defaults to the plugins directories for easydb and fylr.
     paths:
       - /fylr/files/plugins/easydb
       - /fylr/files/plugins/fylr
     defaults:
       fylr_example:
-        # enable, set to false to disable the plugin, defaults to true
+        # -- enable, set to false to disable the plugin, defaults to true
         enabled: false
-        # update_policy: automatic, always, never, defaults to automatic
+        # -- update_policy: automatic, always, never, defaults to automatic
         update: "never"
-      # not compatible with fylr
+      # -- not compatible with fylr
       easydb-connector-plugin:
         enabled: false
         update: "never"
   elastic:
-    # logger used for the elastic client
+    # -- logger used for the elastic client
     # "Text": TextLogger prints the log message in plain text.
     # "Color": ColorLogger prints the log message in a terminal-optimized plain text.
     # "Curl": CurlLogger prints the log message as a runnable curl command.
     # "JSON": JSONLogger prints the log message as JSON.
     logger: ""
-    # Where to find the Elastic search index settings. If you provide your own
+    # -- Where to find the Elastic search index settings. If you provide your own
     # file make sure to base it on the default
     # resources/index/index_settings.json which is included in the distribution.
     settings: ""
-    # number of parallel workers to index documents, default to 1, set to 0 to disable
+    # -- number of parallel workers to index documents, default to 1, set to 0 to disable
     parallel: 4
-    # number of objects per job passed to the indexer process
+    # -- number of objects per job passed to the indexer process
     objectsPerJob: 100
-    # limit of payloads sent to Elastic
+    # -- limit of payloads sent to Elastic
     maxMem: 100mb
-    # fielddata (debug feature). if set to true, fields are mapped including their fielddata
+    # -- fielddata (debug feature). if set to true, fields are mapped including their fielddata
     # in the reverse index. with that, the inspect view of the indexed version of
     # the object shows a per field list of stored terms. This can be useful for debugging
     # of analyzer settings.
     fielddata: false
-    # addresses of the elastic servers
+    # -- addresses of the elastic servers
     addresses:
       - "http://localhost:9200"
-    # username
+    # -- username for the elastic server
     username: ""
-    # password
+    # -- password for the elastic server
     password: ""
   execserver:
-    # number of parallel file workers, default to 1, set to 0 to disable
+    # -- number of parallel file workers, default to 1, set to 0 to disable
     parallel: 4
-    # pluginJobTimeoutSec sets the maximum seconds a callback
+    # -- pluginJobTimeoutSec sets the maximum seconds a callback
     # is allowed to run. Defaults to 30 seconds.
     pluginJobTimeoutSec: 240
-    # connectTimeout sets the maximum seconds the server will wait
+    # -- connectTimeout sets the maximum seconds the server will wait
     # until a worker gets a job. Defaults to 60 seconds.
     connectTimeoutSec: 240
-    # addresses represents a list of execserver services.
+    # -- addresses represents a list of execserver services.
     # If execserver.enabled is set to true, this option will be ignored.
     # We expect the url in the format of "http://localhost:8080".
     addresses: []
   services:
     api:
+      # -- configures oauth2 related settings
       oauth2Server:
-        # additional oauth2 clients to be added to the oauth2 server.
+        # -- additional oauth2 clients to be added to the oauth2 server.
         # For the web application, we automatically generate a key pair and assign it to the oauth2 client.
         clients: {}
           # my-client-id:
@@ -284,7 +294,7 @@ fylr:
           #   # public, set to true if this client is publicly known
           #   public: false
     webapp:
-      # basicAuth is used to protect the web application with additional basic credentials.
+      # -- basicAuth is used to protect the web application with additional basic credentials.
       # We expect a map of usernames and passwords in clear text.
       basicAuth: {}
       #  myuser: mypassword
@@ -297,7 +307,7 @@ execserver:
 
 # third party services
 
-# minio (s3 compatible storage)
+# -- minio (s3 compatible storage)
 # If enabled and no change has been made, fylr uses the internal kubernetes minio service.
 # fylr will use it for "assets", "versions" and "backups".
 # Even if you decide to make it available to the outside world, we still use the Kubernetes service.
