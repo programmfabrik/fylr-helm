@@ -107,6 +107,74 @@ fylr:
     noColor: false
     # addHostname adds the hostname to the logs.
     addHostname: true
+
+  persistent:
+    defaults:
+      originals: "disk1"
+      versions: "disk2"
+      backups: "s3"
+    definitions:
+      s3:
+        # kind is the kind of the storage. Valid values are "s3" and "disk".
+        kind: s3
+        # allow fylr to purge files from the disk.
+        # This is a dangerous setting and should be used for development purposes only.
+        allowPurge: false
+        # s3 is the configuration for the s3 storage.
+        s3:
+          # path represents the path in the s3 bucket.
+          path: ""
+          # bucket is the name of the bucket to use.
+          bucket: fylr
+          # endpoint is the endpoint of the s3 server.
+          endpoint: "http://localhost:9000"
+          # accessKey is the access key to use.
+          accessKey: "minio"
+          # secretKey is the secret key to use.
+          secretKey: "minio123"
+          # region is the region of the s3 server.
+          region: "us-east-1"
+          # useSSL enables SSL for the s3 connection.
+          useSSL: false
+          # allowRedirect specifies whether we expose s3 urls to the outside world.
+          allowRedirect: false
+      disk1:
+        # kind is the kind of the storage. Valid values are "s3" and "disk".
+        kind: disk
+        # allow fylr to purge files from the disk.
+        # This is a dangerous setting and should be used for development purposes only.
+        allowPurge: false
+        # disk is the configuration for the disk storage (persistent volume).
+        disk:
+          # storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
+          storageClass: ""
+          # accessModes is a list of access modes for the volume.
+          # If the replica count is greater than 1, the access modes must contain "ReadWriteMany".
+          # If the replica count is > 1 and the access modes are set to "ReadWriteOnce", the replica count will be set to 1.
+          # This is required because the volume cannot be mounted by more than one pod at a time.
+          # If we would allow this, the data would be spread across the pods and it will likely be impossible to receive the data back.
+          accessModes: ["ReadWriteOnce"]
+          # size is the size of the disk to be claimed and used by fylr.
+          size: 10Gi
+      disk2:
+        # kind is the kind of the storage. Valid values are "s3" and "disk".
+        kind: disk
+        # allow fylr to purge files from the disk.
+        # This is a dangerous setting and should be used for development purposes only.
+        allowPurge: false
+        # disk is the configuration for the disk storage (persistent volume).
+        disk:
+          # storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
+          storageClass: ""
+          # accessModes is a list of access modes for the volume.
+          # If the replica count is greater than 1, the access modes must contain "ReadWriteMany".
+          # If the replica count is > 1 and the access modes are set to "ReadWriteOnce", the replica count will be set to 1.
+          # This is required because the volume cannot be mounted by more than one pod at a time.
+          # If we would allow this, the data would be spread across the pods and it will likely be impossible to receive the data back.
+          accessModes: ["ReadWriteOnce"]
+          # size is the size of the disk to be claimed and used by fylr.
+          size: 10Gi
+
   db:
     # driver will be ignored if postgresql-ha is enabled
     driver: "postgres"
