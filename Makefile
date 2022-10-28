@@ -80,6 +80,14 @@ install-fylr:
 		--set elasticsearch.ingest.resources.requests.memory=64Mi \
 		--set elasticsearch.ingest.replicaCount=1
 
+install-fylr-dry:
+	helm install testinstance charts/fylr \
+		--namespace fylr \
+		--create-namespace \
+		-f charts/fylr/values.yaml \
+		--dry-run \
+		--debug
+
 # uninstall-execserver: uninstalls the execserver chart
 uninstall-execserver:
 	helm uninstall execserver
