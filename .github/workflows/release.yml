@@ -55,6 +55,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: helm-docs
+          retention-days: 1
           path: |
             charts/**/README.md
 
@@ -81,6 +82,12 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: helm-docs
+          path: charts
+
+      - name: Debug
+        run: |
+          git status
+          ls -la charts/
 
       - name: Commit and Publish documentation
         run: |
