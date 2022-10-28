@@ -7,6 +7,10 @@ on:
     paths:
       - charts/**/Chart.yaml
 
+env:
+  gh_actor: fylr-bot
+  gh_email: fylr-bot@users.noreply.github.com
+
 jobs:
   release:
     # depending on default permission settings for your org (contents being read-only or read-write for workloads), you will have to add permissions
@@ -22,8 +26,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config user.name "${{ env.gh_actor }}"
+          git config user.email "${{ env.gh_email }}@users.noreply.github.com"
 
       - name: Install Helm
         uses: azure/setup-helm@v3
@@ -75,8 +79,8 @@ jobs:
 
       - name: Configure Git
         run: |
-          git config user.name "$GITHUB_ACTOR"
-          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+          git config user.name "${{ env.gh_actor }}"
+          git config user.email "${{ env.gh_email }}@users.noreply.github.com"
 
       - name: Download documentation
         uses: actions/download-artifact@v3
