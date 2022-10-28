@@ -1,0 +1,68 @@
+{{ $firstDiskName := (include "fylr.storage.volumes.asset.name" .) }}
+{{ $secondDiskName := (include "fylr.storage.volumes.version.name" .) }}
+{{ $thirdDiskName := (include "fylr.storage.volumes.backup.name" .) }}
+{{ $helmValues := . }}
+
+{{ $persistent := .Values.fylr.persistent }}
+{{- range $key, $val := $persistent.definitions -}}
+{{- if eq $val.kind "disk" -}}
+{{/* check whether the key matches any default rule, if so, we add a mount path to it */}}
+{{- if or (eq $key $persistent.defaults.originals) (eq $key $persistent.defaults.versions) (eq $key $persistent.defaults.backups) -}}
+
+{{/* check if key is defined as original */}}
+{{- if eq $key $persistent.defaults.originals -}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $firstDiskName | quote }}
+spec:
+  accessModes:
+    {{- toYaml $val.disk.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ $val.disk.size }}
+  storageClassName: {{ $val.disk.storageClass }}
+{{/* end if is originals */}}
+{{- end -}}
+
+{{/* check if key is defined as versions */}}
+{{- if and (eq $key $persistent.defaults.versions) (ne $key $persistent.defaults.originals) -}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $secondDiskName | quote }}
+spec:
+  accessModes:
+    {{- toYaml $val.disk.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ $val.disk.size }}
+  storageClassName: {{ $val.disk.storageClass }}
+{{/* end if and is versions and not originals*/}}
+{{- end -}}
+
+{{/* check if key is defined as backups */}}
+{{- if and (eq $key $persistent.defaults.backups) (ne $key $persistent.defaults.versions) (ne $key $persistent.defaults.originals) -}}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $thirdDiskName | quote }}
+spec:
+  accessModes:
+    {{- toYaml $val.disk.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ $val.disk.size }}
+  storageClassName: {{ $val.disk.storageClass }}
+{{/* end if and is versions and not originals*/}}
+{{- end -}}
+
+{{/* end if or originals, versions, backups */}}
+{{- end -}}
+{{/* end if kind is disk */}}
+{{- end -}}
+{{/* end loop */}}
+{{- end -}}
