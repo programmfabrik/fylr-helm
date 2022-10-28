@@ -19,40 +19,18 @@ data:
         maxOpenConns: {{ .Values.fylr.db.maxOpenConns }}
         maxIdleConns: {{ .Values.fylr.db.maxIdleConns }}
         init:
-          configFile: {{ .Values.fylr.db.init.configFile }}
-          {{ if .Values.minio.enabled }}
-          # minio is enabled, use minio as the backend
-          {{- $baseConfig := include "fylr.default_s3_config" . | fromYaml -}}
-          {{- if .Values.fylr.db.init.config -}}
-          # the user has provided a custom config, merge it with the minio config
-          {{- $mergedConfig := mustMergeOverwrite (dict) .Values.fylr.db.init.config $baseConfig -}}
+          {{- if .Values.fylr.db.init.config }}
+          configFile: /fylr/files/init/fylr.init.yaml
+          {{- end }}
           config:
-            {{- toYaml $mergedConfig | nindent 10 }}
-          {{- else -}}
-          config:
-            {{- toYaml $baseConfig | nindent 10 }}
-          {{- end -}}
-          {{ else }}
-          config:
-          {{ if .Values.fylr.db.init.config }}
-            {{- toYaml .Values.fylr.db.init.config | nindent 10 }}
-          {{ else if .Values.fylr.db.init.locations }}
             system:
               config:
+                purge:
+                  allow_purge: {{ .Values.fylr.allowPurge }}
+                  purge_storage: {{ .Values.fylr.allowPurge }}
                 location_defaults:
-                  {{- range $key, $value := .Values.fylr.db.init.locations }}
-                  {{ if contains $value.mode "originals" }}
-                  originals: {{ $value.name | upper }}
-                  {{ end }}
-                  {{ if contains $value.mode "versions" }}
-                  versions: {{ $value.name | upper }}
-                  {{ end }}
-                  {{ if contains $value.mode "backups" }}
-                  backups: {{ $value.name | upper }}
-                  {{ end }}
-                  {{ end }}
-          {{ end }}
-          {{ end }}
+                  {{- include "fylr.config.init.location.defaults" . | nindent 18 }}
+
       plugin:
         paths:
           {{- toYaml .Values.fylr.plugin.paths | nindent 8 }}
