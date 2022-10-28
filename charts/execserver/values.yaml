@@ -8,7 +8,7 @@ image:
   repository: docker.fylr.io/fylr/fylr
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: "main"
+  tag: "v6.1.0-beta.8"
 
 imagePullSecrets: []
 nameOverride: ""
