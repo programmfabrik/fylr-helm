@@ -200,44 +200,10 @@ fylr:
     maxIdleConns: 0
     # The init block is used to pre-fill the database when its created or purged.
     init:
-      # Path to base config file. If set, on a fresh install or after a purge this
-      # file is used and preloaded into the base config. The format of the file is
-      # JSON in API format. Defaults to "", which starts with an empty base
-      # config. The empty base config uses defaults which are defined in
-      # resources/baseconfig/baseconfig.yml. Unset keys (from a partial base
-      # config file), are set to their defaults.
-      configFile: ""
       # Inline base config. Works like configFile but used the inlined
       # baseconfig setting in this .yml file. Runs after configFile, so everything
       # in config overwrites settings from configFile. Default is empty.
-      config: null
-      # locations is a list of unique location by names.
-      # If set, on a fresh install or after a purge this list is used and preloaded.
-      # The list of locations is used to create secret values for the locations.
-      # The secret values are then injected into the container environment.
-      locations:
-        - name: "assets"
-          pathPrefix: ""
-          allowPurge: false
-          # mode determines how the storage location is used.
-          # "originals" denotes the location as "originals" storage.
-          # "versions" denotes the location as "version" storage.
-          # "backups" denotes the location as "backup" storage.
-          # A combination of "originals", "versions" and "backups" is possible. Simply separate them with a comma.
-          mode: "originals"
-          config:
-            s3:
-              bucket: fylr
-              endpoint: "http://localhost:9000"
-              accessKey: "minio"
-              secretKey: "minio123"
-              region: "us-east-1"
-              useSSL: false
-              # Set to true if that storage location allows its download URLs to be
-              # exposed. For the kind "file" storage backend this is a dangerous
-              # setting and should be used for development purposes only. Default to
-              # false.
-              allowRedirect: false
+      config: {}
 
   plugin:
     # paths is a list of paths to search for plugins. Defaults to the plugins directories for easydb and fylr.
