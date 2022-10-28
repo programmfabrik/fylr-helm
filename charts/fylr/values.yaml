@@ -5,7 +5,9 @@
 replicaCount: 1
 
 image:
+  # -- Docker image repository
   repository: docker.fylr.io/fylr/fylr-server
+  # -- Docker image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images
   pullPolicy: IfNotPresent
   # -- Overrides the image tag whose default is the chart appVersion.
   tag: "v6.1.0-beta.8"
