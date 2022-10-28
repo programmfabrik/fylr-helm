@@ -4,32 +4,40 @@
 
 replicaCount: 1
 
+# -- The image to use for the execserver
 image:
+  # -- The image repository
   repository: docker.fylr.io/fylr/fylr
+  # -- The image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
+  # -- The image tag
+  # Overrides the image tag whose default value is the appVersion of the chart.
   tag: "v6.1.0-beta.8"
 
+# -- Pull secrets for the image. Useful for private registries. See https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+# -- Service account to be used by the pod
 serviceAccount:
-  # Specifies whether a service account should be created
+  # -- Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
+  # -- Annotations to add to the service account
   annotations: {}
-  # The name of the service account to use.
+  # -- The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
+# -- Pod annotations to add to the deployment.
 podAnnotations: {}
 
+# -- Pod Security Context. See https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
 podSecurityContext: {}
-  # fsGroup: 2000
+  # -- fsGroup: 2000
 
 securityContext: {}
-  # capabilities:
+  # -- capabilities:
   #   drop:
   #   - ALL
   # readOnlyRootFilesystem: true
@@ -37,33 +45,49 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
+  # -- The type of service to create
   type: ClusterIP
+  # -- The port on which to expose the service
   port: 8070
 
+# -- Whether to configure monitoring for the application
 monitoring:
+  # -- Whether to create a ServiceMonitor resource for Prometheus Operator
   service:
+    # -- Enable service monitor
     enabled: false
+    # -- The interval at which metrics should be scraped
     interval: "30s"
+  # -- Whether to create a PodMonitor resource for Prometheus Operator
   pod:
+    # -- Enable pod monitor
     enabled: false
+    # -- The interval at which metrics should be scraped
     interval: "30s"
 
+# -- Ingress configuration
 ingress:
+  # -- Enable ingress
   enabled: false
+  # -- The class of the ingress
   className: ""
+  # -- The annotations of the ingress
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
+  # -- The list of hosts to expose
   hosts:
     - host: chart-example.local
       paths:
         - path: /
           pathType: ImplementationSpecific
+  # -- The list of TLS secrets
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
   #      - chart-example.local
 
+# -- The resources to allocate to the pod
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
@@ -77,60 +101,103 @@ resources: {}
   #   memory: 128Mi
 
 autoscaling:
+  # -- Whether to create an HorizontalPodAutoscaler resource
   enabled: false
+  # -- The minimum number of replicas
   minReplicas: 1
+  # -- The maximum number of replicas
   maxReplicas: 5
+  # -- The target CPU utilization percentage
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 
+# -- The node selector settings to use. See https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
 nodeSelector: {}
 
+# -- The tolerations settings to use. See https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
 tolerations: []
 
+# -- The affinity settings to use. See https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+# -- Application configuration
 fylr:
+  # -- Log settings
   logger:
-    # format can be: console or json
+    # -- Set to "json" or "console". Default: "console"
     format: console
-    # level can be: debug, info, warn, error, fatal, panic
+    # -- Set zerolog log level: trace, debug, info, warn, error, fatal, panic
+    # default to "info".
     level: info
+    # -- timeFormat is the Go representation to format the time in the log output.
+    # zerolog's time keeping resolution is always set to milliseconds by FYLR.
+    # Use "", "UNIXMS" or "UNIXMICRO" to output a unix timestamp (json format only).
+    # Defaults to ""
     timeFormat: "2006-01-02T15:04:05Z07:00"
+    # -- turn off color for zerolog's underlying ConsoleWriter
+    # format: "console" only.
     noColor: false
+    # -- add hostname to log output
     addHostname: true
+  # -- Settings related to the execserver
   execserver:
+    # -- Parallelism of the execserver
+    # define several groups with a different number of jobs running in parallel
+    # we expect a map[string]int
     waitGroups:
       a: 1
       b: 1
       c: 1
       # ...
+    # -- Specify a set of services that should be executed by the execserver
     services:
       python3:
+        # -- Enable or disable the python3 service
         enabled: true
+        # -- Specify the waitGroup the service should be executed in
         waitGroup: b
       node:
+        # -- Enable or disable the node service
         enabled: true
+        # -- Specify the waitGroup the service should be executed in
         waitGroup: b
       convert:
+        # -- Enable or disable the convert service
+        enabled: true
+        # -- Specify the waitGroup the service should be executed in
         waitGroup: a
       ffmpeg:
+        # -- Enable or disable the ffmpeg service
         enabled: true
+        # -- Specify the waitGroup the service should be executed in
         waitGroup: a
       soffice:
+        # -- Enable or disable the soffice service
         enabled: true
+        # -- Specify the waitGroup the service should be executed in
         waitGroup: c
       pdf2pages:
+        # -- Enable or disable the pdf2pages service
         enabled: true
+        # -- Specify the waitGroup the service should be executed in
         waitGroup: a
       xslt:
+        # -- Enable or disable the xslt service
         enabled: true
+        # -- Specify the waitGroup the service should be executed in
         waitGroup: a
       copy:
+        # -- Enable or disable the copy service
         enabled: true
+        # -- Specify the waitGroup the service should be executed in
         waitGroup: a
       metadata:
+        # -- Enable or disable the metadata service
         enabled: true
+        # -- Specify the waitGroup the service should be executed in
         waitGroup: a
       iiif:
+        # -- Enable or disable the iiif service
         enabled: true
+        # -- Specify the waitGroup the service should be executed in
         waitGroup: a
