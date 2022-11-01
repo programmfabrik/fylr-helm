@@ -42,7 +42,7 @@ spec:
               {{ if (index .Values "postgresql-ha" "enabled") }}
               value: "5432"
               {{ else }}
-              value: "{{ .Values.fylr.db.postgres.port }}"
+              value: {{ .Values.fylr.db.postgres.port | quote }}
               {{ end }}
           command:
           - 'sh'
@@ -56,14 +56,14 @@ spec:
               value: "{{ .Release.Name }}-elasticsearch.{{ .Release.Namespace }}.svc"
               {{ else }}
               # remove everything except the host
-              value: {{ mustRegexReplaceAll ":[0-9]+$" (mustRegexReplaceAll "^http[s]{0,1}://" (index .Values.fylr.elastic.hosts 0) "") "" }}
+              value: {{ mustRegexReplaceAll ":[0-9]+$" (mustRegexReplaceAll "^http[s]{0,1}://" (index .Values.fylr.elastic.addresses 0) "") "" }}
               {{ end }}
             - name: elastic_port
               {{ if .Values.elasticsearch.enabled }}
               value: "9200"
               {{ else }}
               # remove everything before the port
-              value: {{ mustRegexReplaceAll "^http[s]{0,1}://[a-zA-Z0-9-.]+:" (.Values.fylr.elastic.hosts 0) "" }}
+              value: {{ mustRegexReplaceAll "^http[s]{0,1}://[a-zA-Z0-9-.]+:" (index .Values.fylr.elastic.addresses 0) "" | quote }}
               {{ end }}
           command:
           - 'sh'
@@ -82,15 +82,15 @@ spec:
               {{ else }}
               # user provided s3 endpoint
               # remove everything except the host
-              value: {{ mustRegexReplaceAll ":[0-9]+$" (mustRegexReplaceAll "^http[s]{0,1}://" (index .Values.fylr.elastic.hosts 0) "") "" }}
+              value: {{ mustRegexReplaceAll ":[0-9]+$" (mustRegexReplaceAll "^http[s]{0,1}://" (index .Values.fylr.elastic.addresses 0) "") "" }}
               {{ end }}
             - name: s3_port
               {{ if .Values.minio.enabled }}
               value: "9000"
               {{ else }}
               # remove everything before the port
-              {{ $port = mustRegexReplaceAll "^http[s]{0,1}://[a-zA-Z0-9-.]+:" (.Values.fylr.elastic.hosts 0) "" }}
-              value: {{ if $port "" }}"443"{{ else }}{{ $port }}{{ end }}
+              {{ $port = mustRegexReplaceAll "^http[s]{0,1}://[a-zA-Z0-9-.]+:" (index .Values.fylr.elastic.addresses 0) "" }}
+              value: {{ if $port "" }}"443"{{ else }}{{ $port | quote }}{{ end }}
               {{ end }}
           command:
           - 'sh'
