@@ -1,5 +1,8 @@
 EXTRA_ARGS?=""
 
+KUBE_CONFIG?=~/.kube/config
+NAMESPACE?=fylr
+
 .PHONY: all
 all: lint
 
@@ -58,12 +61,15 @@ test-fylr:
 
 # install-execserver: installs the execserver
 install-execserver:
-	helm install execserver charts/execserver
+	helm install execserver charts/execserver \
+		--namespace ${NAMESPACE} \
+		--create-namespace \
+		--kubeconfig ${KUBE_CONFIG}
 
 # install-fylr: installs the fylr
 install-fylr:
 	helm install testinstance charts/fylr \
-		--namespace fylr \
+		--namespace ${NAMESPACE} \
 		--create-namespace \
 		-f charts/fylr/values.yaml \
 		--set minio.resources.requests.memory=128Mi \
@@ -82,7 +88,7 @@ install-fylr:
 
 install-fylr-dry:
 	helm install testinstance charts/fylr \
-		--namespace fylr \
+		--namespace ${NAMESPACE} \
 		--create-namespace \
 		-f charts/fylr/values.yaml \
 		--dry-run \
@@ -90,8 +96,12 @@ install-fylr-dry:
 
 # uninstall-execserver: uninstalls the execserver chart
 uninstall-execserver:
-	helm uninstall execserver
+	helm uninstall execserver \
+		--namespace ${NAMESPACE} \
+		--kubeconfig ${KUBE_CONFIG}
 
 # uninstall-fylr: uninstalls the fylr chart
 uninstall-fylr:
-	helm uninstall testinstance -n fylr
+	helm uninstall testinstance \
+		--namespace ${NAMESPACE} \
+		--kubeconfig ${KUBE_CONFIG}
