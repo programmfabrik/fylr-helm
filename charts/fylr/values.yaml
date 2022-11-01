@@ -135,11 +135,11 @@ fylr:
           # bucket is the name of the bucket to use.
           bucket: fylr
           # endpoint is the endpoint of the s3 server.
-          endpoint: "http://localhost:9000"
+          endpoint: "http://testinstance-minio:9000"
           # accessKey is the access key to use.
-          accessKey: "minio"
+          accessKey: "fylr"
           # secretKey is the secret key to use.
-          secretKey: "minio123"
+          secretKey: "fylrsecret123"
           # region is the region of the s3 server.
           region: "us-east-1"
           # useSSL enables SSL for the s3 connection.
