@@ -4,12 +4,13 @@
 
 replicaCount: 1
 
+# -- (object) The image to use for the container
 image:
-  # -- Docker image repository
+  # -- (string) Docker image repository
   repository: docker.fylr.io/fylr/fylr-server
-  # -- Docker image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images
+  # -- (string) Docker image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images
   pullPolicy: IfNotPresent
-  # -- Overrides the image tag whose default is the chart appVersion.
+  # -- (string) Overrides the image tag whose default is the chart appVersion.
   tag: "v6.1.0-beta.8"
 
 imagePullSecrets: []
@@ -17,20 +18,20 @@ nameOverride: ""
 fullnameOverride: ""
 
 serviceAccount:
-  # -- Specifies whether a service account should be created
+  # -- (bool) Specifies whether a service account should be created
   create: true
-  # -- Annotations to add to the service account
+  # -- (object) Annotations to add to the service account
   annotations: {}
-  # -- The name of the service account to use.
+  # -- (string) The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
 podAnnotations: {}
 
-# -- Pod security context
-# Should be enabled if you use persistent volumes for storage.
-podSecurityContext: {}
-  # fsGroup: 2000
+# -- (object) Pod security context
+podSecurityContext:
+  # -- (int) This is a requirement when running with attached volumes.
+  fsGroup: 2000
 
 securityContext: {}
   # capabilities:
@@ -54,7 +55,7 @@ services:
 ingress:
   enabled: true
   className: "nginx"
-  annotations:
+  annotations: {}
     # cert-manager.io/cluster-issuer: letsencrypt
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
@@ -94,193 +95,208 @@ tolerations: []
 affinity: {}
 
 fylr:
-  # -- public external url of the server. This url needs to be fully qualified
+  # -- (string) public external url of the server. This url needs to be fully qualified
   externalURL: "http://localhost"
-  # -- set to true to allow /api/settings/purge. should be disabled for production!
+  # -- (bool) set to true to allow /api/settings/purge. should be disabled for production!
   allowPurge: true
+  # -- (object) settings related to the logging
   logger:
-    # -- format is the format of the logs. Valid values are "json" and "console".
+    # -- (string) format is the format of the logs. Valid values are "json" and "console".
     format: "console"
-    # -- level is the minimum level of logs to be logged. Valid values are "trace", "debug", "info", "warn", "error", "fatal", "panic".
+    # -- (string) level is the minimum level of logs to be logged. Valid values are "trace", "debug", "info", "warn", "error", "fatal", "panic".
     level: "info"
-    # -- timeFormat is the Go representation to format the time in the log output.
+    # -- (string) timeFormat is the Go representation to format the time in the log output.
     # zerolog's time keeping resolution is always set to milliseconds by FYLR.
     # Use "", "UNIXMS" or "UNIXMICRO" to output a unix timestamp (json format only).
     # Defaults to "2006-01-02 15:04:05"
     timeFormat: "2006-01-02 15:04:05"
-    # -- noColor disables colorized output.
+    # -- (bool) noColor disables colorized output.
     noColor: false
-    # -- addHostname adds the hostname to the logs.
+    # -- (bool) addHostname adds the hostname to the logs.
     addHostname: true
 
+  # -- (object) defines the storage settings required for the persistence of data (e.g. files, backups, etc.)
   persistent:
+    # -- (object) defines the persistent storage definitions for the server
     defaults:
-      # -- the storage definition for originals
+      # -- (string) the storage definition for originals
       originals: "disk1"
-      # -- the storage definition for versions
+      # -- (string) the storage definition for versions
       versions: "disk2"
-      # -- the storage definition for backups
+      # -- (string) the storage definition for backups
       backups: "s3"
+    # -- (object) the storage definitions
     definitions:
+      # -- (object) a storage definition referenced by the `fylr.persistent.defaults` values
       s3:
-        # kind is the kind of the storage. Valid values are "s3" and "disk".
+        # -- (string) kind is the kind of the storage. Valid values are "s3" and "disk".
         kind: s3
-        # allow fylr to purge files from the disk.
+        # -- (bool) allow fylr to purge files from the disk.
         # This is a dangerous setting and should be used for development purposes only.
         allowPurge: false
-        # s3 is the configuration for the s3 storage.
+        # -- (object) s3 is the configuration for the s3 storage.
         s3:
-          # path represents the path in the s3 bucket.
+          # -- (string) path represents the path in the s3 bucket.
           path: ""
-          # bucket is the name of the bucket to use.
+          # -- (string) bucket is the name of the bucket to use.
           bucket: fylr
-          # endpoint is the endpoint of the s3 server.
+          # -- (string) endpoint is the endpoint of the s3 server.
           endpoint: "http://testinstance-minio:9000"
-          # accessKey is the access key to use.
+          # -- (string) accessKey is the access key to use.
           accessKey: "fylr"
-          # secretKey is the secret key to use.
+          # -- (string) secretKey is the secret key to use.
           secretKey: "fylrsecret123"
-          # region is the region of the s3 server.
+          # -- (string) region is the region of the s3 server.
           region: "us-east-1"
-          # useSSL enables SSL for the s3 connection.
+          # -- (string) useSSL enables SSL for the s3 connection.
           useSSL: false
-          # allowRedirect specifies whether we expose s3 urls to the outside world.
+          # -- (string) allowRedirect specifies whether we expose s3 urls to the outside world.
           allowRedirect: false
+      # -- (object) a storage definition referenced by the `fylr.persistent.defaults` values
       disk1:
-        # kind is the kind of the storage. Valid values are "s3" and "disk".
+        # -- (string) kind is the kind of the storage. Valid values are "s3" and "disk".
         kind: disk
-        # allow fylr to purge files from the disk.
+        # -- (bool) allow fylr to purge files from the disk.
         # This is a dangerous setting and should be used for development purposes only.
         allowPurge: false
-        # disk is the configuration for the disk storage (persistent volume).
+        # -- (object) disk is the configuration for the disk storage (persistent volume).
         disk:
-          # storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
+          # -- (string) storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
           storageClass: ""
-          # accessModes is a list of access modes for the volume.
+          # -- (list) accessModes is a list of access modes for the volume.
           # If the replica count is greater than 1, the access modes must contain "ReadWriteMany".
-          # If the replica count is > 1 and the access modes are set to "ReadWriteOnce", the replica count will be set to 1.
           # This is required because the volume cannot be mounted by more than one pod at a time.
           # If we would allow this, the data would be spread across the pods and it will likely be impossible to receive the data back.
           accessModes: ["ReadWriteOnce"]
-          # size is the size of the disk to be claimed and used by fylr.
+          # -- (string) size is the size of the disk to be claimed and used by fylr.
           size: 10Gi
+      # -- (object) a storage definition referenced by the `fylr.persistent.defaults` values
       disk2:
-        # kind is the kind of the storage. Valid values are "s3" and "disk".
+        # -- (string) kind is the kind of the storage. Valid values are "s3" and "disk".
         kind: disk
-        # allow fylr to purge files from the disk.
+        # -- (bool) allow fylr to purge files from the disk.
         # This is a dangerous setting and should be used for development purposes only.
         allowPurge: false
-        # disk is the configuration for the disk storage (persistent volume).
+        # -- (object) disk is the configuration for the disk storage (persistent volume).
         disk:
-          # storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
+          # -- (string) storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
           storageClass: ""
-          # accessModes is a list of access modes for the volume.
+          # -- (list) accessModes is a list of access modes for the volume.
           # If the replica count is greater than 1, the access modes must contain "ReadWriteMany".
-          # If the replica count is > 1 and the access modes are set to "ReadWriteOnce", the replica count will be set to 1.
           # This is required because the volume cannot be mounted by more than one pod at a time.
           # If we would allow this, the data would be spread across the pods and it will likely be impossible to receive the data back.
           accessModes: ["ReadWriteOnce"]
-          # size is the size of the disk to be claimed and used by fylr.
+          # -- (string) size is the size of the disk to be claimed and used by fylr.
           size: 10Gi
 
+  # -- (object) defines database settings
   db:
-    # -- driver will be ignored if postgresql-ha is enabled
+    # -- (string) driver defines the driver for the database server.
+    # It is ignored if postgresql-ha.enabled is set to true.
     driver: "postgres"
-    # -- postgres will be ignored if postgresql-ha is enabled
+    # -- (object) postgresql connection settings
+    # It is ignored if postgresql-ha.enabled is set to true.
     postgres:
-      # -- host is the host of the postgres server.
+      # -- (string) host is the host of the postgres server.
       host: "localhost"
-      # -- port is the port of the postgres server.
+      # -- (int) port is the port of the postgres server.
       port: 5432
-      # -- user is the user to use for the postgres connection.
+      # -- (string) user is the user to use for the postgres connection.
       user: "fylr"
-      # -- password is the password to use for the postgres connection.
+      # -- (string) password is the password to use for the postgres connection.
       password: "password"
-      # -- database is the database to use for the postgres connection.
+      # -- (string) database is the database to use for the postgres connection.
       database: "fylr"
-      # -- sslmode is the sslmode to use for the postgres connection.
+      # -- (string) sslmode is the sslmode to use for the postgres connection.
       sslmode: "disable"
-      # -- options is a map of additional options to be passed to the database connection string.
+      # -- (object) options is a map of additional options to be passed to the database connection string.
       # See https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS
       options: {}
       #  sslcert: /fylr/files/certs/postgres-ca.crt
-    # -- This has to be at 4 + execserver.parallel + elastic.parallel. Two of these
+    # -- (int) This has to be at 4 + execserver.parallel + elastic.parallel. Two of these
     # connections will be dedicated to a separate connection pool managing
     # the sequences (Postgres only)
     # https://golang.org/pkg/database/sql/#DB.SetMaxOpenConns, default: 0
     maxOpenConns: 12
-    # -- maxIdleConns has to be not more than maxOpenConns
+    # -- (int) maxIdleConns has to be not more than maxOpenConns
     # https://golang.org/pkg/database/sql/#DB.SetMaxIdleConns, default: 0
     maxIdleConns: 0
-    # -- The init block is used to pre-fill the database when its created or purged.
+    # -- (object) The init block is used to pre-fill the database when its created or purged.
     init:
-      # -- Inline base config. Works like configFile but used the inlined
-      # baseconfig setting in this .yml file. Runs after configFile, so everything
-      # in config overwrites settings from configFile. Default is empty.
+      # -- (object) Inline base config. Default is empty.
       config: {}
 
+  # -- (object) defines plugin settings
   plugin:
-    # -- paths is a list of paths to search for plugins. Defaults to the plugins directories for easydb and fylr.
+    # -- (list) paths is a list of paths to search for plugins. Defaults to the plugins directories for easydb and fylr.
     paths:
       - /fylr/files/plugins/easydb
       - /fylr/files/plugins/fylr
+    # -- (object) explicitly defines settings for the plugin with the given name.
     defaults:
+      # -- (object) a plugin to be configured (by name)
       fylr_example:
-        # -- enable, set to false to disable the plugin, defaults to true
+        # -- (bool) enable, set to false to disable the plugin, defaults to true
         enabled: false
-        # -- update_policy: automatic, always, never, defaults to automatic
+        # -- (string) update_policy: automatic, always, never, defaults to automatic
         update: "never"
-      # -- not compatible with fylr
+      # -- (object) a plugin to be configured (by name)
+      # NOTE: This plugin is not compatible with fylr.
       easydb-connector-plugin:
+        # -- (bool) enable, set to false to disable the plugin, defaults to true
         enabled: false
+        # -- (string) update_policy: automatic, always, never, defaults to automatic
         update: "never"
   elastic:
-    # -- logger used for the elastic client
+    # -- (string) logger used for the elastic client
     # "Text": TextLogger prints the log message in plain text.
     # "Color": ColorLogger prints the log message in a terminal-optimized plain text.
     # "Curl": CurlLogger prints the log message as a runnable curl command.
     # "JSON": JSONLogger prints the log message as JSON.
     logger: ""
-    # -- Where to find the Elastic search index settings. If you provide your own
+    # -- (string) Where to find the Elastic search index settings. If you provide your own
     # file make sure to base it on the default
     # resources/index/index_settings.json which is included in the distribution.
     settings: ""
-    # -- number of parallel workers to index documents, default to 1, set to 0 to disable
+    # -- (int) number of parallel workers to index documents, default to 1, set to 0 to disable
     parallel: 4
-    # -- number of objects per job passed to the indexer process
+    # -- (int) number of objects per job passed to the indexer process
     objectsPerJob: 100
-    # -- limit of payloads sent to Elastic
+    # -- (string) limit of payloads sent to Elastic
     maxMem: 100mb
-    # -- fielddata (debug feature). if set to true, fields are mapped including their fielddata
+    # -- (bool) fielddata (debug feature). if set to true, fields are mapped including their fielddata
     # in the reverse index. with that, the inspect view of the indexed version of
     # the object shows a per field list of stored terms. This can be useful for debugging
     # of analyzer settings.
     fielddata: false
-    # -- addresses of the elastic servers
+    # -- (list) addresses of the elastic servers
     addresses:
       - "http://localhost:9200"
-    # -- username for the elastic server
+    # -- (string) username for the elastic server
     username: ""
-    # -- password for the elastic server
+    # -- (string) password for the elastic server
     password: ""
+  # -- (object) defines the settings for the execserver connection
   execserver:
-    # -- number of parallel file workers, default to 1, set to 0 to disable
+    # -- (int) number of parallel file workers, default to 1, set to 0 to disable
     parallel: 4
-    # -- pluginJobTimeoutSec sets the maximum seconds a callback
+    # -- (int) pluginJobTimeoutSec sets the maximum seconds a callback
     # is allowed to run. Defaults to 30 seconds.
     pluginJobTimeoutSec: 240
-    # -- connectTimeout sets the maximum seconds the server will wait
+    # -- (int) connectTimeout sets the maximum seconds the server will wait
     # until a worker gets a job. Defaults to 60 seconds.
     connectTimeoutSec: 240
-    # -- addresses represents a list of execserver services.
+    # -- (list) addresses represents a list of execserver services.
     # If execserver.enabled is set to true, this option will be ignored.
     # We expect the url in the format of "http://localhost:8080".
     addresses: []
+  # -- (object) defines settings for services that fylr should start.
   services:
+    # -- (object) define settings for the api service
     api:
-      # -- configures oauth2 related settings
+      # -- (object) configures oauth2 related settings
       oauth2Server:
-        # -- additional oauth2 clients to be added to the oauth2 server.
+        # -- (object) additional oauth2 clients to be added to the oauth2 server.
         # For the web application, we automatically generate a key pair and assign it to the oauth2 client.
         clients: {}
           # my-client-id:
@@ -298,27 +314,21 @@ fylr:
           #     - "offline"
           #   # public, set to true if this client is publicly known
           #   public: false
+    # -- (object) define settings for the wepapp service
     webapp:
-      # -- basicAuth is used to protect the web application with additional basic credentials.
+      # -- (object) basicAuth is used to protect the web application with additional basic credentials.
       # We expect a map of usernames and passwords in clear text.
       basicAuth: {}
       #  myuser: mypassword
       #  myuser2: mypassword2
       #  ...
 
+# -- (object) defines the settings for the execserver application
 execserver:
   # TODO: add config for the execserver
   enabled: true
 
-# third party services
-
-# -- minio (s3 compatible storage)
-# If enabled and no change has been made, fylr uses the internal kubernetes minio service.
-# fylr will use it for "assets", "versions" and "backups".
-# Even if you decide to make it available to the outside world, we still use the Kubernetes service.
-# This means that fylr does not expose the S3 URLs for "assets", "versions" and "backups".
-# Instead, the URLs point to fylr itself.
-#
+# -- (object) defines the settings for the minio application
 # For more information about minio and how to use it, see: https://github.com/minio/minio/tree/master/helm/minio
 minio:
   enabled: true
@@ -361,7 +371,7 @@ minio:
           conditions:
             - StringEquals: '"aws:username": "fylr"'
 
-# -- postgresql deployment
+# -- (object) defines the settings for the postgresql application
 # for more information see: https://github.com/bitnami/charts/tree/master/bitnami/postgresql-ha
 postgresql-ha:
   enabled: true
@@ -393,7 +403,7 @@ postgresql-ha:
     - ReadWriteOnce
     size: 10Gi
 
-# -- elasticsearch deployment
+# -- (object) defines the settings for the elasticsearch application
 # for more information see: https://github.com/bitnami/charts/blob/master/bitnami/elasticsearch/values.yaml
 elasticsearch:
   enabled: true
