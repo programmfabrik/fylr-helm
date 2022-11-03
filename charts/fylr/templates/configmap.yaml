@@ -51,12 +51,7 @@ data:
         callbackBackendInternalURL: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
         callbackApiInternalURL: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
         addresses:
-          {{- if .Values.execserver.enabled }}
-          # TODO: add execserver service address
-          - "http://not.specified.localhost:8080"
-          {{- else }}
-          {{- toYaml .Values.fylr.execserver.addresses | nindent 8 }}
-          {{ end }}
+          {{- toYaml .Values.fylr.execserver.addresses | nindent 10 }}
       services:
         webapp:
           addr: :8080
