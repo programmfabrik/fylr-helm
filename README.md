@@ -1,6 +1,6 @@
 # fylr-helm
 
-A Helm-Chart for the fylr application
+A Helm-Chart for the fylr application (WIP)
 
 ## Requirements
 
