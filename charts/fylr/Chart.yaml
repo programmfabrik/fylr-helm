@@ -16,9 +16,9 @@ version: 0.1.1
 appVersion: "v6.1.0-beta.8"
 
 maintainers:
-  - name: leonsteinhaeuser
-    email: leon.steinhaeuser@fylr.io
-    url: https://github.com/leonsteinhaeuser
+  - name: Klaus Thorn
+    email: klaus.thorn@programmfabrik.de
+    url: https://github.com/KlausThornProgrammfabrik
 
 dependencies:
   # https://github.com/minio/minio/tree/master/helm/minio
