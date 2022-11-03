@@ -19,7 +19,7 @@ metadata:
   annotations:
     helm.sh/resource-policy: keep
   labels:
-    {{- include "fylr.labels" . | nindent 4 }}
+    {{- include "fylr.labels" $helmValues | nindent 4 }}
 spec:
   accessModes:
     {{- toYaml $val.disk.accessModes | nindent 4 }}
@@ -40,7 +40,7 @@ metadata:
   annotations:
     helm.sh/resource-policy: keep
   labels:
-    {{- include "fylr.labels" . | nindent 4 }}
+    {{- include "fylr.labels" $helmValues | nindent 4 }}
 spec:
   accessModes:
     {{- toYaml $val.disk.accessModes | nindent 4 }}
@@ -61,7 +61,7 @@ metadata:
   annotations:
     helm.sh/resource-policy: keep
   labels:
-    {{- include "fylr.labels" . | nindent 4 }}
+    {{- include "fylr.labels" $helmValues | nindent 4 }}
 spec:
   accessModes:
     {{- toYaml $val.disk.accessModes | nindent 4 }}
