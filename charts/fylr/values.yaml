@@ -212,10 +212,10 @@ fylr:
   # -- (object) defines database settings
   db:
     # -- (string) driver defines the driver for the database server.
-    # It is ignored if postgresql-ha.enabled is set to true.
+    # NOTE: this is ignored if postgresql-ha.enabled is set to true.
     driver: "postgres"
     # -- (object) postgresql connection settings
-    # It is ignored if postgresql-ha.enabled is set to true.
+    # NOTE: this is ignored if postgresql-ha.enabled is set to true.
     postgres:
       # -- (string) host is the host of the postgres server.
       host: "localhost"
@@ -290,11 +290,14 @@ fylr:
     # of analyzer settings.
     fielddata: false
     # -- (list) addresses of the elastic servers
+    # NOTE: This is ignored if elasticsearch.enabled is set to true.
     addresses:
       - "http://localhost:9200"
     # -- (string) username for the elastic server
+    # NOTE: This is ignored if elasticsearch.enabled is set to true.
     username: ""
     # -- (string) password for the elastic server
+    # NOTE: This is ignored if elasticsearch.enabled is set to true.
     password: ""
   # -- (object) defines the settings for the execserver connection
   execserver:
@@ -309,7 +312,7 @@ fylr:
     # -- (list) addresses represents a list of execserver services.
     # If execserver.enabled is set to true, this option will be ignored.
     # We expect the url in the format of "http://localhost:8080".
-    # If execserver.enabled is set to true, this option defines additional execserver addresses.
+    # # NOTE: This is merged with the execserver service address provided by the execserver helm chart, if execserver.enabled is set to true.
     addresses: []
   # -- (object) defines settings for services that fylr should start.
   services:
@@ -345,8 +348,9 @@ fylr:
       #  ...
 
 # @ignored defines the settings for the execserver application
+# For more information about the execserver and how to configure it, please refer to the execserver documentation.
+# https://programmfabrik.github.io/fylr-helm/charts/execserver/
 execserver:
-  # TODO: add config for the execserver
   enabled: true
   # -- The image to use for the execserver
   image:
