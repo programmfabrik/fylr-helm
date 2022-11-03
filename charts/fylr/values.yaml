@@ -41,6 +41,15 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
+# -- (object) Specifies the strategy used to replace old Pods by new ones
+# See: https://kubernetes.io/docs/concepts/workloads/controllers/deployment/#rolling-update-deployment
+strategy:
+  type: Recreate
+  #type: RollingUpdate
+  #rollingUpdate:
+  #  maxSurge: 25%
+  #  maxUnavailable: 25%
+
 services:
   webapp:
     type: ClusterIP
