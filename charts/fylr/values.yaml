@@ -148,12 +148,16 @@ fylr:
     # -- (object) defines the persistent storage definitions for the server
     defaults:
       # -- (string) the storage definition for originals
+      # The value is a reference to a storage definition in the storage fylr.persistent.definitions section.
       originals: "s3"
       # -- (string) the storage definition for versions
+      # The value is a reference to a storage definition in the storage fylr.persistent.definitions section.
       versions: "s3"
       # -- (string) the storage definition for backups
+      # The value is a reference to a storage definition in the storage fylr.persistent.definitions section.
       backups: "s3"
     # -- (object) the storage definitions
+    # We expect at least one storage definition to be defined.
     definitions:
       # -- (object) a storage definition referenced by the `fylr.persistent.defaults` values
       s3:
@@ -183,42 +187,42 @@ fylr:
           # If you are using the included minio server, this should be set to false.
           # For public s3 providers like AWS, this should be set to true.
           allowRedirect: false
-      # -- (object) a storage definition referenced by the `fylr.persistent.defaults` values
-      disk1:
-        # -- (string) kind is the kind of the storage. Valid values are "s3" and "disk".
-        kind: disk
-        # -- (bool) allow fylr to purge files from the disk.
-        # This is a dangerous setting and should be used for development purposes only.
-        allowPurge: false
-        # -- (object) disk is the configuration for the disk storage (persistent volume).
-        disk:
-          # -- (string) storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
-          storageClass: ""
-          # -- (list) accessModes is a list of access modes for the volume.
-          # If the replica count is greater than 1, the access modes must contain "ReadWriteMany".
-          # This is required because the volume cannot be mounted by more than one pod at a time.
-          # If we would allow this, the data would be spread across the pods and it will likely be impossible to receive the data back.
-          accessModes: ["ReadWriteOnce"]
-          # -- (string) size is the size of the disk to be claimed and used by fylr.
-          size: 10Gi
-      # -- (object) a storage definition referenced by the `fylr.persistent.defaults` values
-      disk2:
-        # -- (string) kind is the kind of the storage. Valid values are "s3" and "disk".
-        kind: disk
-        # -- (bool) allow fylr to purge files from the disk.
-        # This is a dangerous setting and should be used for development purposes only.
-        allowPurge: false
-        # -- (object) disk is the configuration for the disk storage (persistent volume).
-        disk:
-          # -- (string) storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
-          storageClass: ""
-          # -- (list) accessModes is a list of access modes for the volume.
-          # If the replica count is greater than 1, the access modes must contain "ReadWriteMany".
-          # This is required because the volume cannot be mounted by more than one pod at a time.
-          # If we would allow this, the data would be spread across the pods and it will likely be impossible to receive the data back.
-          accessModes: ["ReadWriteOnce"]
-          # -- (string) size is the size of the disk to be claimed and used by fylr.
-          size: 10Gi
+      # # -- (object) a storage definition referenced by the `fylr.persistent.defaults` values
+      # disk1:
+      #   # -- (string) kind is the kind of the storage. Valid values are "s3" and "disk".
+      #   kind: disk
+      #   # -- (bool) allow fylr to purge files from the disk.
+      #   # This is a dangerous setting and should be used for development purposes only.
+      #   allowPurge: false
+      #   # -- (object) disk is the configuration for the disk storage (persistent volume).
+      #   disk:
+      #     # -- (string) storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
+      #     storageClass: ""
+      #     # -- (list) accessModes is a list of access modes for the volume.
+      #     # If the replica count is greater than 1, the access modes must contain "ReadWriteMany".
+      #     # This is required because the volume cannot be mounted by more than one pod at a time.
+      #     # If we would allow this, the data would be spread across the pods and it will likely be impossible to receive the data back.
+      #     accessModes: ["ReadWriteOnce"]
+      #     # -- (string) size is the size of the disk to be claimed and used by fylr.
+      #     size: 10Gi
+      # # -- (object) a storage definition referenced by the `fylr.persistent.defaults` values
+      # disk2:
+      #   # -- (string) kind is the kind of the storage. Valid values are "s3" and "disk".
+      #   kind: disk
+      #   # -- (bool) allow fylr to purge files from the disk.
+      #   # This is a dangerous setting and should be used for development purposes only.
+      #   allowPurge: false
+      #   # -- (object) disk is the configuration for the disk storage (persistent volume).
+      #   disk:
+      #     # -- (string) storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
+      #     storageClass: ""
+      #     # -- (list) accessModes is a list of access modes for the volume.
+      #     # If the replica count is greater than 1, the access modes must contain "ReadWriteMany".
+      #     # This is required because the volume cannot be mounted by more than one pod at a time.
+      #     # If we would allow this, the data would be spread across the pods and it will likely be impossible to receive the data back.
+      #     accessModes: ["ReadWriteOnce"]
+      #     # -- (string) size is the size of the disk to be claimed and used by fylr.
+      #     size: 10Gi
 
   # -- (object) defines database settings
   db:
