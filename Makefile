@@ -71,6 +71,7 @@ install-fylr:
 	helm install testinstance charts/fylr \
 		--namespace ${NAMESPACE} \
 		--create-namespace \
+		--kubeconfig ${KUBE_CONFIG} \
 		-f charts/fylr/values.yaml \
 		--set minio.resources.requests.memory=128Mi \
 		--set minio.replicas=3 \
@@ -90,6 +91,7 @@ install-fylr-dry:
 	helm install testinstance charts/fylr \
 		--namespace ${NAMESPACE} \
 		--create-namespace \
+		--kubeconfig ${KUBE_CONFIG} \
 		-f charts/fylr/values.yaml \
 		--dry-run \
 		--debug
