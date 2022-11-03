@@ -34,6 +34,12 @@ jobs:
         with:
           version: v3.8.1
 
+      - name: Add chart repositories
+        run: |
+          helm repo add minio https://charts.min.io/
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add programmfabrik https://programmfabrik.github.io/fylr-helm
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.4.1
         env:
