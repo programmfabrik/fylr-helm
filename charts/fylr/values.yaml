@@ -148,9 +148,9 @@ fylr:
     # -- (object) defines the persistent storage definitions for the server
     defaults:
       # -- (string) the storage definition for originals
-      originals: "disk1"
+      originals: "s3"
       # -- (string) the storage definition for versions
-      versions: "disk2"
+      versions: "s3"
       # -- (string) the storage definition for backups
       backups: "s3"
     # -- (object) the storage definitions
@@ -169,6 +169,7 @@ fylr:
           # -- (string) bucket is the name of the bucket to use.
           bucket: fylr
           # -- (string) endpoint is the endpoint of the s3 server.
+          # If you are using the included minio server, this should be set to "http://<deployment-name>-minio.<namespace>.svc:9000"
           endpoint: "http://testinstance-minio:9000"
           # -- (string) accessKey is the access key to use.
           accessKey: "fylr"
@@ -179,6 +180,8 @@ fylr:
           # -- (string) useSSL enables SSL for the s3 connection.
           useSSL: false
           # -- (string) allowRedirect specifies whether we expose s3 urls to the outside world.
+          # If you are using the included minio server, this should be set to false.
+          # For public s3 providers like AWS, this should be set to true.
           allowRedirect: false
       # -- (object) a storage definition referenced by the `fylr.persistent.defaults` values
       disk1:
