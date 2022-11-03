@@ -1,0 +1,48 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "fylr.service-webapp-name" . }}
+  labels:
+    {{- include "fylr.webapp.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.services.webapp.type }}
+  ports:
+    - port: {{ .Values.services.webapp.port }}
+      targetPort: webapp
+      protocol: TCP
+      name: webapp
+  selector:
+    {{- include "fylr.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "fylr.service-api-name" . }}
+  labels:
+    {{- include "fylr.api.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.services.api.type }}
+  ports:
+    - port: {{ .Values.services.api.port }}
+      targetPort: api
+      protocol: TCP
+      name: api
+  selector:
+    {{- include "fylr.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "fylr.service-backend-name" . }}
+  labels:
+    {{- include "fylr.backend.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.services.backend.type }}
+  ports:
+    - port: {{ .Values.services.backend.port }}
+      targetPort: backend
+      protocol: TCP
+      name: backend
+  selector:
+    {{- include "fylr.selectorLabels" . | nindent 4 }}

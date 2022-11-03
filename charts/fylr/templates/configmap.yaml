@@ -1,0 +1,97 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: {{ include "fylr.fullname" . }}
+  labels:
+    {{- include "fylr.labels" . | nindent 4 }}
+data:
+  fylr.yml: |
+    fylr:
+      name: {{ include "fylr.fullname" . }}
+      externalURL: {{ .Values.fylr.externalURL }}
+      logger:
+        format: {{ .Values.fylr.logger.format | default "" | quote }}
+        level: {{ .Values.fylr.logger.level | default "info" | quote }}
+        timeFormat: {{ .Values.fylr.logger.timeFormat | default "2006-01-02 15:04:05" | quote }}
+        noColor: {{ .Values.fylr.logger.noColor | default true }}
+        addHostname: {{ .Values.fylr.logger.addHostname | default true }}
+      db:
+        maxOpenConns: {{ .Values.fylr.db.maxOpenConns }}
+        maxIdleConns: {{ .Values.fylr.db.maxIdleConns }}
+        init:
+          {{- if .Values.fylr.db.init.config }}
+          configFile: /fylr/files/init/fylr.init.yaml
+          {{- end }}
+          config:
+            system:
+              config:
+                purge:
+                  allow_purge: {{ .Values.fylr.allowPurge }}
+                  purge_storage: {{ .Values.fylr.allowPurge }}
+                location_defaults:
+                  {{- include "fylr.config.init.location.defaults" . | nindent 18 }}
+
+      plugin:
+        paths:
+          {{- toYaml .Values.fylr.plugin.paths | nindent 8 }}
+        defaults:
+          {{- toYaml .Values.fylr.plugin.defaults | nindent 8 }}
+      allowpurge: {{ .Values.fylr.allowPurge }}
+      resources: "/fylr/files/resources"
+      elastic:
+        logger: {{ .Values.fylr.elastic.logger | default "" | quote }}
+        parallel: {{ .Values.fylr.elastic.parallel | default 4 }}
+        objectsPerJob: {{ .Values.fylr.elastic.objectsPerJob | default 100 }}
+        maxMem: {{ .Values.fylr.elastic.maxMem | default "100mb" | quote }}
+        fielddata: {{ .Values.fylr.elastic.fielddata | default false }}
+      execserver:
+        parallel: {{ .Values.fylr.execserver.parallel | default 4 }}
+        pluginJobTimeoutSec: {{ .Values.fylr.execserver.pluginJobTimeoutSec | default 240 }}
+        connectTimeoutSec: {{ .Values.fylr.execserver.connectTimeoutSec | default 240 }}
+        callbackBackendInternalURL: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
+        callbackApiInternalURL: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
+        addresses: {{ if and (ne .Values.execserver.enabled true) (not .Values.fylr.execserver.addresses) }}[]{{ else }}
+          {{- if .Values.execserver.enabled }}
+          - "http://{{ .Release.Name }}-execserver.{{ .Release.Namespace }}.svc:8070/?pretty=true"
+          {{- end }}
+          {{- if .Values.fylr.execserver.addresses }}
+          {{- toYaml .Values.fylr.execserver.addresses | nindent 10 }}
+          {{- end }}
+          {{- end }}
+      services:
+        webapp:
+          addr: :8080
+          path: /fylr/files/webfrontend
+          oauth2:
+            clientID: "webclient"
+          reverseProxy:
+            api: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
+            backend: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
+          {{- if .Values.fylr.services.webapp.basicAuth }}
+          basicAuth:
+            {{- toYaml .Values.fylr.services.webapp.basicAuth | nindent 12 }}
+          {{- end }}
+        api:
+          addr: :8081
+          oauth2Server:
+            clients:
+              webclient:
+                redirectURIs:
+                  - {{ .Values.fylr.externalURL }}/oauth2/callback
+                scopes:
+                  - "read"
+                  - "write"
+                  - "offline"
+                public: false
+              # add custom clients
+              {{- if .Values.fylr.services.api.oauth2Server.clients }}
+              {{- toYaml .Values.fylr.services.api.oauth2Server.clients | nindent 12 }}
+              {{- end }}
+        backend:
+          addr: :8082
+          inspect:
+            backup:
+              path: /tmp/fylrctrl
+              fylrctl: fylrctl
+              psql: psql
+              sqlite3: sqlite3

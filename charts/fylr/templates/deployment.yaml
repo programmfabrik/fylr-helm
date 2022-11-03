@@ -1,0 +1,223 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "fylr.fullname" . }}
+  labels:
+    {{- include "fylr.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "fylr.selectorLabels" . | nindent 6 }}
+  {{- if .Values.strategy }}
+  strategy:
+    {{- toYaml .Values.strategy | nindent 4 }}
+  {{- end }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "fylr.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "fylr.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: wait-for-db
+          image: busybox
+          env:
+            - name: postgres_host
+              {{ if (index .Values "postgresql-ha" "enabled") }}
+              value: "{{ .Release.Name }}-postgresql-ha-pgpool.{{ .Release.Namespace }}.svc"
+              {{ else }}
+              value: "{{ .Values.fylr.db.postgres.host }}"
+              {{ end }}
+            - name: postgres_port
+              {{ if (index .Values "postgresql-ha" "enabled") }}
+              value: "5432"
+              {{ else }}
+              value: {{ .Values.fylr.db.postgres.port | quote }}
+              {{ end }}
+          command:
+          - 'sh'
+          - '-c'
+          - 'until nc -z -v -w30 $postgres_host $postgres_port; do echo waiting for postgres; sleep 5; done;'
+        - name: wait-for-elastic
+          image: busybox
+          env:
+            - name: elastic_address
+              {{ if .Values.elasticsearch.enabled }}
+              value: "{{ .Release.Name }}-elasticsearch.{{ .Release.Namespace }}.svc"
+              {{ else }}
+              # remove everything except the host
+              value: {{ mustRegexReplaceAll ":[0-9]+$" (mustRegexReplaceAll "^http[s]{0,1}://" (index .Values.fylr.elastic.addresses 0) "") "" }}
+              {{ end }}
+            - name: elastic_port
+              {{ if .Values.elasticsearch.enabled }}
+              value: "9200"
+              {{ else }}
+              # remove everything before the port
+              value: {{ mustRegexReplaceAll "^http[s]{0,1}://[a-zA-Z0-9-.]+:" (index .Values.fylr.elastic.addresses 0) "" | quote }}
+              {{ end }}
+          command:
+          - 'sh'
+          - '-c'
+          - 'until nc -z -v -w30 $elastic_address $elastic_port; do echo waiting for elasticsearch; sleep 5; done;'
+        # if internal s3 is enabled, or an external provider was configured, wait for it
+        # TODO: check if we actually use s3 if that is the case we need this check, otherwise we don't need it
+        {{ if or (.Values.minio.enabled) (.Values.fylr.db.init.locations) }}
+        - name: wait-for-s3
+          image: busybox
+          env:
+            - name: s3_endpoint
+              {{ if .Values.minio.enabled }}
+              # internal s3 service address
+              value: "{{ .Release.Name }}-minio.{{ .Release.Namespace }}.svc"
+              {{ else }}
+              # user provided s3 endpoint
+              # remove everything except the host
+              value: {{ mustRegexReplaceAll ":[0-9]+$" (mustRegexReplaceAll "^http[s]{0,1}://" (index .Values.fylr.elastic.addresses 0) "") "" }}
+              {{ end }}
+            - name: s3_port
+              {{ if .Values.minio.enabled }}
+              value: "9000"
+              {{ else }}
+              # remove everything before the port
+              {{ $port = mustRegexReplaceAll "^http[s]{0,1}://[a-zA-Z0-9-.]+:" (index .Values.fylr.elastic.addresses 0) "" }}
+              value: {{ if $port "" }}"443"{{ else }}{{ $port | quote }}{{ end }}
+              {{ end }}
+          command:
+          - 'sh'
+          - '-c'
+          - 'until nc -z -v -w30 $s3_endpoint $s3_port; do echo waiting for s3; sleep 5; done;'
+        {{ end }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          command: ["fylr"]
+          args: [ "server", "-c", "config/fylr.yml", "--env-prefix", "CFG_FYLR_"]
+          ports:
+            - name: webapp
+              containerPort: 8080
+              protocol: TCP
+            - name: api
+              containerPort: 8081
+              protocol: TCP
+            - name: backend
+              containerPort: 8082
+              protocol: TCP
+          env:
+            - name: CFG_FYLR_DB_DRIVER
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.db.name" . }}
+                  key: "driver"
+            - name: CFG_FYLR_DB_DSN
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.db.name" . }}
+                  key: "dsn"
+            - name: CFG_FYLR_ELASTIC_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.elastic.name" . }}
+                  key: "username"
+            - name: CFG_FYLR_ELASTIC_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.elastic.name" . }}
+                  key: "password"
+            - name: CFG_FYLR_ELASTIC_ADDRESSES
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.elastic.name" . }}
+                  key: "hosts"
+            - name: CFG_FYLR_SERVICES_API_OAUTH2SERVER_CLIENTS_webclient_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.oauth2.name" . }}
+                  key: "oauth2ServerClientSecret"
+            - name: CFG_FYLR_SERVICES_WEBAPP_OAUTH2_CLIENTSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.oauth2.name" . }}
+                  key: "oauth2WebappClientSecret"
+            - name: CFG_FYLR_ENCRYPTIONKEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.utils" . }}
+                  key: "encryptionKey"
+            - name: CFG_FYLR_SERVICES_API_OAUTH2SERVER_SIGNINGSECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.utils" . }}
+                  key: "signinSecret"
+          envFrom:
+            - secretRef:
+                name: {{ include "fylr.secret.storage.name" . }}
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: backend
+              scheme: HTTP
+            initialDelaySeconds: 20
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: backend
+              scheme: HTTP
+            initialDelaySeconds: 30
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 5
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - mountPath: /fylr/config
+              name: fylr-config
+            {{ if .Values.fylr.db.init.config -}}
+            - name: fylr-init-config
+              mountPath: /fylr/files/init
+            {{- end }}
+            {{ include "fylr.deployment.volume.mounts" . | nindent 12 }}
+      volumes:
+        - name: "fylr-config"
+          configMap:
+            name: {{ include "fylr.fullname" . }}
+        {{ if .Values.fylr.db.init.config -}}
+        - name: "fylr-init-config"
+          secret:
+            secretName: {{ include "fylr.secret.init.name" . }}
+        {{- end }}
+        {{ include "fylr.deployment.volumes" . | nindent 8 -}}
+
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

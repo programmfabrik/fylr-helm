@@ -1,0 +1,28 @@
+{{- if and .Values.monitoring.enabled .Values.monitoring.serviceMonitor.enabled }}
+---
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: {{ include "fylr.monitoring.fullname" . }}
+  namespace: {{ default .Release.Namespace .Values.monitoring.serviceMonitor.namespace | quote }}
+  labels:
+    {{- include "fylr.backend.labels" . | nindent 4 }}
+spec:
+  jobLabel: {{ .Values.monitoring.serviceMonitor.jobLabel | quote }}
+  selector:
+    matchLabels:
+      {{- include "fylr.backend.labels" . | nindent 6 }}
+  endpoints:
+    - port: backend
+      path: /metrics
+      scheme: http
+      {{- if .Values.monitoring.serviceMonitor.interval }}
+      interval: {{ .Values.monitoring.serviceMonitor.interval }}
+      {{- end }}
+      {{- if .Values.monitoring.serviceMonitor.scrapeTimeout }}
+      scrapeTimeout: {{ .Values.monitoring.serviceMonitor.scrapeTimeout }}
+      {{- end }}
+  namespaceSelector:
+    matchNames:
+      - {{ .Release.Namespace | quote }}
+{{- end }}
