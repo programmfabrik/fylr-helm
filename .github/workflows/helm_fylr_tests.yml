@@ -122,4 +122,4 @@ jobs:
         run: kubectl config get-contexts
 
       - name: Run chart-testing (install)
-        run: make install-fylr
+        run: make test-fylr
