@@ -343,12 +343,12 @@ fylr:
       #  myuser2: mypassword2
       #  ...
 
-# -- (object) defines the settings for the execserver application
+# @ignored defines the settings for the execserver application
 execserver:
   # TODO: add config for the execserver
   enabled: true
 
-# -- (object) defines the settings for the minio application
+# @ignored defines the settings for the minio application
 # For more information about minio and how to use it, see: https://github.com/minio/minio/tree/master/helm/minio
 minio:
   enabled: true
@@ -391,7 +391,7 @@ minio:
           conditions:
             - StringEquals: '"aws:username": "fylr"'
 
-# -- (object) defines the settings for the postgresql application
+# @ignored defines the settings for the postgresql application
 # for more information see: https://github.com/bitnami/charts/tree/master/bitnami/postgresql-ha
 postgresql-ha:
   enabled: true
@@ -423,7 +423,7 @@ postgresql-ha:
     - ReadWriteOnce
     size: 10Gi
 
-# -- (object) defines the settings for the elasticsearch application
+# @ignored defines the settings for the elasticsearch application
 # for more information see: https://github.com/bitnami/charts/blob/master/bitnami/elasticsearch/values.yaml
 elasticsearch:
   enabled: true
