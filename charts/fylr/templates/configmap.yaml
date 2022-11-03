@@ -50,8 +50,14 @@ data:
         connectTimeoutSec: {{ .Values.fylr.execserver.connectTimeoutSec | default 240 }}
         callbackBackendInternalURL: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
         callbackApiInternalURL: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
-        addresses:
+        addresses: {{ if and (ne .Values.execserver.enabled true) (not .Values.fylr.execserver.addresses) }}[]{{ else }}
+          {{- if .Values.execserver.enabled }}
+          - "http://{{ .Release.Name }}-execserver.{{ .Release.Namespace }}.svc:8070/?pretty=true"
+          {{- end }}
+          {{- if .Values.fylr.execserver.addresses }}
           {{- toYaml .Values.fylr.execserver.addresses | nindent 10 }}
+          {{- end }}
+          {{- end }}
       services:
         webapp:
           addr: :8080

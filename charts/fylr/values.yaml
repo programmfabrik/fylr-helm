@@ -309,6 +309,7 @@ fylr:
     # -- (list) addresses represents a list of execserver services.
     # If execserver.enabled is set to true, this option will be ignored.
     # We expect the url in the format of "http://localhost:8080".
+    # If execserver.enabled is set to true, this option defines additional execserver addresses.
     addresses: []
   # -- (object) defines settings for services that fylr should start.
   services:
@@ -347,6 +348,39 @@ fylr:
 execserver:
   # TODO: add config for the execserver
   enabled: true
+  # -- The image to use for the execserver
+  image:
+    # -- The image repository
+    repository: docker.fylr.io/fylr/fylr
+    # -- The image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images
+    pullPolicy: IfNotPresent
+    # -- The image tag
+    # Overrides the image tag whose default value is the appVersion of the chart.
+    tag: "v6.1.0-beta.8"
+  # -- Whether to configure monitoring for the application
+  monitoring:
+    # -- Whether to create a ServiceMonitor resource for Prometheus Operator
+    service:
+      # -- Enable service monitor
+      enabled: false
+      # -- The interval at which metrics should be scraped
+      interval: "30s"
+    # -- Whether to create a PodMonitor resource for Prometheus Operator
+    pod:
+      # -- Enable pod monitor
+      enabled: false
+      # -- The interval at which metrics should be scraped
+      interval: "30s"
+  autoscaling:
+    # -- Whether to create an HorizontalPodAutoscaler resource
+    enabled: false
+    # -- The minimum number of replicas
+    minReplicas: 1
+    # -- The maximum number of replicas
+    maxReplicas: 11
+    # -- The target CPU utilization percentage
+    targetCPUUtilizationPercentage: 80
+    # targetMemoryUtilizationPercentage: 80
 
 # @ignored defines the settings for the minio application
 # For more information about minio and how to use it, see: https://github.com/minio/minio/tree/master/helm/minio

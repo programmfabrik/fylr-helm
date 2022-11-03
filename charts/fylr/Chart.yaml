@@ -44,3 +44,8 @@ dependencies:
     version: 19.4.2
     repository: https://charts.bitnami.com/bitnami
     condition: elasticsearch.enabled
+  # https://github.com/bitnami/charts/tree/master/bitnami/elasticsearch
+  - name: execserver
+    version: 0.1.1
+    repository: https://programmfabrik.github.io/fylr-helm
+    condition: execserver.enabled
