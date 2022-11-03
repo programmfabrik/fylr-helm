@@ -412,6 +412,9 @@ postgresql-ha:
         cpu: 250m
       limits:
         memory: 2Gi
+        cpu: 1000m
+      limits:
+        memory: 4Gi
         cpu: 2000m
     username: fylr
     password: fylr
@@ -452,15 +455,15 @@ elasticsearch:
     resources:
       limits: {}
       requests:
-        cpu: 25m
-        memory: 256Mi
+        cpu: 250m
+        memory: 512Mi
     ## @param master.heapSize Elasticsearch master-eligible node heap size.
     ## Note: The recommended heapSize is half of the container's memory.
     ## If omitted, it will be automatically set.
     ## Example:
     ##   heapSize: 128m
     ##
-    heapSize: 128m
+    heapSize: 256m
     ## Configure Pods Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
     ## @param master.podSecurityContext.enabled Enabled master-elegible pods' Security Context
@@ -571,7 +574,7 @@ elasticsearch:
     ## @param master.autoscaling.targetMemory Define the memory target to trigger the scaling actions (utilization percentage)
     ##
     autoscaling:
-      enabled: true
+      enabled: false
       minReplicas: 3
       maxReplicas: 11
       targetCPU: ""
@@ -595,15 +598,15 @@ elasticsearch:
     resources:
       limits: {}
       requests:
-        cpu: 25m
-        memory: 2048Mi
+        cpu: 250m
+        memory: 512Mi
     ## @param data.heapSize Elasticsearch data node heap size.
     ## Note: The recommended heapSize is half of the container's memory.
     ## If omitted, it will be automatically set.
     ## Example:
     ##   heapSize: 128m
     ##
-    heapSize: 1024m
+    heapSize: 256m
     ## Configure Pods Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
     ## @param data.podSecurityContext.enabled Enabled data pods' Security Context
@@ -816,7 +819,7 @@ elasticsearch:
   coordinating:
     ## @param coordinating.replicaCount Number of coordinating-only replicas to deploy
     ##
-    replicaCount: 2
+    replicaCount: 3
     ## @param coordinating.nameOverride String to partially override elasticsearch.coordinating.fullname
     ##
     nameOverride: ""
@@ -842,15 +845,15 @@ elasticsearch:
     resources:
       limits: {}
       requests:
-        cpu: 25m
-        memory: 256Mi
+        cpu: 250m
+        memory: 512Mi
     ## @param coordinating.heapSize Elasticsearch coordinating node heap size.
     ## Note: The recommended heapSize is half of the container's memory.
     ## If omitted, it will be automatically set.
     ## Example:
     ##   heapSize: 128m
     ##
-    heapSize: 128m
+    heapSize: 256m
     ## Configure Pods Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
     ## @param coordinating.podSecurityContext.enabled Enabled coordinating-only pods' Security Context
@@ -1075,7 +1078,7 @@ elasticsearch:
     enabled: true
     ## @param ingest.replicaCount Number of ingest-only replicas to deploy
     ##
-    replicaCount: 2
+    replicaCount: 3
     ## @param ingest.nameOverride String to partially override elasticsearch.ingest.fullname
     ##
     nameOverride: ""
@@ -1107,15 +1110,15 @@ elasticsearch:
     resources:
       limits: {}
       requests:
-        cpu: 25m
-        memory: 256Mi
+        cpu: 250m
+        memory: 512Mi
     ## @param ingest.heapSize Elasticsearch ingest-only node heap size.
     ## Note: The recommended heapSize is half of the container's memory.
     ## If omitted, it will be automatically set.
     ## Example:
     ##   heapSize: 128m
     ##
-    heapSize: 128m
+    heapSize: 256m
     ## Configure Pods Security Context
     ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/#set-the-security-context-for-a-pod
     ## @param ingest.podSecurityContext.enabled Enabled ingest-only pods' Security Context
