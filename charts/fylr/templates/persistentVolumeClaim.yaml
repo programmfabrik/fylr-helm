@@ -18,6 +18,8 @@ metadata:
   name: {{ $firstDiskName | quote }}
   annotations:
     helm.sh/resource-policy: keep
+  labels:
+    {{- include "fylr.labels" . | nindent 4 }}
 spec:
   accessModes:
     {{- toYaml $val.disk.accessModes | nindent 4 }}
@@ -37,6 +39,8 @@ metadata:
   name: {{ $secondDiskName | quote }}
   annotations:
     helm.sh/resource-policy: keep
+  labels:
+    {{- include "fylr.labels" . | nindent 4 }}
 spec:
   accessModes:
     {{- toYaml $val.disk.accessModes | nindent 4 }}
@@ -56,6 +60,8 @@ metadata:
   name: {{ $thirdDiskName | quote }}
   annotations:
     helm.sh/resource-policy: keep
+  labels:
+    {{- include "fylr.labels" . | nindent 4 }}
 spec:
   accessModes:
     {{- toYaml $val.disk.accessModes | nindent 4 }}
