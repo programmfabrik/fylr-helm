@@ -83,6 +83,7 @@ jobs:
         with:
           fetch-depth: 0
           ref: gh-pages
+          token: ${{ secrets.FYLR_BOT_PAT }}
 
       - name: Configure Git
         run: |
