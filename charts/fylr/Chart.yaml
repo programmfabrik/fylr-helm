@@ -15,7 +15,7 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.0
+version: 0.1.1
 
 # This is the version number of the application being deployed. This version number should be
 # incremented each time you make changes to the application. Versions are not expected to
@@ -36,12 +36,12 @@ dependencies:
     condition: minio.enabled
   # https://github.com/bitnami/charts/tree/master/bitnami/postgresql-ha
   - name: postgresql-ha
-    version: 9.4.6
+    version: 10.0.1
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql-ha.enabled
   # https://github.com/bitnami/charts/tree/master/bitnami/elasticsearch
   - name: elasticsearch
-    version: 19.4.2
+    version: 19.4.6
     repository: https://charts.bitnami.com/bitnami
     condition: elasticsearch.enabled
   # https://programmfabrik.github.io/fylr-helm/charts/execserver/
