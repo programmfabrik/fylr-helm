@@ -1,4 +1,4 @@
-name: module tests
+name: fylr module tests
 
 on:
   push:
