@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - charts/**/Chart.yaml
+      - charts/execserver/Chart.yaml
+      - charts/fylr/Chart.yaml
 
 env:
   gh_actor: fylr-bot
