@@ -94,6 +94,26 @@ tolerations: []
 
 affinity: {}
 
+monitoring:
+  # -- (bool) Specifies whether Prometheus monitoring should be enabled
+  enabled: false
+  # -- (object) Prometheus Operator ServiceMonitor configuration
+  serviceMonitor:
+    ## -- (bool) Create ServiceMonitor Resource for scraping metrics using PrometheusOperator
+    enabled: false
+    ## -- (string) Namespace which Prometheus is running in
+    ## e.g:
+    ## namespace: monitoring
+    namespace: "default"
+    ## -- (string) The name of the label on the target service to use as the job name in prometheus.
+    jobLabel: ""
+    ## -- (string) Interval at which metrics should be scraped
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    interval: "30s"
+    ## -- (string) Timeout after which the scrape is ended
+    ## ref: https://github.com/coreos/prometheus-operator/blob/master/Documentation/api.md#endpoint
+    scrapeTimeout: "10s"
+
 fylr:
   # -- (string) public external url of the server. This url needs to be fully qualified
   externalURL: "http://localhost"

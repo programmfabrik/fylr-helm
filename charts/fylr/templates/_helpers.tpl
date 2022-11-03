@@ -42,6 +42,21 @@ app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
 {{- end }}
 
+{{- define "fylr.webapp.labels" -}}
+{{ include "fylr.labels" . }}
+app.kubernetes.io/component: webapp
+{{- end }}
+
+{{- define "fylr.api.labels" -}}
+{{ include "fylr.labels" . }}
+app.kubernetes.io/component: api
+{{- end }}
+
+{{- define "fylr.backend.labels" -}}
+{{ include "fylr.labels" . }}
+app.kubernetes.io/component: backend
+{{- end }}
+
 {{/*
 Selector labels
 */}}
@@ -104,6 +119,14 @@ Secret names
 {{- define "fylr.secret.utils" -}}
 {{- printf "%s-%s" (include "fylr.fullname" .) "utils" | trunc 63 | trimSuffix "-" }}
 {{- end }}
+
+{{/*
+Create a default fully qualified metrics name.
+We truncate at 63 chars because some Kubernetes name fields are limited to this (by the DNS naming spec).
+*/}}
+{{- define "fylr.monitoring.fullname" -}}
+{{- printf "%s-%s" (include "fylr.fullname" .) "metrics" | trunc 63 | trimSuffix "-" -}}
+{{- end -}}
 
 {{/* s3 default configuration */}}
 {{- define "fylr.default_s3_config" -}}

@@ -4,7 +4,7 @@ kind: Service
 metadata:
   name: {{ include "fylr.service-webapp-name" . }}
   labels:
-    {{- include "fylr.labels" . | nindent 4 }}
+    {{- include "fylr.webapp.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.services.webapp.type }}
   ports:
@@ -20,7 +20,7 @@ kind: Service
 metadata:
   name: {{ include "fylr.service-api-name" . }}
   labels:
-    {{- include "fylr.labels" . | nindent 4 }}
+    {{- include "fylr.api.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.services.api.type }}
   ports:
@@ -36,7 +36,7 @@ kind: Service
 metadata:
   name: {{ include "fylr.service-backend-name" . }}
   labels:
-    {{- include "fylr.labels" . | nindent 4 }}
+    {{- include "fylr.backend.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.services.backend.type }}
   ports:
