@@ -369,7 +369,7 @@ minio:
   resources:
     requests:
       memory: 1Gi
-      cpu: 100m
+      cpu: 250m
   users:
     # the first user will be used as ouline user
     - accessKey: fylr
