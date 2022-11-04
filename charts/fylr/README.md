@@ -1,5 +1,14 @@
 # fylr
 
+1. get [values.yaml](https://github.com/programmfabrik/fylr-helm/blob/main/charts/fylr/values.yaml)
+2. change at least `- host: localhost` and `externalURL: "http://localhost"`
+3. install via helm:
+```
+helm repo add programmfabrik https://programmfabrik.github.io/fylr-helm
+
+helm install fylr-helm programmfabrik/fylr -f values.yaml --namespace=fylr-helm --create-namespace
+```
+
 ## Good to know
 
 ### Secrets
