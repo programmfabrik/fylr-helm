@@ -6,7 +6,7 @@ A Helm-Chart for the fylr application
 see [charts/fylr/](https://github.com/programmfabrik/fylr-helm/blob/main/charts/fylr/README.md)
 
 ## Deploy execserver separately
-... and not as part of the fylr helm chart:
+... if you do not want to deploy it as part of the fylr helm chart, e.g. to have a pool of execservers that work for many flyr instances:
 
 see [charts/execserver](https://github.com/programmfabrik/fylr-helm/tree/main/charts/execserver)
 
