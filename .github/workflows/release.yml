@@ -10,7 +10,6 @@ on:
 
 env:
   gh_actor: fylr-bot
-  gh_email: fylr-bot@users.noreply.github.com
 
 jobs:
   release:
@@ -24,11 +23,12 @@ jobs:
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
+          token: ${{ secrets.FYLR_BOT_PAT }}
 
       - name: Configure Git
         run: |
           git config user.name "${{ env.gh_actor }}"
-          git config user.email "${{ env.gh_email }}@users.noreply.github.com"
+          git config user.email "${{ env.gh_actor }}@users.noreply.github.com"
 
       - name: Install Helm
         uses: azure/setup-helm@v3
@@ -88,7 +88,7 @@ jobs:
       - name: Configure Git
         run: |
           git config user.name "${{ env.gh_actor }}"
-          git config user.email "${{ env.gh_email }}@users.noreply.github.com"
+          git config user.email "${{ env.gh_actor }}@users.noreply.github.com"
 
       - name: Download documentation
         uses: actions/download-artifact@v3
