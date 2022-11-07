@@ -1,12 +1,83 @@
 # fylr
 
-1. get [values.yaml](https://github.com/programmfabrik/fylr-helm/blob/main/charts/fylr/values.yaml)
-2. change at least `- host: localhost` and `externalURL: "http://localhost"`
-3. install via helm:
-```
-helm repo add programmfabrik https://programmfabrik.github.io/fylr-helm
+## Getting started
 
-helm install fylr-helm programmfabrik/fylr -f values.yaml --namespace=fylr-helm --create-namespace
+The following instructions show you how to install and run *fylr* on your Kubernetes cluster. For these steps, you must have access to a Kubernetes cluster and have Helm installed. The following example also assumes that you have a working ingress controller installed, such as [nginx-ingress](https://kubernetes.github.io/ingress-nginx/deploy/), and that you have a domain name pointing to the ingress controller. In addition, we assume that you have access to an S3-compatible object storage provider and have created a bucket for fylr. The following steps will guide you through the installation of fylr.
+
+1. Add the fylr Helm repository:
+
+```bash
+helm repo add fylr https://programmfabrik.github.io/fylr-helm
+```
+
+2. Create a values file for fylr:
+
+```bash
+export RELEASE_NAME=fylr
+export DOMAIN=fylr.mydomain.com
+export STORAGE_CLASS=local-path
+
+cat <<EOF > values.yaml
+ingress:
+  enabled: true
+  className: "nginx"
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+  hosts:
+  - host: ${DOMAIN}
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+  - secretName: chart-example-tls
+    hosts:
+      - ${DOMAIN}
+fylr:
+  externalURL: https://${DOMAIN}
+  persistent:
+    defaults:
+      originals: "s3"
+      versions: "s3"
+      backups: "s3"
+    definitions:
+      s3:
+        kind: "s3"
+        allowPurge: false
+        s3:
+          path: ""
+          bucket: "fylr"
+          endpoint: "s3.amazonaws.com"
+          accessKey: "awss3accesskey"
+          secretKey: "awss3secretkey"
+          region: "us-east-1"
+          useSSL: true
+          allowRedirect: true
+minio:
+  enabled: false
+postgresql-ha:
+  enabled: true
+  persistence:
+    storageClass: ${STORAGE_CLASS}
+elasticsearch:
+  master:
+    persistence:
+      storageClass: ${STORAGE_CLASS}
+  data:
+    persistence:
+      storageClass: ${STORAGE_CLASS}
+EOF
+```
+
+3. Install the fylr Helm chart:
+
+```bash
+export NAMESPACE=fylr
+export RELEASE_NAME=fylr
+
+helm install ${RELEASE_NAME} fylr/fylr \
+    --namespace ${NAMESPACE} \
+    --create-namespace \
+    -f values.yaml
 ```
 
 ## Good to know
