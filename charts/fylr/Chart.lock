@@ -7,9 +7,9 @@ dependencies:
   version: 10.0.1
 - name: elasticsearch
   repository: https://charts.bitnami.com/bitnami
-  version: 19.4.6
+  version: 19.5.0
 - name: execserver
   repository: https://programmfabrik.github.io/fylr-helm
   version: 0.1.1
-digest: sha256:681b93120bde1f359de8943d912584d8f72c842d02d6542a74cdf033e95be2bd
-generated: "2022-11-03T17:21:52.8549057+01:00"
+digest: sha256:042fd5566be45041aac9d9c842cd2e0aa7a408f7be0e4027588f609e72808c92
+generated: "2022-11-07T15:11:25.1192825+01:00"
