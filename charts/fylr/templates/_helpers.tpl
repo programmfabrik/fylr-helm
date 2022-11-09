@@ -166,21 +166,21 @@ system:
   mountPath: "/fylr/files/assets/originals"
   subPath: "originals"
 {{/* end if is originals */}}
-{{- end -}}
+{{- end }}
 {{/* check if key is defined as versions */}}
 {{- if eq $key $persistent.defaults.versions -}}
 {{- if eq $key $persistent.defaults.originals -}}
 - name: "disk-one"
   mountPath: "/fylr/files/assets/versions"
   subPath: "versions"
-{{- else -}}
+{{- else }}
 - name: "disk-two"
   mountPath: "/fylr/files/assets/versions"
   subPath: "versions"
 {{/* end if key is originals as well */}}
-{{- end -}}
+{{- end }}
 {{/* end if is versions */}}
-{{- end -}}
+{{- end }}
 {{/* check if key is defined as backups */}}
 {{- if eq $key $persistent.defaults.backups -}}
 {{/* check if key is same as originals*/}}
@@ -194,23 +194,23 @@ system:
 - name: "disk-two"
   mountPath: "/fylr/files/backups"
   subPath: "backups"
-{{- else -}}
+{{- else }}
 {{/* key is not the same as defaults.originals and defaults.versions */}}
 - name: "disk-three"
   mountPath: "/fylr/files/backups"
   subPath: "backups"
 {{/* end if key eq defaults.versions and ne defaults.originals */}}
-{{- end -}}
+{{- end }}
 {{/* end if key is originals */}}
-{{- end -}}
+{{- end }}
 {{/* end if key is backups */}}
-{{- end -}}
+{{- end }}
 {{/* end if key is any of originals, versions, backups */}}
-{{- end -}}
+{{- end }}
 {{/* end if is kind disk */}}
-{{- end -}}
+{{- end }}
 {{/* end loop */}}
-{{- end -}}
+{{- end }}
 {{/* end define */}}
 {{- end -}}
 
