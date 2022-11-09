@@ -25,9 +25,9 @@ ingress:
     cert-manager.io/cluster-issuer: letsencrypt
   hosts:
   - host: ${DOMAIN}
-      paths:
-        - path: /
-          pathType: ImplementationSpecific
+    paths:
+    - path: /
+      pathType: ImplementationSpecific
   tls:
   - secretName: chart-example-tls
     hosts:
