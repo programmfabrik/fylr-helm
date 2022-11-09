@@ -1,18 +1,41 @@
 # fylr-helm
 
-A Helm-Chart for the fylr application
+This repository provides all the components to deploy fylr on a Kubernetes cluster. The deployment is done using Helm.
 
-## Default deployment with helm
-see [charts/fylr/](https://github.com/programmfabrik/fylr-helm/blob/main/charts/fylr/README.md)
+## Getting started
 
-## Deploy execserver separately
-... if you do not want to deploy it as part of the fylr helm chart, e.g. to have a pool of execservers that work for many flyr instances:
+### Prerequisites
 
-see [charts/execserver](https://github.com/programmfabrik/fylr-helm/tree/main/charts/execserver)
+- A Kubernetes cluster and the permissions needed to create, update, and delete resources (tested on >= 1.23.0)
+- Helm (>= 3.8.0)
 
-------
+### Installing
 
-## Development and Testing
+To install *fylr* or the *execserver*, you need to add the fylr-helm repository to your helm installation:
+
+```bash
+helm repo add fylr https://programmfabrik.github.io/fylr-helm
+```
+
+If this step was successful, you should be able to search the repository for charts::
+
+```bash
+helm search repo fylr
+```
+
+The output should look like this:
+
+```bash
+NAME                            CHART VERSION   APP VERSION     DESCRIPTION
+programmfabrik/execserver       0.1.1           v6.1.0-beta.8   A Helm chart for Kubernetes
+programmfabrik/fylr             0.1.2           v6.1.0-beta.8   Deploy fylr to your Kubernetes cluster
+```
+
+More information about the charts can be found in the README.md files in the respective chart directories. To see the respective values you can either use `helm show values [chart]` or go to [fylr](https://programmfabrik.github.io/fylr-helm/charts/fylr/) and [execserver](https://programmfabrik.github.io/fylr-helm/charts/execserver/).
+
+## Getting started (development)
+
+Before you can start development, you need to install a few tools and set up a few things in your environment. The following instructions are for a *Linux* environment, but should be easily adaptable to other environments.
 
 ### Requirements
 
@@ -31,56 +54,16 @@ see [charts/execserver](https://github.com/programmfabrik/fylr-helm/tree/main/ch
 
 ### Linting
 
-#### Lint execserver
-
-```bash
-make lint-execserver
-```
-
-#### Lint fylr
-
-```bash
-make lint-fylr
-```
+If the installation of the requirements was successful, you can now lint the charts. To do this, simply run `make lint-execserver` or `make lint-fylr`. This will color the chart and the value files.
 
 ### Testing
 
-#### Test execserver
-
-```bash
-make test-execserver
-```
-
-#### Test fylr
-
-```bash
-make test-fylr
-```
+If the installation of the *ct* tool was successful, you can now test the charts. To do this, simply run `make test-execserver` or `make test-fylr`. This will install the chart in the current (`kubectl config current-context`) Kubernetes cluster and then delete it again.
 
 ### Install
 
-#### Install execserver
-
-```bash
-make install-execserver
-```
-
-#### Install fylr
-
-```bash
-make install-fylr
-```
+To install the chart in the current Kubernetes cluster, simply run `make install-execserver` or `make install-fylr`. This will install the chart in the current (`kubectl config current-context`) Kubernetes cluster. Please note that the chart will not be uninstalled automatically. To uninstall the chart, please refer to [Uninstall](#uninstall).
 
 ### Uninstall
 
-#### Uninstall execserver
-
-```bash
-make uninstall-execserver
-```
-
-#### Uninstall fylr
-
-```bash
-make uninstall-fylr
-```
+In order to uninstall the chart, simply run `make uninstall-execserver` or `make uninstall-fylr`. This will uninstall the chart in the current (`kubectl config current-context`) Kubernetes cluster.
