@@ -12,6 +12,12 @@ see [charts/execserver](https://github.com/programmfabrik/fylr-helm/tree/main/ch
 
 ------
 
+## Contact us
+
+For Issues and questions please write to support@programmfabrik.de
+
+------
+
 ## Development and Testing
 
 ### Requirements
