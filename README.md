@@ -1,6 +1,6 @@
 # fylr-helm
 
-A Helm-Chart for the fylr application
+A Helm chart for the fylr application
 
 ## Default deployment
 see [charts/fylr/](https://github.com/programmfabrik/fylr-helm/blob/main/charts/fylr/README.md)
