@@ -2,7 +2,7 @@
 
 A Helm-Chart for the fylr application
 
-## Default deployment with helm
+## Default deployment
 see [charts/fylr/](https://github.com/programmfabrik/fylr-helm/blob/main/charts/fylr/README.md)
 
 ## Deploy execserver separately
