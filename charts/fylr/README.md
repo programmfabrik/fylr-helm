@@ -89,6 +89,20 @@ helm install ${RELEASE_NAME} fylr/fylr \
 
 These two secrets are used by the fylr installation to sign, encrypt, and configure the OAuth2 client and server. The values are generated during installation and are not updated during upgrades or deleted during uninstallation. If you want to change the values, you must adjust them manually.
 
+So if you want to know the secret to connect as "webclient", the default OAuth2 clientID:
+
+```bash
+kubectl -n ${NAMESPACE} get secrets REPLACE_ME-fylr-oauth2 -o go-template={{.data.oauth2WebappClientSecret}} | base64 -d;echo
+```
+
+To get the secret name:
+
+```bash
+kubectl -n ${NAMESPACE} get secrets
+```
+
+Choose the secret name ending in `-fylr-oauth2`
+
 ### Persistent Volumes
 
 Depending on your configuration, you can deploy fylr with a persistent volume. If you do this, these volumes are created once and are not deleted when you uninstall fylr. If you want to delete the volumes, you must do so manually.
