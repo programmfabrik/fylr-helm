@@ -38,6 +38,6 @@ dependencies:
     condition: elasticsearch.enabled
   # https://programmfabrik.github.io/fylr-helm/charts/execserver/
   - name: execserver
-    version: 0.1.3
+    version: 0.1.2
     repository: https://programmfabrik.github.io/fylr-helm
     condition: execserver.enabled
