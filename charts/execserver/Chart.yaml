@@ -1,6 +1,6 @@
 apiVersion: v2
 name: execserver
-description: A Helm chart for fylr execserver in Kubernetes
+description: A Helm chart for fylr as execserver in Kubernetes
 
 type: application
 
