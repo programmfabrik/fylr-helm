@@ -41,3 +41,4 @@ dependencies:
     version: 0.1.4
     repository: https://programmfabrik.github.io/fylr-helm
     condition: execserver.enabled
+  # Beware: use helm dependency update to download it to charts/fylr/charts
