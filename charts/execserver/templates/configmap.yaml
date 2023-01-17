@@ -106,6 +106,12 @@ data:
                     regex: "Version: ImageMagick 7..*?https://imagemagick.org"
                 fylr_metadata:
                   prog: "fylr_metadata"
+                ffmpegthumbnailer:
+                  prog: "ffmpegthumbnailer"
+                  startupCheck:
+                    args:
+                    - "-v"
+                    regex: "ffmpegthumbnailer version: 2\\..*"
             {{ end }}
             {{ if .Values.fylr.execserver.services.soffice.enabled }}
             soffice:
