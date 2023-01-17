@@ -2,7 +2,7 @@
 
 ## Getting started
 
-The following instructions show you how to install and run *fylr* on your Kubernetes cluster. For these steps, you must have access to a Kubernetes cluster and have Helm installed. The following example also assumes that you have a working ingress controller installed, such as [nginx-ingress](https://kubernetes.github.io/ingress-nginx/deploy/), and that you have a domain name pointing to the ingress controller. In addition, we assume that you have access to an S3-compatible object storage provider and have created a bucket for fylr. The following steps will guide you through the installation of fylr.
+The following steps show how to install and run *fylr* on Kubernetes. You need access to an already existing Kubernetes cluster. You need Helm installed on your local machine where you execute the following commands. The following example also assumes that you have a working ingress controller installed, such as [nginx-ingress](https://kubernetes.github.io/ingress-nginx/deploy/), and that you have a domain name pointing to the ingress controller. In addition, we assume that you have access to an S3-compatible object storage provider and have created a bucket for fylr.
 
 1. Add the fylr Helm repository:
 
