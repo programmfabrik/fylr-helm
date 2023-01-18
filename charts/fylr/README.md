@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.9](https://img.shields.io/badge/Version-0.1.9-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: latest](https://img.shields.io/badge/AppVersion-latest-informational?style=flat-square)
+![Version: 0.1.10](https://img.shields.io/badge/Version-0.1.10-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.2.3](https://img.shields.io/badge/AppVersion-v6.2.3-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -98,10 +98,10 @@ Deploy fylr to your Kubernetes cluster
 | fylr.services.api.oauth2Server.clients | object | `{}` | additional oauth2 clients to be added to the oauth2 server. For the web application, we automatically generate a key pair and assign it to the oauth2 client. |
 | fylr.services.webapp | object | `{"basicAuth":{}}` | define settings for the wepapp service |
 | fylr.services.webapp.basicAuth | object | `{}` | basicAuth is used to protect the web application with additional basic credentials. We expect a map of usernames and passwords in clear text. |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.fylr.io/fylr/fylr-server","tag":"v6.2.0"}` | The image to use for the container |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.fylr.io/fylr/fylr-server","tag":"v6.2.3"}` | The image to use for the container |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images |
 | image.repository | string | `"docker.fylr.io/fylr/fylr-server"` | Docker image repository |
-| image.tag | string | `"v6.2.0"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `"v6.2.3"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `"nginx"` |  |
