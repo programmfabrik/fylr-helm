@@ -7,6 +7,8 @@ on:
     paths:
       - charts/execserver/Chart.yaml
       - charts/fylr/Chart.yaml
+      - charts/fylr/Chart.lock
+      - .github/workflows/release.yml
 
 env:
   gh_actor: fylr-bot
