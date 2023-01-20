@@ -116,3 +116,16 @@ Depending on your configuration, you can deploy fylr with a persistent volume. I
 The link below contains a table of the configurable parameters of the fylr diagram and their default values.
 
 See: https://programmfabrik.github.io/fylr-helm/charts/fylr/
+
+## Troubleshooting
+
+Such messages can be safely ignored:
+> could not obtain lock on row in relation
+
+> WRN Error occurred in NewIntrospectionRequest error=request_unauthorized Env=api
+
+> WRN Accepting token failed error
+
+In case of problems, also try to allocate more resources via:
+* [replicaCount](https://github.com/programmfabrik/fylr-helm/blob/fylr-0.1.11/charts/fylr/values.yaml#L5)
+* [maxOpenConns](https://github.com/programmfabrik/fylr-helm/blob/fylr-0.1.11/charts/fylr/values.yaml#L255)
