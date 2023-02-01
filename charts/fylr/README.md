@@ -2,7 +2,7 @@
 
 ## Getting started
 
-The following steps show how to install and run *fylr* on Kubernetes. You need access to an already existing Kubernetes cluster. You need Helm installed on your local machine where you execute the following commands. The following example also assumes that you have a working ingress controller installed, such as [nginx-ingress](https://kubernetes.github.io/ingress-nginx/deploy/), and that you have a domain name pointing to the ingress controller. In addition, we assume that you have access to an S3-compatible object storage provider and have created a bucket for fylr.
+The following steps show how to install and run *fylr* on Kubernetes. You need access to an already existing Kubernetes cluster. You need Helm installed on your local machine where you execute the following commands. The following example also assumes that you have a working ingress controller installed, such as [nginx-ingress](https://kubernetes.github.io/ingress-nginx/deploy/), and that you have a domain name pointing to the ingress controller.
 
 1. Add the fylr Helm repository:
 
@@ -10,14 +10,9 @@ The following steps show how to install and run *fylr* on Kubernetes. You need a
 helm repo add fylr https://programmfabrik.github.io/fylr-helm
 ```
 
-2. Create a values file for fylr:
+2. Create a file `values.yaml` for fylr:
 
-```bash
-export RELEASE_NAME=fylr
-export DOMAIN=fylr.mydomain.com
-export STORAGE_CLASS=local-path
-
-cat <<EOF > values.yaml
+```yaml
 ingress:
   enabled: true
   className: "nginx"
@@ -28,49 +23,45 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
     nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
   hosts:
-  - host: ${DOMAIN}
+  - host: fylr.example.com
     paths:
     - path: /
       pathType: ImplementationSpecific
   tls:
-  - secretName: chart-example-tls
+  - secretName: fylr-example-tls
     hosts:
-      - ${DOMAIN}
+      - fylr.example.com
 fylr:
-  externalURL: https://${DOMAIN}
+  externalURL: "https://fylr.example.com"
   persistent:
     defaults:
-      originals: "s3"
-      versions: "s3"
-      backups: "s3"
+      originals: "disk1"
+      versions: "disk1"
+      backups: "disk1"
     definitions:
-      s3:
-        kind: "s3"
+      disk1:
+        kind: disk
         allowPurge: false
-        s3:
-          path: ""
-          bucket: "fylr"
-          endpoint: "s3.amazonaws.com"
-          accessKey: "awss3accesskey"
-          secretKey: "awss3secretkey"
-          region: "us-east-1"
-          useSSL: true
-          allowRedirect: true
+        disk:
+          storageClass: "local-path"
+          accessModes: ["ReadWriteOnce"]
+          size: 10Gi
 minio:
   enabled: false
 postgresql-ha:
   enabled: true
   persistence:
-    storageClass: ${STORAGE_CLASS}
+    storageClass: local-path
 elasticsearch:
   master:
     persistence:
-      storageClass: ${STORAGE_CLASS}
+      storageClass: local-path
   data:
     persistence:
-      storageClass: ${STORAGE_CLASS}
-EOF
+      storageClass: local-path
 ```
+
+You may want to replace all strings with example, local-path and letsencrypt.
 
 3. Install the fylr Helm chart:
 
@@ -95,21 +86,48 @@ These two secrets are used by the fylr installation to sign, encrypt, and config
 
 So if you want to know the secret to connect as "web-client", the default OAuth2 clientID:
 
-```bash
-kubectl -n ${NAMESPACE} get secrets REPLACE_ME-fylr-oauth2 -o go-template={{.data.oauth2WebappClientSecret}} | base64 -d;echo
-```
-
-To get the secret name:
+Get the secret name:
 
 ```bash
 kubectl -n ${NAMESPACE} get secrets
 ```
 
-Choose the secret name ending in `-fylr-oauth2`
+Choose the secret name ending in `-fylr-oauth2`. For this example, we assume the name is `example-fylr-oauth2`.
+
+```bash
+kubectl -n ${NAMESPACE} get secrets example-fylr-oauth2 -o go-template={{.data.oauth2WebappClientSecret}} | base64 -d;echo
+```
 
 ### Persistent Volumes
 
 Depending on your configuration, you can deploy fylr with a persistent volume. If you do this, these volumes are created once and are not deleted when you uninstall fylr. If you want to delete the volumes, you must do so manually.
+
+### s3 storage
+
+You may place assets and backups into e.g. amazon s3 instead of kubernetes volumes, by replacing the persistent part in the values.yaml above with:
+
+```yaml
+  persistent:
+    defaults:
+      originals: "s3"
+      versions: "s3"
+      backups: "s3"
+    definitions:
+      s3:
+        kind: "s3"
+        allowPurge: false
+        s3:
+          path: ""
+          bucket: "fylr"
+          endpoint: "s3.amazonaws.com"
+          accessKey: "awss3accesskey"
+          secretKey: "awss3secretkey"
+          region: "us-east-1"
+          useSSL: true
+          allowRedirect: true
+```
+
+Note: fylr does not create the bucket.
 
 ## Configuration
 
