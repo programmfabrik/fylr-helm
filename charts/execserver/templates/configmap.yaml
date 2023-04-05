@@ -179,6 +179,8 @@ data:
             iiif:
               waitgroup: {{ .Values.fylr.execserver.services.iiif.waitGroup | quote }}
               commands:
+                convert:
+                  prog: "convert"
                 fylr_iiif:
                   prog: "fylr_iiif"
                   startupCheck:
