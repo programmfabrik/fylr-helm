@@ -70,7 +70,7 @@ jobs:
       TMUX_SESSION_NAME: execserver-tests
       NAMESPACE: "default"
       SERVICE_NAME: "ex1"
-      VALIDATION_SERVICES: "node,convert,ffmpeg,soffice,metadata,pdf2pages,xslt,copy,iiif"
+      VALIDATION_SERVICES: "node,convert,ffmpeg,soffice,metadata,pdf2pages,xslt,iiif"
     steps:
       - name: Checkout
         uses: actions/checkout@v3

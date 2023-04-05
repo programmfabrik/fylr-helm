@@ -160,13 +160,6 @@ data:
                 xsltproc:
                   prog: "xsltproc"
             {{ end }}
-            {{ if .Values.fylr.execserver.services.copy.enabled }}
-            copy:
-              waitgroup: {{ .Values.fylr.execserver.services.copy.waitGroup | quote }}
-              commands:
-                fylr_copy:
-                  prog: "fylr_copy"
-            {{ end }}
             {{ if .Values.fylr.execserver.services.metadata.enabled }}
             metadata:
               waitgroup: {{ .Values.fylr.execserver.services.metadata.waitGroup | quote }}

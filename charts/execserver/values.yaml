@@ -186,11 +186,6 @@ fylr:
         enabled: true
         # -- Specify the waitGroup the service should be executed in
         waitGroup: a
-      copy:
-        # -- Enable or disable the copy service
-        enabled: true
-        # -- Specify the waitGroup the service should be executed in
-        waitGroup: a
       metadata:
         # -- Enable or disable the metadata service
         enabled: true
