@@ -63,7 +63,6 @@ Selector labels
 {{- define "fylr.selectorLabels" -}}
 app.kubernetes.io/name: {{ include "fylr.name" . }}
 app.kubernetes.io/instance: {{ .Release.Name }}
-app.kubernetes.io/component: server
 app.kubernetes.io/part-of: fylr-server
 {{- end }}
 
