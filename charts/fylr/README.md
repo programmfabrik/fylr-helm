@@ -135,7 +135,7 @@ kubectl -n ${NAMESPACE} get secrets example-fylr-oauth2 -o go-template={{.data.o
 
 ## Configuration
 
-The link below contains a table of the configurable parameters of the fylr diagram and their default values.
+The link below contains a table of the configurable parameters and their default values.
 
 See: https://programmfabrik.github.io/fylr-helm/charts/fylr/
 
