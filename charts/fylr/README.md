@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.28](https://img.shields.io/badge/Version-0.1.28-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.5.0](https://img.shields.io/badge/AppVersion-v6.5.0-informational?style=flat-square)
+![Version: 0.1.29](https://img.shields.io/badge/Version-0.1.29-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.5.1](https://img.shields.io/badge/AppVersion-v6.5.1-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -17,7 +17,7 @@ Deploy fylr to your Kubernetes cluster
 | https://charts.bitnami.com/bitnami | elasticsearch | 19.5.0 |
 | https://charts.bitnami.com/bitnami | postgresql-ha | 10.0.1 |
 | https://charts.min.io/ | minio | 4.0.14 |
-| https://programmfabrik.github.io/fylr-helm | execserver | 0.1.15 |
+| https://programmfabrik.github.io/fylr-helm | execserver | 0.1.16 |
 
 ## Values
 
@@ -98,10 +98,10 @@ Deploy fylr to your Kubernetes cluster
 | fylr.services.api.oauth2Server.clients | object | `{}` | additional oauth2 clients to be added to the oauth2 server. For the web application, we automatically generate a key pair and assign it to the oauth2 client. |
 | fylr.services.webapp | object | `{"basicAuth":{}}` | define settings for the wepapp service |
 | fylr.services.webapp.basicAuth | object | `{}` | basicAuth is used to protect the web application with additional basic credentials. We expect a map of usernames and passwords in clear text. |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.fylr.io/fylr/fylr-server","tag":"v6.5.0"}` | The image to use for the container |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.fylr.io/fylr/fylr-server","tag":"v6.5.1"}` | The image to use for the container |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images |
 | image.repository | string | `"docker.fylr.io/fylr/fylr-server"` | Docker image repository |
-| image.tag | string | `"v6.5.0"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `"v6.5.1"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `"nginx"` |  |
