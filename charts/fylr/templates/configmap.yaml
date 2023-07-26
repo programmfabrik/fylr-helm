@@ -64,6 +64,7 @@ data:
           path: /fylr/files/webfrontend
           oauth2:
             clientID: "web-client"
+            internalURL:  "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
           reverseProxy:
             api: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
             backend: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
