@@ -10,6 +10,6 @@ dependencies:
   version: 19.5.0
 - name: execserver
   repository: https://programmfabrik.github.io/fylr-helm
-  version: 0.1.18
-digest: sha256:044535208871c949eb77cbec9fc6a0d501dc56e71ab6c1c8fc320d6b5a5c5bfb
-generated: "2023-08-10T19:18:30.411881401+02:00"
+  version: 0.1.19
+digest: sha256:ca787f14f1b747af76f192b883339ed60c360df06985e024f97d8507e0804f5c
+generated: "2023-09-19T15:33:49.794500763+02:00"
