@@ -4,11 +4,11 @@ metadata:
   name: {{ include "execserver.fullname" . }}
 data:
   fylr.yml: |
-    fylr:
+    fylr+:
       name: {{ include "execserver.fullname" . }}
-      debug:
+      debug+:
         skipTerms: false
-      logger:
+      logger+:
         # Set to "json" or "console". Default: "console"
         format: "console"
         # Set zerolog log level: trace, debug, info, warn, error, fatal, panic
@@ -25,8 +25,11 @@ data:
         # add hostname to log output
         addHostname: true
       resources: "/fylr/files/resources"
-      services:
-        execserver:
+      services+:
+        api: {}
+        backend: {}
+        webapp: {}
+        execserver+:
           addr: :7070
           tempDir: /tmp/fylr
           waitgroups:
@@ -34,157 +37,4 @@ data:
             {{ $k }}:
               processes: {{ $v -}}
             {{ end }}
-          services:
-            {{ if .Values.fylr.execserver.services.python3.enabled }}
-            python3:
-              waitgroup: {{ .Values.fylr.execserver.services.python3.waitGroup | quote }}
-              commands:
-                python3:
-                  prog: "python3"
-            {{ end }}
-            {{ if .Values.fylr.execserver.services.node.enabled }}
-            node:
-              waitgroup: {{ .Values.fylr.execserver.services.node.waitGroup | quote }}
-              commands:
-                node:
-                  prog: "node"
-            {{ end }}
-            {{ if .Values.fylr.execserver.services.convert.enabled }}
-            convert:
-              waitgroup: {{ .Values.fylr.execserver.services.convert.waitGroup | quote }}
-              commands:
-                convert:
-                  prog: "convert"
-                  env:
-                    - "OMP_NUM_THREADS=2"
-                  startupCheck:
-                    args:
-                      - "-version"
-                    regex: "Version: ImageMagick 7..*?https://imagemagick.org"
-                composite:
-                  prog: "composite"
-                  env:
-                    - "OMP_NUM_THREADS=2"
-                  startupCheck:
-                    args:
-                      - "-version"
-                    regex: "Version: ImageMagick 7..*?https://imagemagick.org"
-                fylr_metadata:
-                  prog: "fylr_metadata"
-            {{ end }}
-            {{ if .Values.fylr.execserver.services.ffmpeg.enabled }}
-            ffmpeg:
-              waitgroup: {{ .Values.fylr.execserver.services.ffmpeg.waitGroup | quote }}
-              commands:
-                ffmpeg:
-                  prog: ffmpeg
-                  startupCheck:
-                    args:
-                      - "-version"
-                    regex: "ffmpeg version 5[\\.0-9]+ Copyright"
-                ffprobe:
-                  prog: ffprobe
-                  startupCheck:
-                    args:
-                      - "-version"
-                    regex: "ffprobe version 5[\\.0-9]+ Copyright"
-                convert:
-                  prog: "convert"
-                  env:
-                    - "OMP_NUM_THREADS=2"
-                  startupCheck:
-                    args:
-                      - "-version"
-                    regex: "Version: ImageMagick 7..*?https://imagemagick.org"
-                composite:
-                  prog: "composite"
-                  env:
-                    - "OMP_NUM_THREADS=2"
-                  startupCheck:
-                    args:
-                      - "-version"
-                    regex: "Version: ImageMagick 7..*?https://imagemagick.org"
-                fylr_metadata:
-                  prog: "fylr_metadata"
-                ffmpegthumbnailer:
-                  prog: "ffmpegthumbnailer"
-                  startupCheck:
-                    args:
-                    - "-v"
-                    regex: "ffmpegthumbnailer version: 2\\..*"
-            {{ end }}
-            {{ if .Values.fylr.execserver.services.soffice.enabled }}
-            soffice:
-              waitgroup: {{ .Values.fylr.execserver.services.soffice.waitGroup | quote }}
-              commands:
-                soffice:
-                  prog: soffice
-                  startupCheck:
-                    args:
-                      - "--headless"
-                      - "--invisible"
-                      - "--version"
-                    regex: "LibreOffice 7[.0-9]+"
-                convert:
-                  prog: "convert"
-                  env:
-                    - "OMP_NUM_THREADS=2"
-                  startupCheck:
-                    args:
-                      - "-version"
-                    regex: "Version: ImageMagick 7..*?https://imagemagick.org"
-                composite:
-                  prog: "composite"
-                  env:
-                    - "OMP_NUM_THREADS=2"
-                  startupCheck:
-                    args:
-                      - "-version"
-                    regex: "Version: ImageMagick 7..*?https://imagemagick.org"
-                fylr_metadata:
-                  prog: "fylr_metadata"
-            {{ end }}
-            {{ if .Values.fylr.execserver.services.pdf2pages.enabled }}
-            pdf2pages:
-              waitgroup: {{ .Values.fylr.execserver.services.pdf2pages.waitGroup | quote }}
-              commands:
-                fylr_pdf2pages:
-                  prog: "fylr_pdf2pages"
-                fylr_metadata:
-                  prog: "fylr_metadata"
-            {{ end }}
-            {{ if .Values.fylr.execserver.services.xslt.enabled }}
-            xslt:
-              waitgroup: {{ .Values.fylr.execserver.services.xslt.waitGroup | quote }}
-              commands:
-                xsltproc:
-                  prog: "xsltproc"
-            {{ end }}
-            {{ if .Values.fylr.execserver.services.metadata.enabled }}
-            metadata:
-              waitgroup: {{ .Values.fylr.execserver.services.metadata.waitGroup | quote }}
-              commands:
-                java:
-                  prog: "java"
-                fylr_metadata:
-                  prog: "fylr_metadata"
-                ffprobe:
-                  prog: ffprobe
-                  startupCheck:
-                    args:
-                      - "-version"
-                    regex: "ffprobe version 5[\\.0-9]+ Copyright"
-            {{ end }}
-            {{ if .Values.fylr.execserver.services.iiif.enabled }}
-            iiif:
-              waitgroup: {{ .Values.fylr.execserver.services.iiif.waitGroup | quote }}
-              commands:
-                convert:
-                  prog: "convert"
-                fylr_iiif:
-                  prog: "fylr_iiif"
-                  startupCheck:
-                    args:
-                      - "-version"
-                    regex: "Version v*"
-            {{ end }}
+

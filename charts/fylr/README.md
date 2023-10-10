@@ -77,6 +77,10 @@ helm install ${RELEASE_NAME} fylr/fylr \
 
 ## Good to know
 
+### Storage locations known bug
+
+Known Bug: Locations are only created if they are present in at least one of the three lines below `defaults:` (`originals:`, `versions:`, `backups:`), so it is currently not enough to just define them below `definitions:`, you also have to use them in the `defaults:` mapping.
+
 ### Storage and fylr replicas
 
 If you use ReadWriteOnce volumes, as in the example above, then these cannot be shared among multiple fylr replicas and thus you can only use one fylr replica (per fylr instance, so for example per customer). For more than one replica you need to either find a solution with ReadWriteMany volumes or, what fylr was designed for, s3 storage:
