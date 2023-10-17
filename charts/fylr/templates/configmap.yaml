@@ -37,7 +37,6 @@ data:
         defaults:
           {{- toYaml .Values.fylr.plugin.defaults | nindent 8 }}
       allowpurge: {{ .Values.fylr.allowPurge }}
-      resources: "/fylr/files/resources"
       elastic:
         logger: {{ .Values.fylr.elastic.logger | default "" | quote }}
         parallel: {{ .Values.fylr.elastic.parallel | default 4 }}
@@ -61,7 +60,6 @@ data:
       services:
         webapp:
           addr: :8080
-          path: /fylr/files/webfrontend
           oauth2:
             clientID: "web-client"
             internalURL:  "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"

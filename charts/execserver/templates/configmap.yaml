@@ -24,7 +24,6 @@ data:
         noColor: false
         # add hostname to log output
         addHostname: true
-      resources: "/fylr/files/resources"
       services+:
         api: {}
         backend: {}
