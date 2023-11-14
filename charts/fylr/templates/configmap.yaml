@@ -15,6 +15,9 @@ data:
         timeFormat: {{ .Values.fylr.logger.timeFormat | default "2006-01-02 15:04:05" | quote }}
         noColor: {{ .Values.fylr.logger.noColor | default true }}
         addHostname: {{ .Values.fylr.logger.addHostname | default true }}
+      debug:
+        easDownloadSkipCheckRights: {{ .Values.fylr.debug.easDownloadSkipCheckRights | default false }}
+
       db:
         maxOpenConns: {{ .Values.fylr.db.maxOpenConns }}
         maxIdleConns: {{ .Values.fylr.db.maxIdleConns }}

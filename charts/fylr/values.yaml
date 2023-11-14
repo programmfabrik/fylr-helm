@@ -143,6 +143,13 @@ fylr:
     # -- (bool) addHostname adds the hostname to the logs.
     addHostname: true
 
+  debug:
+    # this setting skips the sometime expensive permission check
+    # on the /api/eas/download endpoint. However, there is still
+    # some security left, the link is checked against a valid hash
+    # of the file which needs to be provided.
+    easDownloadSkipCheckRights: false
+
   # -- (object) defines the storage settings required for the persistence of data (e.g. files, backups, etc.)
   persistent:
     # -- (object) defines the persistent storage definitions for the server
