@@ -11,7 +11,7 @@ image:
   # -- (string) Docker image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images
   pullPolicy: IfNotPresent
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  tag: "v6.7.1"
+  tag: "v6.7.3"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -382,7 +382,7 @@ execserver:
     pullPolicy: IfNotPresent
     # -- The image tag
     # Overrides the image tag whose default value is the appVersion of the chart.
-    tag: "v6.7.1"
+    tag: "v6.7.3"
   # -- Whether to configure monitoring for the application
   monitoring:
     # -- Whether to create a ServiceMonitor resource for Prometheus Operator
