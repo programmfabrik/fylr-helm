@@ -2,6 +2,20 @@ apiVersion: v1
 entries:
   execserver:
   - apiVersion: v2
+    appVersion: v6.7.3
+    created: "2023-11-14T16:47:09.981198477Z"
+    description: A Helm chart for fylr as execserver in Kubernetes
+    digest: de8183d6cff9dde140a2d3335f806951a097253780b592ac8ff9e33ef8e4e09e
+    maintainers:
+    - email: support@programmfabrik.de
+      name: programmfabrik
+      url: https://programmfabrik.de
+    name: execserver
+    type: application
+    urls:
+    - https://github.com/programmfabrik/fylr-helm/releases/download/execserver-0.1.25/execserver-0.1.25.tgz
+    version: 0.1.25
+  - apiVersion: v2
     appVersion: v6.7.1
     created: "2023-10-17T12:17:10.122294453Z"
     description: A Helm chart for fylr as execserver in Kubernetes
@@ -296,6 +310,37 @@ entries:
     - https://github.com/programmfabrik/fylr-helm/releases/download/execserver-0.1.1/execserver-0.1.1.tgz
     version: 0.1.1
   fylr:
+  - apiVersion: v2
+    appVersion: v6.7.1
+    created: "2023-11-14T16:47:10.304534944Z"
+    dependencies:
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.min.io/
+      version: 4.0.14
+    - condition: postgresql-ha.enabled
+      name: postgresql-ha
+      repository: https://charts.bitnami.com/bitnami
+      version: 10.0.1
+    - condition: elasticsearch.enabled
+      name: elasticsearch
+      repository: https://charts.bitnami.com/bitnami
+      version: 19.5.0
+    - condition: execserver.enabled
+      name: execserver
+      repository: https://programmfabrik.github.io/fylr-helm
+      version: 0.1.24
+    description: Deploy fylr to your Kubernetes cluster
+    digest: d5ba0b2d59b06c274ec5473cef20458dc01ef012c5623e9a8b362635b8e11273
+    maintainers:
+    - email: support@programmfabrik.de
+      name: programmfabrik
+      url: https://programmfabrik.de
+    name: fylr
+    type: application
+    urls:
+    - https://github.com/programmfabrik/fylr-helm/releases/download/fylr-0.1.42/fylr-0.1.42.tgz
+    version: 0.1.42
   - apiVersion: v2
     appVersion: v6.7.1
     created: "2023-10-17T12:22:54.782949045Z"
@@ -1505,4 +1550,4 @@ entries:
     urls:
     - https://github.com/programmfabrik/fylr-helm/releases/download/fylr-0.1.2/fylr-0.1.2.tgz
     version: 0.1.2
-generated: "2023-10-17T12:22:54.783390844Z"
+generated: "2023-11-14T16:47:10.304942415Z"
