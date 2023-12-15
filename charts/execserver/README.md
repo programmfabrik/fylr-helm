@@ -1,6 +1,6 @@
 # execserver
 
-![Version: 0.1.26](https://img.shields.io/badge/Version-0.1.26-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.7.4](https://img.shields.io/badge/AppVersion-v6.7.4-informational?style=flat-square)
+![Version: 0.1.27](https://img.shields.io/badge/Version-0.1.27-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.8.0](https://img.shields.io/badge/AppVersion-v6.8.0-informational?style=flat-square)
 
 A Helm chart for fylr as execserver in Kubernetes
 
@@ -48,10 +48,10 @@ A Helm chart for fylr as execserver in Kubernetes
 | fylr.logger.level | string | `"info"` | Set zerolog log level: trace, debug, info, warn, error, fatal, panic default to "info". |
 | fylr.logger.noColor | bool | `false` | turn off color for zerolog's underlying ConsoleWriter format: "console" only. |
 | fylr.logger.timeFormat | string | `"2006-01-02T15:04:05Z07:00"` | timeFormat is the Go representation to format the time in the log output. zerolog's time keeping resolution is always set to milliseconds by FYLR. Use "", "UNIXMS" or "UNIXMICRO" to output a unix timestamp (json format only). Defaults to "" |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.fylr.io/fylr/fylr","tag":"v6.7.4"}` | The image to use for the execserver |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.fylr.io/fylr/fylr","tag":"v6.8.0"}` | The image to use for the execserver |
 | image.pullPolicy | string | `"IfNotPresent"` | The image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images |
 | image.repository | string | `"docker.fylr.io/fylr/fylr"` | The image repository |
-| image.tag | string | `"v6.7.4"` | The image tag Overrides the image tag whose default value is the appVersion of the chart. |
+| image.tag | string | `"v6.8.0"` | The image tag Overrides the image tag whose default value is the appVersion of the chart. |
 | imagePullSecrets | list | `[]` | Pull secrets for the image. Useful for private registries. See https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/ |
 | ingress | object | `{"annotations":{},"className":"","enabled":false,"hosts":[{"host":"chart-example.local","paths":[{"path":"/","pathType":"ImplementationSpecific"}]}],"tls":[]}` | Ingress configuration |
 | ingress.annotations | object | `{}` | The annotations of the ingress |
