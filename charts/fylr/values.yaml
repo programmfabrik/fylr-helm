@@ -598,12 +598,12 @@ elasticsearch:
     ## @param master.startupProbe.failureThreshold Minimum consecutive failures for the probe to be considered failed after having succeeded
     ##
     startupProbe:
-      enabled: false
+      enabled: true
       initialDelaySeconds: 90
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
-      failureThreshold: 5
+      failureThreshold: 20
     ## @param master.livenessProbe.enabled Enable/disable the liveness probe (master-eligible nodes pod)
     ## @param master.livenessProbe.initialDelaySeconds Delay before liveness probe is initiated (master-eligible nodes pod)
     ## @param master.livenessProbe.periodSeconds How often to perform the probe (master-eligible nodes pod)
@@ -613,7 +613,7 @@ elasticsearch:
     ##
     livenessProbe:
       enabled: true
-      initialDelaySeconds: 90
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
@@ -627,7 +627,7 @@ elasticsearch:
     ##
     readinessProbe:
       enabled: true
-      initialDelaySeconds: 90
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
@@ -762,12 +762,12 @@ elasticsearch:
     ## @param data.startupProbe.failureThreshold Minimum consecutive failures for the probe to be considered failed after having succeeded
     ##
     startupProbe:
-      enabled: false
-      initialDelaySeconds: 90
+      enabled: true
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
-      failureThreshold: 5
+      failureThreshold: 20
     ## @param data.livenessProbe.enabled Enable/disable the liveness probe (data nodes pod)
     ## @param data.livenessProbe.initialDelaySeconds Delay before liveness probe is initiated (data nodes pod)
     ## @param data.livenessProbe.periodSeconds How often to perform the probe (data nodes pod)
@@ -777,7 +777,7 @@ elasticsearch:
     ##
     livenessProbe:
       enabled: true
-      initialDelaySeconds: 90
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
@@ -791,7 +791,7 @@ elasticsearch:
     ##
     readinessProbe:
       enabled: true
-      initialDelaySeconds: 90
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
@@ -1057,12 +1057,12 @@ elasticsearch:
     ## @param coordinating.startupProbe.failureThreshold Minimum consecutive failures for the probe to be considered failed after having succeeded
     ##
     startupProbe:
-      enabled: false
-      initialDelaySeconds: 90
+      enabled: true
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
-      failureThreshold: 5
+      failureThreshold: 20
     ## @param coordinating.livenessProbe.enabled Enable/disable the liveness probe (coordinating-only nodes pod)
     ## @param coordinating.livenessProbe.initialDelaySeconds Delay before liveness probe is initiated (coordinating-only nodes pod)
     ## @param coordinating.livenessProbe.periodSeconds How often to perform the probe (coordinating-only nodes pod)
@@ -1072,7 +1072,7 @@ elasticsearch:
     ##
     livenessProbe:
       enabled: true
-      initialDelaySeconds: 90
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
@@ -1086,7 +1086,7 @@ elasticsearch:
     ##
     readinessProbe:
       enabled: true
-      initialDelaySeconds: 90
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
@@ -1322,12 +1322,12 @@ elasticsearch:
     ## @param ingest.startupProbe.failureThreshold Minimum consecutive failures for the probe to be considered failed after having succeeded
     ##
     startupProbe:
-      enabled: false
-      initialDelaySeconds: 90
+      enabled: true
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
-      failureThreshold: 5
+      failureThreshold: 20
     ## @param ingest.livenessProbe.enabled Enable/disable the liveness probe (ingest-only nodes pod)
     ## @param ingest.livenessProbe.initialDelaySeconds Delay before liveness probe is initiated (ingest-only nodes pod)
     ## @param ingest.livenessProbe.periodSeconds How often to perform the probe (ingest-only nodes pod)
@@ -1337,7 +1337,7 @@ elasticsearch:
     ##
     livenessProbe:
       enabled: true
-      initialDelaySeconds: 90
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
@@ -1351,7 +1351,7 @@ elasticsearch:
     ##
     readinessProbe:
       enabled: true
-      initialDelaySeconds: 90
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
@@ -1754,7 +1754,7 @@ elasticsearch:
     ##
     livenessProbe:
       enabled: true
-      initialDelaySeconds: 60
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 5
       successThreshold: 1
@@ -1770,7 +1770,7 @@ elasticsearch:
     ##
     readinessProbe:
       enabled: true
-      initialDelaySeconds: 5
+      initialDelaySeconds: 1
       periodSeconds: 10
       timeoutSeconds: 1
       successThreshold: 1
@@ -1785,12 +1785,12 @@ elasticsearch:
     ## @param metrics.startupProbe.successThreshold Minimum consecutive successes for the probe to be considered successful after having failed (metrics pod)
     ##
     startupProbe:
-      enabled: false
-      initialDelaySeconds: 5
+      enabled: true
+      initialDelaySeconds: 1
       periodSeconds: 10
-      timeoutSeconds: 1
+      timeoutSeconds: 2
       successThreshold: 1
-      failureThreshold: 5
+      failureThreshold: 40
     ## @param metrics.customStartupProbe Custom liveness probe for the Web component
     ##
     customStartupProbe: {}
