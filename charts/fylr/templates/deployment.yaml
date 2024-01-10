@@ -168,26 +168,42 @@ spec:
           envFrom:
             - secretRef:
                 name: {{ include "fylr.secret.storage.name" . }}
+          {{- if .Values.fylr.startupProbe.enabled }}
+          startupProbe:
+            httpGet:
+              path: /healthz
+              port: backend
+              scheme: HTTP
+            initialDelaySeconds: {{ .Values.fylr.startupProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.fylr.startupProbe.periodSeconds }}
+            successThreshold: {{ .Values.fylr.startupProbe.successThreshold }}
+            failureThreshold: {{ .Values.fylr.startupProbe.failureThreshold }}
+            timeoutSeconds: {{ .Values.fylr.startupProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.fylr.readinessProbe.enabled }}
           readinessProbe:
             httpGet:
               path: /healthz
               port: backend
               scheme: HTTP
-            initialDelaySeconds: 20
-            periodSeconds: 30
-            successThreshold: 1
-            failureThreshold: 3
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.fylr.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.fylr.readinessProbe.periodSeconds }}
+            successThreshold: {{ .Values.fylr.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.fylr.readinessProbe.failureThreshold }}
+            timeoutSeconds: {{ .Values.fylr.readinessProbe.timeoutSeconds }}
+          {{- end }}
+          {{- if .Values.fylr.livenessProbe.enabled }}
           livenessProbe:
             httpGet:
               path: /healthz
               port: backend
               scheme: HTTP
-            initialDelaySeconds: 30
-            periodSeconds: 30
-            successThreshold: 1
-            failureThreshold: 3
-            timeoutSeconds: 5
+            initialDelaySeconds: {{ .Values.fylr.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.fylr.livenessProbe.periodSeconds }}
+            successThreshold: {{ .Values.fylr.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.fylr.livenessProbe.failureThreshold }}
+            timeoutSeconds: {{ .Values.fylr.livenessProbe.timeoutSeconds }}
+          {{- end }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           volumeMounts:
