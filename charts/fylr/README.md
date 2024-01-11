@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.50](https://img.shields.io/badge/Version-0.1.50-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.8.1](https://img.shields.io/badge/AppVersion-v6.8.1-informational?style=flat-square)
+![Version: 0.1.51](https://img.shields.io/badge/Version-0.1.51-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.8.2](https://img.shields.io/badge/AppVersion-v6.8.2-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -17,7 +17,7 @@ Deploy fylr to your Kubernetes cluster
 | https://charts.bitnami.com/bitnami | elasticsearch | 19.5.0 |
 | https://charts.bitnami.com/bitnami | postgresql-ha | 10.0.1 |
 | https://charts.min.io/ | minio | 4.0.14 |
-| https://programmfabrik.github.io/fylr-helm | execserver | 0.1.28 |
+| https://programmfabrik.github.io/fylr-helm | execserver | 0.1.29 |
 
 ## Values
 
@@ -117,10 +117,10 @@ Deploy fylr to your Kubernetes cluster
 | fylr.startupProbe.periodSeconds | int | `5` |  |
 | fylr.startupProbe.successThreshold | int | `1` |  |
 | fylr.startupProbe.timeoutSeconds | int | `10` |  |
-| image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.fylr.io/fylr/fylr-server","tag":"v6.8.1"}` | The image to use for the container |
+| image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.fylr.io/fylr/fylr-server","tag":"v6.8.2"}` | The image to use for the container |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images |
 | image.repository | string | `"docker.fylr.io/fylr/fylr-server"` | Docker image repository |
-| image.tag | string | `"v6.8.1"` | Overrides the image tag whose default is the chart appVersion. |
+| image.tag | string | `"v6.8.2"` | Overrides the image tag whose default is the chart appVersion. |
 | imagePullSecrets | list | `[]` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `"nginx"` |  |
