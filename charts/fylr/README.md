@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.49](https://img.shields.io/badge/Version-0.1.49-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.8.1](https://img.shields.io/badge/AppVersion-v6.8.1-informational?style=flat-square)
+![Version: 0.1.50](https://img.shields.io/badge/Version-0.1.50-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.8.1](https://img.shields.io/badge/AppVersion-v6.8.1-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -60,6 +60,12 @@ Deploy fylr to your Kubernetes cluster
 | fylr.execserver.parallel | int | `4` | number of parallel file workers, default to 1, set to 0 to disable |
 | fylr.execserver.pluginJobTimeoutSec | int | `240` | pluginJobTimeoutSec sets the maximum seconds a callback is allowed to run. Defaults to 30 seconds. |
 | fylr.externalURL | string | `"http://localhost"` | public external url of the server. This url needs to be fully qualified |
+| fylr.livenessProbe.enabled | bool | `true` |  |
+| fylr.livenessProbe.failureThreshold | int | `3` |  |
+| fylr.livenessProbe.initialDelaySeconds | int | `1` |  |
+| fylr.livenessProbe.periodSeconds | int | `30` |  |
+| fylr.livenessProbe.successThreshold | int | `1` |  |
+| fylr.livenessProbe.timeoutSeconds | int | `5` |  |
 | fylr.logger | object | `{"addHostname":true,"format":"console","level":"info","noColor":false,"timeFormat":"2006-01-02 15:04:05"}` | settings related to the logging |
 | fylr.logger.addHostname | bool | `true` | addHostname adds the hostname to the logs. |
 | fylr.logger.format | string | `"console"` | format is the format of the logs. Valid values are "json" and "console". |
@@ -93,12 +99,24 @@ Deploy fylr to your Kubernetes cluster
 | fylr.plugin.defaults.fylr_example.enabled | bool | `false` | enable, set to false to disable the plugin, defaults to true |
 | fylr.plugin.defaults.fylr_example.update | string | `"never"` | update_policy: automatic, always, never, defaults to automatic |
 | fylr.plugin.paths | list | `["/fylr/files/plugins/easydb","/fylr/files/plugins/fylr"]` | paths is a list of paths to search for plugins. Defaults to the plugins directories for easydb and fylr. |
+| fylr.readinessProbe.enabled | bool | `true` |  |
+| fylr.readinessProbe.failureThreshold | int | `3` |  |
+| fylr.readinessProbe.initialDelaySeconds | int | `1` |  |
+| fylr.readinessProbe.periodSeconds | int | `30` |  |
+| fylr.readinessProbe.successThreshold | int | `1` |  |
+| fylr.readinessProbe.timeoutSeconds | int | `5` |  |
 | fylr.services | object | `{"api":{"oauth2Server":{"clients":{}}},"webapp":{"basicAuth":{}}}` | defines settings for services that fylr should start. |
 | fylr.services.api | object | `{"oauth2Server":{"clients":{}}}` | define settings for the api service |
 | fylr.services.api.oauth2Server | object | `{"clients":{}}` | configures oauth2 related settings |
 | fylr.services.api.oauth2Server.clients | object | `{}` | additional oauth2 clients to be added to the oauth2 server. For the web application, we automatically generate a key pair and assign it to the oauth2 client. |
 | fylr.services.webapp | object | `{"basicAuth":{}}` | define settings for the wepapp service |
 | fylr.services.webapp.basicAuth | object | `{}` | basicAuth is used to protect the web application with additional basic credentials. We expect a map of usernames and passwords in clear text. |
+| fylr.startupProbe.enabled | bool | `true` |  |
+| fylr.startupProbe.failureThreshold | int | `100` |  |
+| fylr.startupProbe.initialDelaySeconds | int | `1` |  |
+| fylr.startupProbe.periodSeconds | int | `5` |  |
+| fylr.startupProbe.successThreshold | int | `1` |  |
+| fylr.startupProbe.timeoutSeconds | int | `10` |  |
 | image | object | `{"pullPolicy":"IfNotPresent","repository":"docker.fylr.io/fylr/fylr-server","tag":"v6.8.1"}` | The image to use for the container |
 | image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images |
 | image.repository | string | `"docker.fylr.io/fylr/fylr-server"` | Docker image repository |
