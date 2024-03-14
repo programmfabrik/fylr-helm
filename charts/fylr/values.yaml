@@ -314,6 +314,23 @@ fylr:
     maxIdleConns: 0
     # -- (object) The init block is used to pre-fill the database when its created or purged.
     init:
+      email:
+        from: ""
+      email_server:
+        server_addr: ""
+        helo_domain: ""
+        insecure_skip_verify: false
+        type: "starttls"
+        plain_auth:
+          password: ""
+          username: ""
+        cram_md5_auth:
+          password: ""
+          username: ""
+        login_auth:
+          password: ""
+          username: ""
+
       # -- (object) Inline base config. Default is empty.
       config: {}
 

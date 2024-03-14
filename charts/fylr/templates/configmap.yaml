@@ -33,6 +33,22 @@ data:
                   purge_storage: {{ .Values.fylr.allowPurge }}
                 location_defaults:
                   {{- include "fylr.config.init.location.defaults" . | nindent 18 }}
+                email_server:
+                  server_addr: {{ .Values.fylr.db.init.email_server.server_addr }}
+                  helo_domain: {{ .Values.fylr.db.init.email_server.helo_domain }}
+                  type: {{ .Values.fylr.db.init.email_server.type }}
+                  insecure_skip_verify: {{ .Values.fylr.db.init.email_server.insecure_skip_verify }}
+                  plain_auth:
+                    password: {{ .Values.fylr.db.init.email_server.plain_auth.password }}
+                    username: {{ .Values.fylr.db.init.email_server.plain_auth.username }}
+                  cram_md5_auth:
+                    password: {{ .Values.fylr.db.init.email_server.cram_md5_auth.password }}
+                    username: {{ .Values.fylr.db.init.email_server.cram_md5_auth.username }}
+                  login_auth:
+                    password: {{ .Values.fylr.db.init.email_server.login_auth.password }}
+                    username: {{ .Values.fylr.db.init.email_server.login_auth.username }}
+                email:
+                  from: {{ .Values.fylr.db.init.email.from }}
 
       plugin:
         paths:
