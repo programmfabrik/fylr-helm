@@ -52,9 +52,9 @@ data:
 
       plugin:
         paths:
-          {{- toYaml .Values.fylr.plugin.paths | nindent 8 }}
+          {{- toYaml .Values.fylr.plugin.paths | nindent 10 }}
         defaults:
-          {{- toYaml .Values.fylr.plugin.defaults | nindent 8 }}
+          {{- toYaml .Values.fylr.plugin.defaults | nindent 10 }}
       allowpurge: {{ .Values.fylr.allowPurge }}
       elastic:
         logger: {{ .Values.fylr.elastic.logger | default "" | quote }}
