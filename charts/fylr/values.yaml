@@ -338,18 +338,32 @@ fylr:
   plugin:
     # -- (list) paths is a list of paths to search for plugins. Defaults to the plugins directories for easydb and fylr.
     paths:
-      - /fylr/files/plugins/easydb
-      - /fylr/files/plugins/fylr
+      - "/fylr/files/plugins/easydb/easydb-barcode-display-pdf-plugin"
+      - "/fylr/files/plugins/easydb/easydb-barcode-display-plugin"
+      - "/fylr/files/plugins/easydb/easydb-basemigration-plugin"
+      - "/fylr/files/plugins/easydb/easydb-coin-viewer-plugin"
+      - "/fylr/files/plugins/easydb/easydb-connector-plugin"
+      - "/fylr/files/plugins/easydb/easydb-custom-data-type-*"
+      - "/fylr/files/plugins/easydb/easydb-custom-mask-splitter-detail-linked-plugin"
+      - "/fylr/files/plugins/easydb/easydb-detail-map-plugin"
+      - "/fylr/files/plugins/easydb/easydb-display-field-values-plugin"
+      - "/fylr/files/plugins/easydb/easydb-drupal-plugin"
+      - "/fylr/files/plugins/easydb/easydb-easydb4migration-plugin"
+      - "/fylr/files/plugins/easydb/easydb-editor-field-visibility-plugin"
+      - "/fylr/files/plugins/easydb/easydb-editor-tagfilter-defaults-plugin"
+      - "/fylr/files/plugins/easydb/easydb-eventmanager-plugin"
+      - "/fylr/files/plugins/easydb/easydb-export-transport-ftp-plugin"
+      - "/fylr/files/plugins/easydb/easydb-falconio-plugin"
+      - "/fylr/files/plugins/easydb/easydb-hijri-gregorian-converter-plugin"
+      - "/fylr/files/plugins/easydb/easydb-orcid-plugin"
+      - "/fylr/files/plugins/easydb/easydb-pdf-creator-plugin"
+      - "/fylr/files/plugins/easydb/easydb-presentation-pptx-plugin"
+      - "/fylr/files/plugins/easydb/easydb-remote-plugin"
+      - "/fylr/files/plugins/easydb/easydb-typo3-plugin"
+      - "/fylr/files/plugins/easydb/easydb-wordpress-plugin"
     # -- (object) explicitly defines settings for the plugin with the given name.
     defaults:
       # -- (object) a plugin to be configured (by name)
-      fylr_example:
-        # -- (bool) enable, set to false to disable the plugin, defaults to true
-        enabled: false
-        # -- (string) update_policy: automatic, always, never, defaults to automatic
-        update: "never"
-      # -- (object) a plugin to be configured (by name)
-      # NOTE: This plugin is not compatible with fylr.
       easydb-connector-plugin:
         # -- (bool) enable, set to false to disable the plugin, defaults to true
         enabled: false
