@@ -100,7 +100,7 @@ data:
                   - "read"
                   - "write"
                   - "offline"
-                public: false
+                public: true
               # add custom clients
               {{- if .Values.fylr.services.api.oauth2Server.clients }}
               {{- toYaml .Values.fylr.services.api.oauth2Server.clients | nindent 12 }}
