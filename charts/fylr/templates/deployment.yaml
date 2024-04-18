@@ -213,7 +213,12 @@ spec:
             - name: fylr-init-config
               mountPath: /fylr/files/init
             {{- end }}
+            {{ if .Values.fylr.persistent.tmp.enabled -}}
+            - name: fylr-tmp
+              mountPath: /tmp
+            {{- end }}
             {{ include "fylr.deployment.volume.mounts" . | nindent 12 }}
+
       volumes:
         - name: "fylr-config"
           configMap:
@@ -222,6 +227,11 @@ spec:
         - name: "fylr-init-config"
           secret:
             secretName: {{ include "fylr.secret.init.name" . }}
+        {{- end }}
+        {{ if .Values.fylr.persistent.tmp.enabled -}}        
+        - name: "fylr-tmp"
+          persistentVolumeClaim:
+            claimName: {{ include "fylr.storage.volumes.tmp.name" .  }}
         {{- end }}
         {{ include "fylr.deployment.volumes" . | nindent 8 -}}
 

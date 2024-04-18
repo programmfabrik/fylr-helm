@@ -19,6 +19,18 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+# -- (object) defines the storage settings in case /tmp needs to be keept across redeploy
+persistent:
+  # -- (object) To make the /tmp fylr dir persistent across redeploy
+  tmp:
+    # -- (bool) Wether to enable persistance for tmp dir or not
+    enabled: false
+    accessModes: ["ReadWriteOnce"]
+      # -- (string) storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
+    storageClass: ""
+    # -- (string) size is the size of the disk to be claimed and used by fylr tmp dir.
+    size: "20Gi"
+
 # -- Service account to be used by the pod
 serviceAccount:
   # -- Specifies whether a service account should be created
@@ -33,8 +45,8 @@ serviceAccount:
 podAnnotations: {}
 
 # -- Pod Security Context. See https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-podSecurityContext: {}
-  # -- fsGroup: 2000
+podSecurityContext:
+  fsGroup: 2000
 
 securityContext: {}
   # -- capabilities:

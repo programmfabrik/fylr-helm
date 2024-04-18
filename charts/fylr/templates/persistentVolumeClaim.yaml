@@ -1,6 +1,8 @@
 {{ $firstDiskName := (include "fylr.storage.volumes.asset.name" .) }}
 {{ $secondDiskName := (include "fylr.storage.volumes.version.name" .) }}
 {{ $thirdDiskName := (include "fylr.storage.volumes.backup.name" .) }}
+{{ $tmpDiskName := (include "fylr.storage.volumes.tmp.name" .) }}
+
 {{ $helmValues := . }}
 
 {{ $persistent := .Values.fylr.persistent }}
@@ -77,4 +79,26 @@ spec:
 {{/* end if kind is disk */}}
 {{- end -}}
 {{/* end loop */}}
+{{- end -}}
+
+# tmp persistant volumes claims
+{{/* check if persistance of tmp is enabled */}}
+{{- if .Values.fylr.persistent.tmp.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $tmpDiskName | quote }}
+  annotations:
+    helm.sh/resource-policy: keep
+  labels:
+    {{- include "fylr.labels" $helmValues | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.fylr.persistent.tmp.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.fylr.persistent.tmp.size }}
+  storageClassName: {{ .Values.fylr.persistent.tmp.storageClass }}
+{{/* end if the tmp persistance is enabled */}}
 {{- end -}}

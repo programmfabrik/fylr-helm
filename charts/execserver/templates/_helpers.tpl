@@ -62,3 +62,10 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/* define the storage volume name for tmp  */}}
+{{- define "execserver.storage.volumes.tmp.name" -}}
+{{- if .Values.persistent.tmp.enabled }}
+{{- printf "%s-%s" (include "execserver.fullname" .) "tmp" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
