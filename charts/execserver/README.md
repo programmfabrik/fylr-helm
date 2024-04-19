@@ -1,6 +1,6 @@
 # execserver
 
-![Version: 0.1.37](https://img.shields.io/badge/Version-0.1.37-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.9.3](https://img.shields.io/badge/AppVersion-v6.9.3-informational?style=flat-square)
+![Version: 0.1.40](https://img.shields.io/badge/Version-0.1.40-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.9.3](https://img.shields.io/badge/AppVersion-v6.9.3-informational?style=flat-square)
 
 A Helm chart for fylr as execserver in Kubernetes
 
@@ -71,8 +71,13 @@ A Helm chart for fylr as execserver in Kubernetes
 | monitoring.service.interval | string | `"30s"` | The interval at which metrics should be scraped |
 | nameOverride | string | `""` |  |
 | nodeSelector | object | `{}` | The node selector settings to use. See https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector |
+| persistent | object | `{"tmp":{"accessModes":["ReadWriteOnce"],"enabled":false,"size":"20Gi","storageClass":""}}` | defines the storage settings in case /tmp needs to be keept across redeploy |
+| persistent.tmp | object | `{"accessModes":["ReadWriteOnce"],"enabled":false,"size":"20Gi","storageClass":""}` | To make the /tmp fylr dir persistent across redeploy |
+| persistent.tmp.enabled | bool | `false` | Wether to enable persistance for tmp dir or not |
+| persistent.tmp.size | string | `"20Gi"` | size is the size of the disk to be claimed and used by fylr tmp dir. |
+| persistent.tmp.storageClass | string | `""` | storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes. |
 | podAnnotations | object | `{}` | Pod annotations to add to the deployment. |
-| podSecurityContext | object | `{}` | Pod Security Context. See https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ |
+| podSecurityContext | object | `{"fsGroup":2000}` | Pod Security Context. See https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` | The resources to allocate to the pod |
 | securityContext | object | `{}` |  |

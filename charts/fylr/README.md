@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.66](https://img.shields.io/badge/Version-0.1.66-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.9.3](https://img.shields.io/badge/AppVersion-v6.9.3-informational?style=flat-square)
+![Version: 0.1.69](https://img.shields.io/badge/Version-0.1.69-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.9.3](https://img.shields.io/badge/AppVersion-v6.9.3-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -17,7 +17,7 @@ Deploy fylr to your Kubernetes cluster
 | https://charts.bitnami.com/bitnami | elasticsearch | 19.5.0 |
 | https://charts.bitnami.com/bitnami | postgresql-ha | 10.0.1 |
 | https://charts.min.io/ | minio | 4.0.14 |
-| https://programmfabrik.github.io/fylr-helm | execserver | 0.1.35 |
+| https://programmfabrik.github.io/fylr-helm | execserver | 0.1.37 |
 
 ## Values
 
@@ -72,7 +72,7 @@ Deploy fylr to your Kubernetes cluster
 | fylr.logger.level | string | `"info"` | level is the minimum level of logs to be logged. Valid values are "trace", "debug", "info", "warn", "error", "fatal", "panic". |
 | fylr.logger.noColor | bool | `false` | noColor disables colorized output. |
 | fylr.logger.timeFormat | string | `"2006-01-02 15:04:05"` | timeFormat is the Go representation to format the time in the log output. zerolog's time keeping resolution is always set to milliseconds by FYLR. Use "", "UNIXMS" or "UNIXMICRO" to output a unix timestamp (json format only). Defaults to "2006-01-02 15:04:05" |
-| fylr.persistent | object | `{"defaults":{"backups":"s3","originals":"s3","versions":"s3"},"definitions":{"s3":{"allowPurge":false,"kind":"s3","s3":{"accessKey":"fylr","allowRedirect":false,"bucket":"fylr","endpoint":"http://testinstance-minio:9000","path":"","region":"us-east-1","secretKey":"fylrsecret123","useSSL":false}}}}` | defines the storage settings required for the persistence of data (e.g. files, backups, etc.) |
+| fylr.persistent | object | `{"defaults":{"backups":"s3","originals":"s3","versions":"s3"},"definitions":{"s3":{"allowPurge":false,"kind":"s3","s3":{"accessKey":"fylr","allowRedirect":false,"bucket":"fylr","endpoint":"http://testinstance-minio:9000","path":"","region":"us-east-1","secretKey":"fylrsecret123","useSSL":false}}},"tmp":{"accessModes":["ReadWriteOnce"],"enabled":false,"size":"30Gi","storageClass":""}}` | defines the storage settings required for the persistence of data (e.g. files, backups, etc.) |
 | fylr.persistent.defaults | object | `{"backups":"s3","originals":"s3","versions":"s3"}` | defines the persistent storage definitions for the server |
 | fylr.persistent.defaults.backups | string | `"s3"` | the storage definition for backups The value is a reference to a storage definition in the storage fylr.persistent.definitions section. |
 | fylr.persistent.defaults.originals | string | `"s3"` | the storage definition for originals The value is a reference to a storage definition in the storage fylr.persistent.definitions section. |
@@ -90,6 +90,10 @@ Deploy fylr to your Kubernetes cluster
 | fylr.persistent.definitions.s3.s3.region | string | `"us-east-1"` | region is the region of the s3 server. |
 | fylr.persistent.definitions.s3.s3.secretKey | string | `"fylrsecret123"` | secretKey is the secret key to use. |
 | fylr.persistent.definitions.s3.s3.useSSL | string | `false` | useSSL enables SSL for the s3 connection. |
+| fylr.persistent.tmp | object | `{"accessModes":["ReadWriteOnce"],"enabled":false,"size":"30Gi","storageClass":""}` | To make the /tmp fylr dir persistent across redeploy |
+| fylr.persistent.tmp.enabled | bool | `false` | Wether to enable persistance for tmp dir or not |
+| fylr.persistent.tmp.size | string | `"30Gi"` | size is the size of the disk to be claimed and used by fylr tmp dir. |
+| fylr.persistent.tmp.storageClass | string | `""` | storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes. |
 | fylr.plugin | object | `{"defaults":{"easydb-connector-plugin":{"enabled":false,"update":"never"}},"paths":["/fylr/files/plugins/easydb/easydb-barcode-display-pdf-plugin","/fylr/files/plugins/easydb/easydb-barcode-display-plugin","/fylr/files/plugins/easydb/easydb-basemigration-plugin","/fylr/files/plugins/easydb/easydb-coin-viewer-plugin","/fylr/files/plugins/easydb/easydb-connector-plugin","/fylr/files/plugins/easydb/easydb-custom-data-type-cerlthesaurus","/fylr/files/plugins/easydb/easydb-custom-data-type-gazetteer","/fylr/files/plugins/easydb/easydb-custom-data-type-geonames","/fylr/files/plugins/easydb/easydb-custom-data-type-georef","/fylr/files/plugins/easydb/easydb-custom-data-type-gn250","/fylr/files/plugins/easydb/easydb-custom-data-type-gnd","/fylr/files/plugins/easydb/easydb-custom-data-type-goobi","/fylr/files/plugins/easydb/easydb-custom-data-type-html-editor","/fylr/files/plugins/easydb/easydb-custom-data-type-iconclass","/fylr/files/plugins/easydb/easydb-custom-data-type-iucn","/fylr/files/plugins/easydb/easydb-custom-data-type-link","/fylr/files/plugins/easydb/easydb-custom-data-type-location","/fylr/files/plugins/easydb/easydb-custom-data-type-nomisma","/fylr/files/plugins/easydb/easydb-custom-data-type-tnadiscovery","/fylr/files/plugins/easydb/easydb-custom-mask-splitter-detail-linked-plugin","/fylr/files/plugins/easydb/easydb-detail-map-plugin","/fylr/files/plugins/easydb/easydb-display-field-values-plugin","/fylr/files/plugins/easydb/easydb-drupal-plugin","/fylr/files/plugins/easydb/easydb-easydb4migration-plugin","/fylr/files/plugins/easydb/easydb-editor-tagfilter-defaults-plugin","/fylr/files/plugins/easydb/easydb-eventmanager-plugin","/fylr/files/plugins/easydb/easydb-export-transport-ftp-plugin","/fylr/files/plugins/easydb/easydb-falconio-plugin","/fylr/files/plugins/easydb/easydb-hijri-gregorian-converter-plugin","/fylr/files/plugins/easydb/easydb-orcid-plugin","/fylr/files/plugins/easydb/easydb-pdf-creator-plugin","/fylr/files/plugins/easydb/easydb-presentation-pptx-plugin","/fylr/files/plugins/easydb/easydb-remote-plugin","/fylr/files/plugins/easydb/easydb-typo3-plugin","/fylr/files/plugins/easydb/easydb-wordpress-plugin"]}` | defines plugin settings |
 | fylr.plugin.defaults | object | `{"easydb-connector-plugin":{"enabled":false,"update":"never"}}` | explicitly defines settings for the plugin with the given name. |
 | fylr.plugin.defaults.easydb-connector-plugin | object | `{"enabled":false,"update":"never"}` | a plugin to be configured (by name) |
