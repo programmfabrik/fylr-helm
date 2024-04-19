@@ -52,15 +52,19 @@ spec:
           volumeMounts:
             - mountPath: /fylr/config
               name: fylr-config
+            {{ if .Values.persistent.tmp.enabled -}} 
             - mountPath: /tmp
               name: execserver-tmp
+            {{- end }}
       volumes:
         - name: "fylr-config"
           configMap:
             name: {{ include "execserver.fullname" . }}
+        {{ if .Values.persistent.tmp.enabled -}}  
         - name: "execserver-tmp"
           persistentVolumeClaim:
             claimName: {{ include "execserver.storage.volumes.tmp.name" . }}
+        {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
