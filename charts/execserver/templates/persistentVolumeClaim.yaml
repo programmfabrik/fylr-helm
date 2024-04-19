@@ -1,0 +1,18 @@
+{{ $tmpDiskName := (include "execserver.storage.volumes.tmp.name" .) }}
+
+{{- if .Values.persistent.tmp.enabled }}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $tmpDiskName | quote }}
+  labels:
+    {{- include "execserver.labels" . | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.persistent.tmp.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.persistent.tmp.size }}
+  storageClassName: {{ .Values.persistent.tmp.storageClass }}
+
+{{- end }}

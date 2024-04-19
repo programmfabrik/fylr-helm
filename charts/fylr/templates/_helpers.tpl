@@ -151,6 +151,12 @@ system:
 {{- end }}
 
 
+{{/* define the storage volume name for tmp configuration (main, execserver, backup) */}}
+{{- define "fylr.storage.volumes.tmp.name" -}}
+{{- printf "%s-%s" (include "fylr.fullname" .) "tmp" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+
 
 {{- define "fylr.deployment.volume.mounts" -}}
 {{/* add persistent volume mounts */}}
