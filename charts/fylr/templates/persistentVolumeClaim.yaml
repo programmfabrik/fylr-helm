@@ -1,7 +1,8 @@
 {{ $firstDiskName := (include "fylr.storage.volumes.asset.name" .) }}
 {{ $secondDiskName := (include "fylr.storage.volumes.version.name" .) }}
 {{ $thirdDiskName := (include "fylr.storage.volumes.backup.name" .) }}
-{{ $tmpDiskName := (include "fylr.storage.volumes.tmp.name" .) }}
+{{ $backupTmpDiskName := (include "fylr.storage.volumes.tmp.name" .) }}
+{{ $webDAVHotfolderDiskName := (include "fylr.storage.volumes.webDAVHotfolder.name" .) }}
 
 {{ $helmValues := . }}
 
@@ -88,7 +89,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: {{ $tmpDiskName | quote }}
+  name: {{ $backupTmpDiskName | quote }}
   annotations:
     helm.sh/resource-policy: keep
   labels:
@@ -100,5 +101,27 @@ spec:
     requests:
       storage: {{ .Values.fylr.persistent.tmp.size }}
   storageClassName: {{ .Values.fylr.persistent.tmp.storageClass }}
+{{/* end if the tmp persistance is enabled */}}
+{{- end -}}
+
+# webDAVHotfolder persistant volumes claims
+{{/* check if persistance of webDAVHotfolder is enabled */}}
+{{- if .Values.fylr.persistent.webDAVHotfolder.enabled }}
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ $webDAVHotfolderDiskName | quote }}
+  annotations:
+    helm.sh/resource-policy: keep
+  labels:
+    {{- include "fylr.labels" $helmValues | nindent 4 }}
+spec:
+  accessModes:
+    {{- toYaml .Values.fylr.persistent.webDAVHotfolder.accessModes | nindent 4 }}
+  resources:
+    requests:
+      storage: {{ .Values.fylr.persistent.webDAVHotfolder.size }}
+  storageClassName: {{ .Values.fylr.persistent.webDAVHotfolder.storageClass }}
 {{/* end if the tmp persistance is enabled */}}
 {{- end -}}

@@ -205,12 +205,19 @@ fylr:
     tmp:
       # -- (bool) Wether to enable persistance for tmp dir or not
       enabled: false
-      accessModes: ["ReadWriteOnce"]
+      accessModes: ["ReadWriteMany"]
        # -- (string) storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
       storageClass: ""
       # -- (string) size is the size of the disk to be claimed and used by fylr tmp dir.
       size: "30Gi"
-      
+      # -- (bool) Wether to enable persistance for webDAVHotfolder dir or not
+    webDAVHotfolder:
+      enabled: false
+      accessModes: ["ReadWriteMany"]
+       # -- (string) storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
+      storageClass: ""
+      # -- (string) size is the size of the disk to be claimed and used by fylr tmp dir.
+      size: "30Gi"    
     # -- (object) defines the persistent storage definitions for the server
     defaults:
       # -- (string) the storage definition for originals

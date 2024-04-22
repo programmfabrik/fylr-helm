@@ -150,10 +150,14 @@ system:
 {{- printf "%s-%s" (include "fylr.fullname" .) "disk-3" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-
-{{/* define the storage volume name for tmp configuration (main, execserver, backup) */}}
+{{/* define the storage volume name for tmp configuration */}}
 {{- define "fylr.storage.volumes.tmp.name" -}}
 {{- printf "%s-%s" (include "fylr.fullname" .) "tmp" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+{{/* define the storage volume name for webDAVHotfolder configuration */}}
+{{- define "fylr.storage.volumes.webDAVHotfolder.name" -}}
+{{- printf "%s-%s" (include "fylr.fullname" .) "webdav-hotfolder" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
 

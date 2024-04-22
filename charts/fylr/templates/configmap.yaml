@@ -3,7 +3,7 @@ apiVersion: v1
 metadata:
   name: {{ include "fylr.fullname" . }}
   labels:
-    {{- include "fylr.labels" . | nindent 4 }}
+    {{- include "fylr.labels" . | nindent 4 }}fylr.services.api.webDAVHotfolderPath
 data:
   fylr.yml: |
     fylr:
@@ -90,6 +90,7 @@ data:
             {{- toYaml .Values.fylr.services.webapp.basicAuth | nindent 12 }}
           {{- end }}
         api:
+          webDAVHotfolderPath: /fylr/webDAVHotfolder
           addr: :8081
           oauth2Server:
             clients:
@@ -109,7 +110,15 @@ data:
           addr: :8082
           inspect:
             backup:
+              {{ if .Values.fylr.persistent.tmp.enabled -}}
+              path: /fylr/backup-storage
+              {{ else }}
               path: /tmp/fylrctrl
+              {{- end }}
               fylrctl: fylrctl
               psql: psql
               sqlite3: sqlite3
+      {{ if .Values.fylr.persistent.tmp.enabled -}}
+      tempDir: /fylr/tmpdir
+      {{- end }}
+
