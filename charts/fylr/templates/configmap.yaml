@@ -3,12 +3,16 @@ apiVersion: v1
 metadata:
   name: {{ include "fylr.fullname" . }}
   labels:
-    {{- include "fylr.labels" . | nindent 4 }}fylr.services.api.webDAVHotfolderPath
+    {{- include "fylr.labels" . | nindent 4 }}
 data:
   fylr.yml: |
     fylr:
       name: {{ include "fylr.fullname" . }}
       externalURL: {{ .Values.fylr.externalURL }}
+      {{- if .Values.fylr.license }}
+      license: |
+        {{ .Values.fylr.license | nindent 8 }}
+      {{- end }}
       logger:
         format: {{ .Values.fylr.logger.format | default "" | quote }}
         level: {{ .Values.fylr.logger.level | default "info" | quote }}

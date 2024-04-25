@@ -126,6 +126,9 @@ fylr:
   # -- (string) public external url of the server. This url needs to be fully qualified
   externalURL: "http://localhost"
   # -- (bool) set to true to allow /api/settings/purge. should be disabled for production!
+  # -- (multi string) set fylr license, start by a | to define multi string
+  license: ""
+        
   allowPurge: true
 
   ## Configure liveness, readiness and startup probes
