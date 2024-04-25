@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.73](https://img.shields.io/badge/Version-0.1.73-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.9.3](https://img.shields.io/badge/AppVersion-v6.9.3-informational?style=flat-square)
+![Version: 0.1.74](https://img.shields.io/badge/Version-0.1.74-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.9.3](https://img.shields.io/badge/AppVersion-v6.9.3-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -29,7 +29,7 @@ Deploy fylr to your Kubernetes cluster
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | fullnameOverride | string | `""` |  |
-| fylr.allowPurge | bool | `true` | set to true to allow /api/settings/purge. should be disabled for production! |
+| fylr.allowPurge | bool | `true` |  |
 | fylr.db | object | `{"driver":"postgres","init":{"config":{},"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}},"maxIdleConns":0,"maxOpenConns":12,"postgres":{"database":"fylr","host":"localhost","options":{},"password":"password","port":5432,"sslmode":"disable","user":"fylr"}}` | defines database settings |
 | fylr.db.driver | string | `"postgres"` | driver defines the driver for the database server. NOTE: this is ignored if postgresql-ha.enabled is set to true. |
 | fylr.db.init | object | `{"config":{},"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}}` | The init block is used to pre-fill the database when its created or purged. |
@@ -60,6 +60,7 @@ Deploy fylr to your Kubernetes cluster
 | fylr.execserver.parallel | int | `4` | number of parallel file workers, default to 1, set to 0 to disable |
 | fylr.execserver.pluginJobTimeoutSec | int | `240` | pluginJobTimeoutSec sets the maximum seconds a callback is allowed to run. Defaults to 30 seconds. |
 | fylr.externalURL | string | `"http://localhost"` | public external url of the server. This url needs to be fully qualified |
+| fylr.license | multi string | `""` | set fylr license, start by a | to define multi string |
 | fylr.livenessProbe.enabled | bool | `true` |  |
 | fylr.livenessProbe.failureThreshold | int | `3` |  |
 | fylr.livenessProbe.initialDelaySeconds | int | `1` |  |
