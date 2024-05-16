@@ -328,10 +328,10 @@ fylr:
     # connections will be dedicated to a separate connection pool managing
     # the sequences (Postgres only)
     # https://golang.org/pkg/database/sql/#DB.SetMaxOpenConns, default: 0
-    maxOpenConns: 12
+    maxOpenConns: 100
     # -- (int) maxIdleConns has to be not more than maxOpenConns
     # https://golang.org/pkg/database/sql/#DB.SetMaxIdleConns, default: 0
-    maxIdleConns: 0
+    maxIdleConns: 10
     # -- (object) The init block is used to pre-fill the database when its created or purged.
     init:
       email:
