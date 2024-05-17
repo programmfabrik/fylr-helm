@@ -142,7 +142,7 @@ fylr:
   ## @param fylr.startupProbe.successThreshold Minimum consecutive successes for the probe to be considered successful after having failed
   ## @param fylr.startupProbe.failureThreshold Minimum consecutive failures for the probe to be considered failed after having succeeded
   startupProbe:
-    enabled: true
+    enabled: false
     initialDelaySeconds: 1
     periodSeconds: 5
     timeoutSeconds: 10
@@ -157,12 +157,12 @@ fylr:
   ## @param fylr.livenessProbe.successThreshold Minimum consecutive successes for the probe to be considered successful after having failed
   ## @param fylr.livenessProbe.failureThreshold Minimum consecutive failures for the probe to be considered failed after having succeeded
   livenessProbe:
-    enabled: true
+    enabled: false
     initialDelaySeconds: 1
     periodSeconds: 30
     timeoutSeconds: 5
     successThreshold: 1
-    failureThreshold: 3
+    failureThreshold: 11
   ##
   ## readiness probe: Not ready -> Does not accept traffic, removed from Service load balancer
   ## @param fylr.readinessProbe.enabled Enable/disable the readiness probe
@@ -172,12 +172,12 @@ fylr:
   ## @param fylr.readinessProbe.successThreshold Minimum consecutive successes for the probe to be considered successful after having failed
   ## @param fylr.readinessProbe.failureThreshold Minimum consecutive failures for the probe to be considered failed after having succeeded
   readinessProbe:
-    enabled: true
+    enabled: false
     initialDelaySeconds: 1
     periodSeconds: 30
     timeoutSeconds: 5
     successThreshold: 1
-    failureThreshold: 3
+    failureThreshold: 11
   
   # -- (object) settings related to the logging
   logger:
