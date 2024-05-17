@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.80](https://img.shields.io/badge/Version-0.1.80-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.10.2](https://img.shields.io/badge/AppVersion-v6.10.2-informational?style=flat-square)
+![Version: 0.1.81](https://img.shields.io/badge/Version-0.1.81-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.10.2](https://img.shields.io/badge/AppVersion-v6.10.2-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -30,12 +30,12 @@ Deploy fylr to your Kubernetes cluster
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | fullnameOverride | string | `""` |  |
 | fylr.allowPurge | bool | `true` |  |
-| fylr.db | object | `{"driver":"postgres","init":{"config":{},"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}},"maxIdleConns":0,"maxOpenConns":12,"postgres":{"database":"fylr","host":"localhost","options":{},"password":"password","port":5432,"sslmode":"disable","user":"fylr"}}` | defines database settings |
+| fylr.db | object | `{"driver":"postgres","init":{"config":{},"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}},"maxIdleConns":10,"maxOpenConns":100,"postgres":{"database":"fylr","host":"localhost","options":{},"password":"password","port":5432,"sslmode":"disable","user":"fylr"}}` | defines database settings |
 | fylr.db.driver | string | `"postgres"` | driver defines the driver for the database server. NOTE: this is ignored if postgresql-ha.enabled is set to true. |
 | fylr.db.init | object | `{"config":{},"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}}` | The init block is used to pre-fill the database when its created or purged. |
 | fylr.db.init.config | object | `{}` | Inline base config. Default is empty. |
-| fylr.db.maxIdleConns | int | `0` | maxIdleConns has to be not more than maxOpenConns https://golang.org/pkg/database/sql/#DB.SetMaxIdleConns, default: 0 |
-| fylr.db.maxOpenConns | int | `12` | This has to be at 4 + execserver.parallel + elastic.parallel. Two of these connections will be dedicated to a separate connection pool managing the sequences (Postgres only) https://golang.org/pkg/database/sql/#DB.SetMaxOpenConns, default: 0 |
+| fylr.db.maxIdleConns | int | `10` | maxIdleConns has to be not more than maxOpenConns https://golang.org/pkg/database/sql/#DB.SetMaxIdleConns, default: 0 |
+| fylr.db.maxOpenConns | int | `100` | This has to be at 4 + execserver.parallel + elastic.parallel. Two of these connections will be dedicated to a separate connection pool managing the sequences (Postgres only) https://golang.org/pkg/database/sql/#DB.SetMaxOpenConns, default: 0 |
 | fylr.db.postgres | object | `{"database":"fylr","host":"localhost","options":{},"password":"password","port":5432,"sslmode":"disable","user":"fylr"}` | postgresql connection settings NOTE: this is ignored if postgresql-ha.enabled is set to true. |
 | fylr.db.postgres.database | string | `"fylr"` | database is the database to use for the postgres connection. |
 | fylr.db.postgres.host | string | `"localhost"` | host is the host of the postgres server. |
@@ -61,8 +61,8 @@ Deploy fylr to your Kubernetes cluster
 | fylr.execserver.pluginJobTimeoutSec | int | `240` | pluginJobTimeoutSec sets the maximum seconds a callback is allowed to run. Defaults to 30 seconds. |
 | fylr.externalURL | string | `"http://localhost"` | public external url of the server. This url needs to be fully qualified |
 | fylr.license | multi string | `""` | set fylr license, start by a | to define multi string |
-| fylr.livenessProbe.enabled | bool | `true` |  |
-| fylr.livenessProbe.failureThreshold | int | `3` |  |
+| fylr.livenessProbe.enabled | bool | `false` |  |
+| fylr.livenessProbe.failureThreshold | int | `11` |  |
 | fylr.livenessProbe.initialDelaySeconds | int | `1` |  |
 | fylr.livenessProbe.periodSeconds | int | `30` |  |
 | fylr.livenessProbe.successThreshold | int | `1` |  |
@@ -103,8 +103,8 @@ Deploy fylr to your Kubernetes cluster
 | fylr.plugin.defaults.easydb-connector-plugin.enabled | bool | `false` | enable, set to false to disable the plugin, defaults to true |
 | fylr.plugin.defaults.easydb-connector-plugin.update | string | `"never"` | update_policy: automatic, always, never, defaults to automatic |
 | fylr.plugin.paths | list | `["/fylr/files/plugins/easydb/easydb-barcode-display-pdf-plugin","/fylr/files/plugins/easydb/easydb-barcode-display-plugin","/fylr/files/plugins/easydb/easydb-basemigration-plugin","/fylr/files/plugins/easydb/easydb-coin-viewer-plugin","/fylr/files/plugins/easydb/easydb-connector-plugin","/fylr/files/plugins/easydb/easydb-custom-data-type-cerlthesaurus","/fylr/files/plugins/easydb/easydb-custom-data-type-gazetteer","/fylr/files/plugins/easydb/easydb-custom-data-type-geonames","/fylr/files/plugins/easydb/easydb-custom-data-type-georef","/fylr/files/plugins/easydb/easydb-custom-data-type-gn250","/fylr/files/plugins/easydb/easydb-custom-data-type-gnd","/fylr/files/plugins/easydb/easydb-custom-data-type-goobi","/fylr/files/plugins/easydb/easydb-custom-data-type-html-editor","/fylr/files/plugins/easydb/easydb-custom-data-type-iconclass","/fylr/files/plugins/easydb/easydb-custom-data-type-iucn","/fylr/files/plugins/easydb/easydb-custom-data-type-link","/fylr/files/plugins/easydb/easydb-custom-data-type-location","/fylr/files/plugins/easydb/easydb-custom-data-type-nomisma","/fylr/files/plugins/easydb/easydb-custom-data-type-tnadiscovery","/fylr/files/plugins/easydb/easydb-custom-mask-splitter-detail-linked-plugin","/fylr/files/plugins/easydb/easydb-detail-map-plugin","/fylr/files/plugins/easydb/easydb-display-field-values-plugin","/fylr/files/plugins/easydb/easydb-drupal-plugin","/fylr/files/plugins/easydb/easydb-easydb4migration-plugin","/fylr/files/plugins/easydb/easydb-editor-tagfilter-defaults-plugin","/fylr/files/plugins/easydb/easydb-eventmanager-plugin","/fylr/files/plugins/easydb/easydb-export-transport-ftp-plugin","/fylr/files/plugins/easydb/easydb-falconio-plugin","/fylr/files/plugins/easydb/easydb-hijri-gregorian-converter-plugin","/fylr/files/plugins/easydb/easydb-orcid-plugin","/fylr/files/plugins/easydb/easydb-pdf-creator-plugin","/fylr/files/plugins/easydb/easydb-presentation-pptx-plugin","/fylr/files/plugins/easydb/easydb-remote-plugin","/fylr/files/plugins/easydb/easydb-typo3-plugin","/fylr/files/plugins/easydb/easydb-wordpress-plugin"]` | paths is a list of paths to search for plugins. Defaults to the plugins directories for easydb and fylr. |
-| fylr.readinessProbe.enabled | bool | `true` |  |
-| fylr.readinessProbe.failureThreshold | int | `3` |  |
+| fylr.readinessProbe.enabled | bool | `false` |  |
+| fylr.readinessProbe.failureThreshold | int | `11` |  |
 | fylr.readinessProbe.initialDelaySeconds | int | `1` |  |
 | fylr.readinessProbe.periodSeconds | int | `30` |  |
 | fylr.readinessProbe.successThreshold | int | `1` |  |
@@ -115,7 +115,7 @@ Deploy fylr to your Kubernetes cluster
 | fylr.services.api.oauth2Server.clients | object | `{}` | additional oauth2 clients to be added to the oauth2 server. For the web application, we automatically generate a key pair and assign it to the oauth2 client. |
 | fylr.services.webapp | object | `{"basicAuth":{}}` | define settings for the wepapp service |
 | fylr.services.webapp.basicAuth | object | `{}` | basicAuth is used to protect the web application with additional basic credentials. We expect a map of usernames and passwords in clear text. |
-| fylr.startupProbe.enabled | bool | `true` |  |
+| fylr.startupProbe.enabled | bool | `false` |  |
 | fylr.startupProbe.failureThreshold | int | `100` |  |
 | fylr.startupProbe.initialDelaySeconds | int | `1` |  |
 | fylr.startupProbe.periodSeconds | int | `5` |  |
