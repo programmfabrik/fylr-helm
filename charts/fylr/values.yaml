@@ -576,7 +576,7 @@ minio:
 # @ignored defines the settings for the postgresql application
 # for more information see: https://github.com/bitnami/charts/tree/master/bitnami/postgresql-ha
 postgresql-ha:
-  enabled: true
+  enabled: false
   pgpool:
     adminUsername: fylr
     adminPassword: fylr
@@ -605,6 +605,17 @@ postgresql-ha:
     - ReadWriteOnce
     size: 10Gi
 
+# for more information see: https://github.com/bitnami/charts/tree/master/bitnami/postgresql
+postgresql:
+  enabled: true
+  postgresql:
+    auth:
+      username: "fylr"
+      password: "fylr"
+      database: "fylr"
+  primary:
+    persistence:
+      storageClass: ""
 # @ignored defines the settings for the elasticsearch application
 # for more information see: https://github.com/bitnami/charts/blob/master/bitnami/elasticsearch/values.yaml
 elasticsearch:
