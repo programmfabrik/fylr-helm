@@ -39,6 +39,8 @@ spec:
             - name: postgres_host
               {{ if (index .Values "postgresql-ha" "enabled") }}
               value: "{{ .Release.Name }}-postgresql-ha-pgpool.{{ .Release.Namespace }}.svc"
+              {{ else if (index .Values "postgresql" "enabled") }}
+              value: "{{ .Release.Name }}-postgresql.{{ .Release.Namespace }}.svc"
               {{ else }}
               value: "{{ .Values.fylr.db.postgres.host }}"
               {{ end }}
