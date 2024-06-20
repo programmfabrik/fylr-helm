@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.83](https://img.shields.io/badge/Version-0.1.83-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.11.0](https://img.shields.io/badge/AppVersion-v6.11.0-informational?style=flat-square)
+![Version: 0.1.84](https://img.shields.io/badge/Version-0.1.84-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.11.0](https://img.shields.io/badge/AppVersion-v6.11.0-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -15,6 +15,7 @@ Deploy fylr to your Kubernetes cluster
 | Repository | Name | Version |
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | elasticsearch | 19.5.0 |
+| https://charts.bitnami.com/bitnami | postgresql | 12.1.0 |
 | https://charts.bitnami.com/bitnami | postgresql-ha | 10.0.1 |
 | https://charts.min.io/ | minio | 4.0.14 |
 | https://programmfabrik.github.io/fylr-helm | execserver | 0.1.45 |
@@ -139,6 +140,11 @@ Deploy fylr to your Kubernetes cluster
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{"fsGroup":2000}` | Pod security context |
 | podSecurityContext.fsGroup | int | `2000` | This is a requirement when running with attached volumes. |
+| postgresql.enabled | bool | `true` |  |
+| postgresql.postgresql.auth.database | string | `"fylr"` |  |
+| postgresql.postgresql.auth.password | string | `"fylr"` |  |
+| postgresql.postgresql.auth.username | string | `"fylr"` |  |
+| postgresql.primary.persistence.storageClass | string | `""` |  |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
 | securityContext | object | `{}` |  |
