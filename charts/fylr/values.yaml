@@ -576,7 +576,7 @@ minio:
 # @ignored defines the settings for the postgresql application
 # for more information see: https://github.com/bitnami/charts/tree/master/bitnami/postgresql-ha
 postgresql-ha:
-  enabled: false
+  enabled: true
   pgpool:
     adminUsername: fylr
     adminPassword: fylr
@@ -607,7 +607,7 @@ postgresql-ha:
 
 # for more information see: https://github.com/bitnami/charts/tree/master/bitnami/postgresql
 postgresql:
-  enabled: true
+  enabled: false
   postgresql:
     auth:
       username: "fylr"
