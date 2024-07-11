@@ -147,16 +147,6 @@ spec:
                 secretKeyRef:
                   name: {{ include "fylr.secret.elastic.name" . }}
                   key: "hosts"
-            - name: CFG_FYLR_SERVICES_API_OAUTH2SERVER_CLIENTS_web-client_SECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "fylr.secret.oauth2.name" . }}
-                  key: "oauth2ServerClientSecret"
-            - name: CFG_FYLR_SERVICES_WEBAPP_OAUTH2_CLIENTSECRET
-              valueFrom:
-                secretKeyRef:
-                  name: {{ include "fylr.secret.oauth2.name" . }}
-                  key: "oauth2WebappClientSecret"
             - name: CFG_FYLR_ENCRYPTIONKEY
               valueFrom:
                 secretKeyRef:

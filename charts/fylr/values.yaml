@@ -456,7 +456,35 @@ fylr:
       oauth2Server:
         # -- (object) additional oauth2 clients to be added to the oauth2 server.
         # For the web application, we automatically generate a key pair and assign it to the oauth2 client.
-        clients: {}
+        clients:
+          fylr-mobile-app:
+            public: true
+            redirectURIs:
+              - "fylr.app.scheme:///"
+            scopes:
+              - "read"
+              - "write"
+              - "offline"
+          ci-hub:
+            public: true
+            redirectURIs:
+              - "https://ci-hub.azurewebsites.net/api/v1/auth/login/fylr"
+              - "https://ci-hub-beta.azurewebsites.net/api/v1/auth/login/fylr"
+              - "https://ci-hub-test.azurewebsites.net/api/v1/auth/login/fylr"
+              - "http://localhost:8080/api/v1/auth/login/fylr"
+            scopes:
+              - "read"
+              - "write"
+              - "offline"
+          santa-cruz:
+            public: true
+            redirectURIs:
+              - "https://fylr.linkrui.com/oauth"
+              - "https://stage-fylr.linkrui.com/oauth"
+            scopes:
+              - "read"
+              - "write"
+              - "offline"
           # my-client-id:
           #   # secret must be given as bcrypt hash
           #   secret: $2y$04$81xGNnm8PS1uiIzjbos6Le3NzFaNB0goNqnBpOx7S/EyrayzJCNAq # foo

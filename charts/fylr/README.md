@@ -118,23 +118,30 @@ Depending on your configuration, you can deploy fylr with a persistent volume. I
 
 ### Secrets
 
-- `<deployment-name>-fylr-oauth2`
-- `<deployment-name>-fylr-utils`
+- `fylr*utils`
 
-These two secrets are used by the fylr installation to sign, encrypt, and configure the OAuth2 client and server. The values are generated during installation and are not updated during upgrades or deleted during uninstallation. If you want to change the values, you must adjust them manually.
+This secret is used by the fylr installation for the OAuth2 server. The value is generated during installation and not updated during upgrades or deleted during uninstallation. If you want to change the values, you must adjust them manually.
 
-So if you want to know the secret to connect as "web-client", the default OAuth2 clientID:
+How to read out a secret:
 
-Get the secret name:
+Get secret names:
 
 ```bash
 kubectl -n ${NAMESPACE} get secrets
 ```
 
-Choose the secret name ending in `-fylr-oauth2`. For this example, we assume the name is `example-fylr-oauth2`.
+Choose the secret name with `fylr*utils`. For this example, we assume the name is `fylr-helm-test-utils`.
+
+view the structure:
 
 ```bash
-kubectl -n ${NAMESPACE} get secrets example-fylr-oauth2 -o go-template={{.data.oauth2WebappClientSecret}} | base64 -d;echo
+kubectl -n ${NAMESPACE} get secrets fylr-helm-test-utils -o json
+```
+
+output one string of the secret:
+
+```bash
+kubectl -n ${NAMESPACE} get secrets fylr-helm-test-utils -o go-template={{.data.encryptionKey}} | base64 -d;echo
 ```
 
 ## Configuration

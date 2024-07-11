@@ -84,7 +84,7 @@ data:
         webapp:
           addr: :8080
           oauth2:
-            clientID: "web-client"
+            clientID: "fylr-web-frontend"
             internalURL:  "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
           reverseProxy:
             api: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
@@ -98,7 +98,7 @@ data:
           addr: :8081
           oauth2Server:
             clients:
-              web-client:
+              fylr-web-frontend:
                 redirectURIs:
                   - {{ .Values.fylr.externalURL }}/oauth2/callback
                 scopes:
@@ -108,7 +108,7 @@ data:
                 public: true
               # add custom clients
               {{- if .Values.fylr.services.api.oauth2Server.clients }}
-              {{- toYaml .Values.fylr.services.api.oauth2Server.clients | nindent 12 }}
+              {{- toYaml .Values.fylr.services.api.oauth2Server.clients | nindent 14 }}
               {{- end }}
         backend:
           addr: :8082
