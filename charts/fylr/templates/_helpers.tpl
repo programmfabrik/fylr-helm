@@ -111,10 +111,6 @@ Secret names
 {{- printf "%s-%s" (include "fylr.fullname" .) "init" | trunc 63 | trimSuffix "-" }}
 {{- end }}
 
-{{- define "fylr.secret.oauth2.name" -}}
-{{- printf "%s-%s" (include "fylr.fullname" .) "oauth2" | trunc 63 | trimSuffix "-" }}
-{{- end }}
-
 {{- define "fylr.secret.utils" -}}
 {{- printf "%s-%s" (include "fylr.fullname" .) "utils" | trunc 63 | trimSuffix "-" }}
 {{- end }}
