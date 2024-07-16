@@ -36,6 +36,10 @@ dependencies:
     version: 19.5.0
     repository: https://charts.bitnami.com/bitnami
     condition: elasticsearch.enabled
+  - name: opensearch
+    version: 1.2.6
+    repository: https://charts.bitnami.com/bitnami
+    condition: opensearch.enabled
   # https://programmfabrik.github.io/fylr-helm/charts/execserver/
   - name: execserver
     version: 0.1.49
