@@ -648,6 +648,34 @@ postgresql:
   primary:
     persistence:
       storageClass: ""
+## For more infos: https://github.com/bitnami/charts/blob/main/bitnami/opensearch/values.yaml
+opensearch:
+  ## Wether to enable or disable opensearch
+  enabled: false
+  ## @param clusterName OpenSearch cluster name
+  ##
+  clusterName: open
+  ## @param containerPorts.restAPI OpenSearch REST API port
+  ## @param containerPorts.transport OpenSearch Transport port
+  ##
+  containerPorts:
+    restAPI: 9200
+    transport: 9300
+  ## @param plugins Comma, semi-colon or space separated list of plugins to install at initialization
+  ## ref: https://github.com/bitnami/containers/tree/main/bitnami/opensearch#environment-variables
+  ##
+  plugins: "analysis-icu"
+  ## @section Master-eligible nodes parameters
+  master:
+    ## @param master.masterOnly Deploy the OpenSearch master-eligible nodes as master-only nodes. Recommended for high-demand deployments.
+    ## If you are
+    masterOnly: true
+    ## @param master.replicaCount Number of master-eligible replicas to deploy
+    ##
+    replicaCount: 2
+    ## @param master.extraRoles Append extra roles to the node role
+
+
 # @ignored defines the settings for the elasticsearch application
 # for more information see: https://github.com/bitnami/charts/blob/master/bitnami/elasticsearch/values.yaml
 elasticsearch:

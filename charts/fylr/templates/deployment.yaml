@@ -54,18 +54,20 @@ spec:
           - 'sh'
           - '-c'
           - 'until nc -z -v -w30 $postgres_host $postgres_port; do echo waiting for postgres; sleep 5; done;'
-        - name: wait-for-elastic
+        - name: wait-for-indexer
           image: busybox
           env:
-            - name: elastic_address
+            - name: indexer_address
               {{ if .Values.elasticsearch.enabled }}
               value: "{{ .Release.Name }}-elasticsearch.{{ .Release.Namespace }}.svc"
+              {{ else if .Values.opensearch.enabled }}
+              value: "{{ .Release.Name }}-opensearch.{{ .Release.Namespace }}.svc"
               {{ else }}
               # remove everything except the host
               value: {{ mustRegexReplaceAll ":[0-9]+$" (mustRegexReplaceAll "^http[s]{0,1}://" (index .Values.fylr.elastic.addresses 0) "") "" }}
               {{ end }}
-            - name: elastic_port
-              {{ if .Values.elasticsearch.enabled }}
+            - name: indexer_port
+              {{ if or .Values.elasticsearch.enabled .Values.opensearch.enabled }}
               value: "9200"
               {{ else }}
               # remove everything before the port
@@ -74,7 +76,7 @@ spec:
           command:
           - 'sh'
           - '-c'
-          - 'until nc -z -v -w30 $elastic_address $elastic_port; do echo waiting for elasticsearch; sleep 5; done;'
+          - 'until nc -z -v -w30 $indexer_address $indexer_port; do echo waiting for indexer; sleep 5; done;'
         # if internal s3 is enabled, or an external provider was configured, wait for it
         # TODO: check if we actually use s3 if that is the case we need this check, otherwise we don't need it
         {{ if or (.Values.minio.enabled) (.Values.fylr.db.init.locations) }}
