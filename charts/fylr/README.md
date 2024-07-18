@@ -144,6 +144,25 @@ output one string of the secret:
 kubectl -n ${NAMESPACE} get secrets fylr-helm-test-utils -o go-template={{.data.encryptionKey}} | base64 -d;echo
 ```
 
+## Internal Execserver
+
+This is a variation of deployment:
+* no execserver pod is created
+* execserver functionality is instead used in the one remaining fylr pod
+* the one fylr pod is thus bigger, as the container image with 3rd party tools has to be pulled
+* as the execserver pod is omitted, this uses less resources overall (when replica is 1)
+* for small instances
+
+To use this variant, include this in your `values.yaml`:
+
+´´´yaml
+image:
+  repository: docker.fylr.io/fylr/fylr
+execserver:
+  enabled: false
+[...]
+´´´
+
 ## Configuration
 
 The link below contains a table of the configurable parameters and their default values.

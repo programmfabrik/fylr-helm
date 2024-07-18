@@ -6,7 +6,7 @@ metadata:
     {{- include "fylr.labels" . | nindent 4 }}
 data:
   fylr.yml: |
-    fylr:
+    fylr+:
       name: {{ include "fylr.fullname" . }}
       externalURL: {{ .Values.fylr.externalURL }}
       {{- if .Values.fylr.license }}
@@ -72,15 +72,16 @@ data:
         connectTimeoutSec: {{ .Values.fylr.execserver.connectTimeoutSec | default 240 }}
         callbackBackendInternalURL: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
         callbackApiInternalURL: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
-        addresses: {{ if and (ne .Values.execserver.enabled true) (not .Values.fylr.execserver.addresses) }}[]{{ else }}
+        addresses:
           {{- if .Values.execserver.enabled }}
           - "http://{{ .Release.Name }}-execserver.{{ .Release.Namespace }}.svc:8070/?pretty=true"
+          {{- else }}
+          - "http://localhost:8070/?pretty=true"
           {{- end }}
           {{- if .Values.fylr.execserver.addresses }}
           {{- toYaml .Values.fylr.execserver.addresses | nindent 10 }}
           {{- end }}
-          {{- end }}
-      services:
+      services+:
         webapp:
           addr: :8080
           oauth2:
@@ -122,7 +123,18 @@ data:
               fylrctl: fylrctl
               psql: psql
               sqlite3: sqlite3
+        {{- if .Values.execserver.enabled }}
+        execserver:
+        {{- else }}
+        execserver+:
+          addr: :8070
+          tempDir: /tmp/fylr
+          waitgroups+:
+            {{- range $k, $v := .Values.fylr.execserver.waitGroups }}
+            {{ $k }}:
+              processes: {{ $v -}}
+            {{ end }}
+        {{- end }}
       {{ if .Values.fylr.persistent.tmp.enabled -}}
       tempDir: /fylr/tmpdir
       {{- end }}
-
