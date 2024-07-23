@@ -454,6 +454,8 @@ fylr:
     api:
       # -- (object) configures oauth2 related settings
       oauth2Server:
+        # default: false. Set to true if you want to avoid https and only use http. Not needed for 127.0.0.1
+        allowHttpRedirects: true
         # -- (object) additional oauth2 clients to be added to the oauth2 server.
         # For the web application, we automatically generate a key pair and assign it to the oauth2 client.
         clients:
