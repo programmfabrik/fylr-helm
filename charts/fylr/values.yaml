@@ -638,15 +638,17 @@ postgresql-ha:
 # for more information see: https://github.com/bitnami/charts/tree/master/bitnami/postgresql
 postgresql:
   enabled: false
-  image:
-    registry: docker.io
-    repository: bitnami/postgresql
-    tag: 16.3.0-debian-12-r18
   postgresql:
     auth:
+      postgresPassword: "fylr"
       username: "fylr"
       password: "fylr"
       database: "fylr"
+  auth:
+    postgresPassword: "fylr"
+    username: "fylr"
+    password: "fylr"
+    database: "fylr"
   primary:
     persistence:
       storageClass: ""
