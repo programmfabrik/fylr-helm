@@ -155,13 +155,12 @@ This is a variation of deployment:
 
 To use this variant, include this in your `values.yaml`:
 
-´´´yaml
+```yaml
 image:
   repository: docker.fylr.io/fylr/fylr
 execserver:
   enabled: false
-[...]
-´´´
+```
 
 ## Configuration
 
