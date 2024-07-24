@@ -162,6 +162,47 @@ execserver:
   enabled: false
 ```
 
+## Minimal indexer and databse pods
+
+* minimal elasticsearch pods
+* minimal postgres pods, uses a different Helm chart (PostgreSQL without high availability by bitname)
+* uses only default local storage (for testing other aspects of the helm chart)
+
+To use this variant, include this in your `values.yaml`:
+
+```yaml
+elasticsearch:
+  extraEnvs:
+  - name: discovery.type
+    value: single-node
+  - name: cluster.initial_master_nodes
+    value: null
+  master:
+    masterOnly: false
+    replicaCount: 1
+    persistence:
+      storageClass: ""
+      size: 1Gi
+  data:
+    replicaCount: 0
+  coordinating:
+    replicaCount: 0
+  ingest:
+    replicaCount: 0
+
+postgresql-ha:
+  enabled: false
+postgresql:
+  enabled: true
+  primary:
+    persistence:
+      storageClass: ""
+  auth:
+    username: "fylr"
+    password: "fylr"
+    database: "fylr"
+```
+
 ## Configuration
 
 The link below contains a table of the configurable parameters and their default values.
