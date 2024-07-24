@@ -162,11 +162,11 @@ execserver:
   enabled: false
 ```
 
-## Minimal indexer and databse pods
+## Minimal indexer and database pods
 
 * minimal elasticsearch pods
-* minimal postgres pods, uses a different Helm chart (PostgreSQL without high availability by bitname)
-* uses only default local storage (for testing other aspects of the helm chart)
+* minimal postgres pods, uses a different Helm chart (PostgreSQL without high availability by bitnami)
+* uses only default local storage (viable for testing other aspects of the helm chart)
 
 To use this variant, include this in your `values.yaml`:
 
