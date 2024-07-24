@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.96](https://img.shields.io/badge/Version-0.1.96-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.11.5](https://img.shields.io/badge/AppVersion-v6.11.5-informational?style=flat-square)
+![Version: 0.1.97](https://img.shields.io/badge/Version-0.1.97-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.11.5](https://img.shields.io/badge/AppVersion-v6.11.5-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -149,12 +149,17 @@ Deploy fylr to your Kubernetes cluster
 | podSecurityContext | object | `{"fsGroup":2000}` | Pod security context |
 | podSecurityContext.fsGroup | int | `2000` | This is a requirement when running with attached volumes. |
 | postgresql.enabled | bool | `false` |  |
+| postgresql.image.auth.database | string | `"fylr"` |  |
+| postgresql.image.auth.password | string | `"fylr"` |  |
+| postgresql.image.auth.postgresPassword | string | `"fylr"` |  |
+| postgresql.image.auth.username | string | `"fylr"` |  |
+| postgresql.image.postgresql.auth.database | string | `"fylr"` |  |
+| postgresql.image.postgresql.auth.password | string | `"fylr"` |  |
+| postgresql.image.postgresql.auth.postgresPassword | string | `"fylr"` |  |
+| postgresql.image.postgresql.auth.username | string | `"fylr"` |  |
 | postgresql.image.registry | string | `"docker.io"` |  |
 | postgresql.image.repository | string | `"bitnami/postgresql"` |  |
 | postgresql.image.tag | string | `"16.3.0-debian-12-r18"` |  |
-| postgresql.postgresql.auth.database | string | `"fylr"` |  |
-| postgresql.postgresql.auth.password | string | `"fylr"` |  |
-| postgresql.postgresql.auth.username | string | `"fylr"` |  |
 | postgresql.primary.persistence.storageClass | string | `""` |  |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
