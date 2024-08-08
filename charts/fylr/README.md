@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.100](https://img.shields.io/badge/Version-0.1.100-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.1](https://img.shields.io/badge/AppVersion-v6.12.1-informational?style=flat-square)
+![Version: 0.1.101](https://img.shields.io/badge/Version-0.1.101-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.1](https://img.shields.io/badge/AppVersion-v6.12.1-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -32,10 +32,9 @@ Deploy fylr to your Kubernetes cluster
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | fullnameOverride | string | `""` |  |
 | fylr.allowPurge | bool | `true` |  |
-| fylr.db | object | `{"driver":"postgres","init":{"config":{},"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}},"maxIdleConns":10,"maxOpenConns":100,"postgres":{"database":"fylr","host":"localhost","options":{},"password":"password","port":5432,"sslmode":"disable","user":"fylr"}}` | defines database settings |
+| fylr.db | object | `{"driver":"postgres","init":{"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}},"maxIdleConns":10,"maxOpenConns":100,"postgres":{"database":"fylr","host":"localhost","options":{},"password":"password","port":5432,"sslmode":"disable","user":"fylr"}}` | defines database settings |
 | fylr.db.driver | string | `"postgres"` | driver defines the driver for the database server. NOTE: this is ignored if postgresql-ha.enabled is set to true. |
-| fylr.db.init | object | `{"config":{},"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}}` | The init block is used to pre-fill the database when its created or purged. |
-| fylr.db.init.config | object | `{}` | Inline base config. Default is empty. |
+| fylr.db.init | object | `{"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}}` | The init block is used to pre-fill the database when its created or purged. |
 | fylr.db.maxIdleConns | int | `10` | maxIdleConns has to be not more than maxOpenConns https://golang.org/pkg/database/sql/#DB.SetMaxIdleConns, default: 0 |
 | fylr.db.maxOpenConns | int | `100` | This has to be at 4 + execserver.parallel + elastic.parallel. Two of these connections will be dedicated to a separate connection pool managing the sequences (Postgres only) https://golang.org/pkg/database/sql/#DB.SetMaxOpenConns, default: 0 |
 | fylr.db.postgres | object | `{"database":"fylr","host":"localhost","options":{},"password":"password","port":5432,"sslmode":"disable","user":"fylr"}` | postgresql connection settings NOTE: this is ignored if postgresql-ha.enabled is set to true. |
