@@ -26,9 +26,6 @@ data:
         maxOpenConns: {{ .Values.fylr.db.maxOpenConns }}
         maxIdleConns: {{ .Values.fylr.db.maxIdleConns }}
         init:
-          {{- if .Values.fylr.db.init.config }}
-          configFile: /fylr/files/init/fylr.init.yaml
-          {{- end }}
           config:
             system:
               config:
@@ -53,6 +50,13 @@ data:
                     username: {{ .Values.fylr.db.init.email_server.login_auth.username }}
                 email:
                   from: {{ .Values.fylr.db.init.email.from }}
+                {{- if .Values.fylr.db.init.config }}
+                {{- if .Values.fylr.db.init.config.system }}
+                {{- if .Values.fylr.db.init.config.system.config }}
+                {{- toYaml .Values.fylr.db.init.config.system.config | nindent 16 }}
+                {{- end }}
+                {{- end }}
+                {{- end }}
 
       plugin:
         paths:

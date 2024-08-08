@@ -352,7 +352,13 @@ fylr:
           username: ""
 
       # -- (object) Inline base config. Default is empty.
-      config: {}
+      #config: 
+        #system:
+          #config:
+            # example: enable the service to send emails.
+            # docs: https://docs.fylr.io/for-system-administrators/configuration/pre-load-frontend-config
+            #notification_scheduler:
+              #active: true
 
   # -- (object) defines plugin settings
   plugin:
