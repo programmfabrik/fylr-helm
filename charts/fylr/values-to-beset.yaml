@@ -13,7 +13,7 @@ podAnnotations:
 strategy:
   rollingUpdate: null
   type: Recreate
-resources: 
+resources:
   limits:
     cpu: "1"
     memory: 1Gi
@@ -66,7 +66,7 @@ fylr:
           ],
           "signature": "y74XzA/DjpuHhb1ZBc3zDHA6N4qeioVstPtmOu6TwLC65odcsLLdXl7deE9gcnE1QZxNkS7Jn8BO\nn/qn3mTTlZgYLSB07tLVtrSscK8OVeZVfDMUGCoOmurTpYPUgkR5fxJKPGVgLDLp6IWZSl8LRVww\n3KEhjjzdIYatmc5pEhoQ7acBKGA7D7L9lqW3N2fxALtR/KNU5QBljOhwequJNGthyvCVe6z2+EEP\nFlBeoJv5/wlKghX0zlSDXFlv1pqeBuSB1RAP6VpO90WfINXz02xWeTEJ+Z7vX89iEzMo28YzxsUN\nkoD7c8fAu3YDf7DUtjhLPy8FeCXeyqgVk64gYw=="
     }
-        
+
   persistent:
     # -- (object) To make the /tmp fylr dir persistent across redeploy
     tmp:
@@ -84,7 +84,7 @@ fylr:
        # -- (string) storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
       storageClass: "longhorn"
       # -- (string) size is the size of the disk to be claimed and used by fylr tmp dir.
-      size: "30Gi"    
+      size: "30Gi"
     defaults:
       originals: "s3"
       versions: "s3"
@@ -133,11 +133,6 @@ postgresql-ha:
       enabled: false
 postgresql:
   enabled: true
-  postgresql:
-    auth:
-      username: "fylr"
-      password: "fylr"
-      database: "fylr"
   auth:
     username: "fylr"
     ## @param auth.password Password for the custom user to create. Ignored if `auth.existingSecret` is provided

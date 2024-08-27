@@ -123,6 +123,11 @@ spec:
             - name: backend
               containerPort: 8082
               protocol: TCP
+          {{- if .Values.includeStorageSecret }}
+          envFrom:
+            - secretRef:
+                name: {{ include "fylr.secret.storage.name" . }}
+          {{- end}}
           env:
             - name: CFG_FYLR_DB_DRIVER
               valueFrom:
@@ -159,9 +164,9 @@ spec:
                 secretKeyRef:
                   name: {{ include "fylr.secret.utils" . }}
                   key: "signinSecret"
-          envFrom:
-            - secretRef:
-                name: {{ include "fylr.secret.storage.name" . }}
+          {{- with .Values.extraEnvVars }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           {{- if .Values.fylr.startupProbe.enabled }}
           startupProbe:
             httpGet:
