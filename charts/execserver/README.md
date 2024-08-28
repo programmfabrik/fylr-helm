@@ -1,6 +1,6 @@
 # execserver
 
-![Version: 0.1.50](https://img.shields.io/badge/Version-0.1.50-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.1](https://img.shields.io/badge/AppVersion-v6.12.1-informational?style=flat-square)
+![Version: 0.1.51](https://img.shields.io/badge/Version-0.1.51-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.1](https://img.shields.io/badge/AppVersion-v6.12.1-informational?style=flat-square)
 
 A Helm chart for fylr as execserver in Kubernetes
 
@@ -77,7 +77,7 @@ A Helm chart for fylr as execserver in Kubernetes
 | persistent.tmp.size | string | `"20Gi"` | size is the size of the disk to be claimed and used by fylr tmp dir. |
 | persistent.tmp.storageClass | string | `""` | storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes. |
 | podAnnotations | object | `{}` | Pod annotations to add to the deployment. |
-| podSecurityContext | object | `{"fsGroup":2000}` | Pod Security Context. See https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ |
+| podSecurityContext | object | `{}` | Pod Security Context. See https://kubernetes.io/docs/tasks/configure-pod-container/security-context/ |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` | The resources to allocate to the pod |
 | securityContext | object | `{}` |  |

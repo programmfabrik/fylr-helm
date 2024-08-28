@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.103](https://img.shields.io/badge/Version-0.1.103-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.1](https://img.shields.io/badge/AppVersion-v6.12.1-informational?style=flat-square)
+![Version: 0.1.104](https://img.shields.io/badge/Version-0.1.104-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.1](https://img.shields.io/badge/AppVersion-v6.12.1-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -30,6 +30,7 @@ Deploy fylr to your Kubernetes cluster
 | autoscaling.maxReplicas | int | `100` |  |
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
+| extraEnvVars | list | `[]` |  |
 | fullnameOverride | string | `""` |  |
 | fylr.allowPurge | bool | `true` |  |
 | fylr.db | object | `{"driver":"postgres","init":{"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}},"maxIdleConns":10,"maxOpenConns":100,"postgres":{"database":"fylr","host":"localhost","options":{},"password":"password","port":5432,"sslmode":"disable","user":"fylr"}}` | defines database settings |
@@ -126,6 +127,7 @@ Deploy fylr to your Kubernetes cluster
 | image.pullPolicy | string | `"IfNotPresent"` | Docker image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images |
 | image.repository | string | `"docker.fylr.io/fylr/fylr-server"` | Docker image repository |
 | imagePullSecrets | list | `[]` |  |
+| includeStorageSecret | bool | `true` |  |
 | ingress.annotations | object | `{}` |  |
 | ingress.className | string | `"nginx"` |  |
 | ingress.enabled | bool | `true` |  |
@@ -147,15 +149,11 @@ Deploy fylr to your Kubernetes cluster
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{"fsGroup":2000}` | Pod security context |
 | podSecurityContext.fsGroup | int | `2000` | This is a requirement when running with attached volumes. |
+| postgresql.auth.database | string | `"fylr"` |  |
+| postgresql.auth.password | string | `"fylr"` |  |
+| postgresql.auth.postgresPassword | string | `"fylr"` |  |
+| postgresql.auth.username | string | `"fylr"` |  |
 | postgresql.enabled | bool | `false` |  |
-| postgresql.image.auth.database | string | `"fylr"` |  |
-| postgresql.image.auth.password | string | `"fylr"` |  |
-| postgresql.image.auth.postgresPassword | string | `"fylr"` |  |
-| postgresql.image.auth.username | string | `"fylr"` |  |
-| postgresql.image.postgresql.auth.database | string | `"fylr"` |  |
-| postgresql.image.postgresql.auth.password | string | `"fylr"` |  |
-| postgresql.image.postgresql.auth.postgresPassword | string | `"fylr"` |  |
-| postgresql.image.postgresql.auth.username | string | `"fylr"` |  |
 | postgresql.image.registry | string | `"docker.io"` |  |
 | postgresql.image.repository | string | `"bitnami/postgresql"` |  |
 | postgresql.image.tag | string | `"16.3.0-debian-12-r18"` |  |
