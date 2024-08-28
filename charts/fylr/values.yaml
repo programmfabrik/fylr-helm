@@ -17,6 +17,9 @@ imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
 
+extraEnvVars: []
+includeStorageSecret: true
+
 serviceAccount:
   # -- (bool) Specifies whether a service account should be created
   create: true
@@ -128,7 +131,7 @@ fylr:
   # -- (bool) set to true to allow /api/settings/purge. should be disabled for production!
   # -- (multi string) set fylr license, start by a | to define multi string
   license: ""
-        
+
   allowPurge: true
 
   ## Configure liveness, readiness and startup probes
@@ -178,7 +181,7 @@ fylr:
     timeoutSeconds: 5
     successThreshold: 1
     failureThreshold: 11
-  
+
   # -- (object) settings related to the logging
   logger:
     # -- (string) format is the format of the logs. Valid values are "json" and "console".
@@ -220,7 +223,7 @@ fylr:
        # -- (string) storageClass is the storage class of the file system. Check your kubernetes infrastructure for the available storage classes.
       storageClass: ""
       # -- (string) size is the size of the disk to be claimed and used by fylr tmp dir.
-      size: "30Gi"    
+      size: "30Gi"
     # -- (object) defines the persistent storage definitions for the server
     defaults:
       # -- (string) the storage definition for originals
@@ -352,7 +355,7 @@ fylr:
           username: ""
 
       # -- (object) Inline base config. Default is empty.
-      #config: 
+      #config:
         #system:
           #config:
             # example: enable the service to send emails.
@@ -648,17 +651,11 @@ postgresql:
     registry: docker.io
     repository: bitnami/postgresql
     tag: 16.3.0-debian-12-r18
-    postgresql:
-      auth:
-        postgresPassword: "fylr"
-        username: "fylr"
-        password: "fylr"
-        database: "fylr"
-    auth:
-      postgresPassword: "fylr"
-      username: "fylr"
-      password: "fylr"
-      database: "fylr"
+  auth:
+    postgresPassword: "fylr"
+    username: "fylr"
+    password: "fylr"
+    database: "fylr"
   primary:
     persistence:
       storageClass: ""
