@@ -534,6 +534,11 @@ execserver:
     # -- The image tag
     # Overrides the image tag whose default value is the appVersion of the chart.
     #tag: "v6.8.2"
+
+# -- Pod Security Context. See https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  podSecurityContext:
+    fsGroup: 2000
+
   # -- Whether to configure monitoring for the application
   persistent:
     # -- (object) To make the /tmp fylr dir persistent across redeploy

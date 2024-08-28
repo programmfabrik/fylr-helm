@@ -45,8 +45,7 @@ serviceAccount:
 podAnnotations: {}
 
 # -- Pod Security Context. See https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
-podSecurityContext:
-  fsGroup: 2000
+podSecurityContext: {}
 
 securityContext: {}
   # -- capabilities:
