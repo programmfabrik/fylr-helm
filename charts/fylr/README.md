@@ -162,6 +162,31 @@ execserver:
   enabled: false
 ```
 
+### set imagemagick limits for execserver jobs
+
+To limit each ImageMagick process to 0.5 GB RAM, 5 GB temporary storage and to make ImageMagick use fylr's directory structure for execserver jobs, put into values.yaml:
+
+```
+fylr:
+  services:
+    execserver:
+      env:
+        - MAGICK_MEMORY_LIMIT=512MiB
+        - MAGICK_MAP_LIMIT=512MiB
+        - MAGICK_DISK_LIMIT=5GiB
+        - MAGICK_TEMPORARY_PATH=.
+  execserver:
+    # just an example, see explanation below
+    parallel: 2
+
+image:
+  repository: docker.fylr.io/fylr/fylr
+execserver:
+  enabled: false
+```
+
+As fylr.execerver.parallel is 2, one fylr pod might use double the RAM and storage of the above limit for asset processing.
+
 ## Minimal indexer and database pods
 
 * minimal elasticsearch pods
