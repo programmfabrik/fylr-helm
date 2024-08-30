@@ -16,7 +16,7 @@ data:
       logger:
         format: {{ .Values.fylr.logger.format | default "" | quote }}
         level: {{ .Values.fylr.logger.level | default "info" | quote }}
-        timeFormat: {{ .Values.fylr.logger.timeFormat | default "2006-01-02 15:04:05" | quote }}
+        timeFormat: {{ .Values.fylr.logger.timeFormat | default "2006-01-02 15:04:05 -07:00" | quote }}
         noColor: {{ .Values.fylr.logger.noColor | default true }}
         addHostname: {{ .Values.fylr.logger.addHostname | default true }}
       debug:

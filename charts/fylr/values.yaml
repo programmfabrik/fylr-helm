@@ -192,7 +192,7 @@ fylr:
     # zerolog's time keeping resolution is always set to milliseconds by FYLR.
     # Use "", "UNIXMS" or "UNIXMICRO" to output a unix timestamp (json format only).
     # Defaults to "2006-01-02 15:04:05"
-    timeFormat: "2006-01-02 15:04:05"
+    timeFormat: "2006-01-02 15:04:05 -07:00"
     # -- (bool) noColor disables colorized output.
     noColor: false
     # -- (bool) addHostname adds the hostname to the logs.
