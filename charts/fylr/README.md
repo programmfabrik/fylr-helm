@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.107](https://img.shields.io/badge/Version-0.1.107-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.1](https://img.shields.io/badge/AppVersion-v6.12.1-informational?style=flat-square)
+![Version: 0.1.108](https://img.shields.io/badge/Version-0.1.108-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.1](https://img.shields.io/badge/AppVersion-v6.12.1-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -69,12 +69,12 @@ Deploy fylr to your Kubernetes cluster
 | fylr.livenessProbe.periodSeconds | int | `30` |  |
 | fylr.livenessProbe.successThreshold | int | `1` |  |
 | fylr.livenessProbe.timeoutSeconds | int | `5` |  |
-| fylr.logger | object | `{"addHostname":true,"format":"console","level":"info","noColor":false,"timeFormat":"2006-01-02 15:04:05"}` | settings related to the logging |
+| fylr.logger | object | `{"addHostname":true,"format":"console","level":"info","noColor":false,"timeFormat":"2006-01-02 15:04:05 -07:00"}` | settings related to the logging |
 | fylr.logger.addHostname | bool | `true` | addHostname adds the hostname to the logs. |
 | fylr.logger.format | string | `"console"` | format is the format of the logs. Valid values are "json" and "console". |
 | fylr.logger.level | string | `"info"` | level is the minimum level of logs to be logged. Valid values are "trace", "debug", "info", "warn", "error", "fatal", "panic". |
 | fylr.logger.noColor | bool | `false` | noColor disables colorized output. |
-| fylr.logger.timeFormat | string | `"2006-01-02 15:04:05"` | timeFormat is the Go representation to format the time in the log output. zerolog's time keeping resolution is always set to milliseconds by FYLR. Use "", "UNIXMS" or "UNIXMICRO" to output a unix timestamp (json format only). Defaults to "2006-01-02 15:04:05" |
+| fylr.logger.timeFormat | string | `"2006-01-02 15:04:05 -07:00"` | timeFormat is the Go representation to format the time in the log output. zerolog's time keeping resolution is always set to milliseconds by FYLR. Use "", "UNIXMS" or "UNIXMICRO" to output a unix timestamp (json format only). Defaults to "2006-01-02 15:04:05" |
 | fylr.persistent | object | `{"defaults":{"backups":"s3","originals":"s3","versions":"s3"},"definitions":{"s3":{"allowPurge":false,"kind":"s3","s3":{"accessKey":"fylr","allowRedirect":false,"bucket":"fylr","endpoint":"http://testinstance-minio:9000","path":"","region":"us-east-1","secretKey":"fylrsecret123","useSSL":false}}},"tmp":{"accessModes":["ReadWriteMany"],"enabled":false,"size":"30Gi","storageClass":""},"webDAVHotfolder":{"accessModes":["ReadWriteMany"],"enabled":false,"size":"30Gi","storageClass":""}}` | defines the storage settings required for the persistence of data (e.g. files, backups, etc.) |
 | fylr.persistent.defaults | object | `{"backups":"s3","originals":"s3","versions":"s3"}` | defines the persistent storage definitions for the server |
 | fylr.persistent.defaults.backups | string | `"s3"` | the storage definition for backups The value is a reference to a storage definition in the storage fylr.persistent.definitions section. |
