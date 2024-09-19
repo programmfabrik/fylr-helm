@@ -447,11 +447,11 @@ fylr:
     # -- (int) number of parallel file workers, default to 1, set to 0 to disable
     parallel: 4
     # -- (int) pluginJobTimeoutSec sets the maximum seconds a callback
-    # is allowed to run. Defaults to 30 seconds.
-    pluginJobTimeoutSec: 240
+    # is allowed to run. Defaults to 2400 seconds.
+    pluginJobTimeoutSec: 2400
     # -- (int) connectTimeout sets the maximum seconds the server will wait
-    # until a worker gets a job. Defaults to 60 seconds.
-    connectTimeoutSec: 240
+    # until a worker gets a job. Defaults to 120 seconds.
+    connectTimeoutSec: 120
     # -- (list) addresses represents a list of execserver services.
     # If execserver.enabled is set to true, this option will be ignored.
     # We expect the url in the format of "http://localhost:8080".

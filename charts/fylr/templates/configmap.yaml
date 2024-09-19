@@ -72,8 +72,8 @@ data:
         fielddata: {{ .Values.fylr.elastic.fielddata | default false }}
       execserver:
         parallel: {{ .Values.fylr.execserver.parallel | default 4 }}
-        pluginJobTimeoutSec: {{ .Values.fylr.execserver.pluginJobTimeoutSec | default 240 }}
-        connectTimeoutSec: {{ .Values.fylr.execserver.connectTimeoutSec | default 240 }}
+        pluginJobTimeoutSec: {{ .Values.fylr.execserver.pluginJobTimeoutSec | default 2400 }}
+        connectTimeoutSec: {{ .Values.fylr.execserver.connectTimeoutSec | default 120 }}
         callbackBackendInternalURL: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
         callbackApiInternalURL: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
         addresses:
