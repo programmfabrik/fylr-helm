@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.108](https://img.shields.io/badge/Version-0.1.108-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.1](https://img.shields.io/badge/AppVersion-v6.12.1-informational?style=flat-square)
+![Version: 0.1.109](https://img.shields.io/badge/Version-0.1.109-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.1](https://img.shields.io/badge/AppVersion-v6.12.1-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -56,11 +56,11 @@ Deploy fylr to your Kubernetes cluster
 | fylr.elastic.password | string | `""` | password for the elastic server NOTE: This is ignored if elasticsearch.enabled is set to true. |
 | fylr.elastic.settings | string | `""` | Where to find the Elastic search index settings. If you provide your own file make sure to base it on the default resources/index/index_settings.json which is included in the distribution. |
 | fylr.elastic.username | string | `""` | username for the elastic server NOTE: This is ignored if elasticsearch.enabled is set to true. |
-| fylr.execserver | object | `{"addresses":[],"connectTimeoutSec":240,"parallel":4,"pluginJobTimeoutSec":240}` | defines the settings for the execserver connection |
+| fylr.execserver | object | `{"addresses":[],"connectTimeoutSec":120,"parallel":4,"pluginJobTimeoutSec":2400}` | defines the settings for the execserver connection |
 | fylr.execserver.addresses | list | `[]` | addresses represents a list of execserver services. If execserver.enabled is set to true, this option will be ignored. We expect the url in the format of "http://localhost:8080". # NOTE: This is merged with the execserver service address provided by the execserver helm chart, if execserver.enabled is set to true. |
-| fylr.execserver.connectTimeoutSec | int | `240` | connectTimeout sets the maximum seconds the server will wait until a worker gets a job. Defaults to 60 seconds. |
+| fylr.execserver.connectTimeoutSec | int | `120` | connectTimeout sets the maximum seconds the server will wait until a worker gets a job. Defaults to 120 seconds. |
 | fylr.execserver.parallel | int | `4` | number of parallel file workers, default to 1, set to 0 to disable |
-| fylr.execserver.pluginJobTimeoutSec | int | `240` | pluginJobTimeoutSec sets the maximum seconds a callback is allowed to run. Defaults to 30 seconds. |
+| fylr.execserver.pluginJobTimeoutSec | int | `2400` | pluginJobTimeoutSec sets the maximum seconds a callback is allowed to run. Defaults to 2400 seconds. |
 | fylr.externalURL | string | `"http://localhost"` | public external url of the server. This url needs to be fully qualified |
 | fylr.license | multi string | `""` | set fylr license, start by a | to define multi string |
 | fylr.livenessProbe.enabled | bool | `false` |  |
