@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.110](https://img.shields.io/badge/Version-0.1.110-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.2](https://img.shields.io/badge/AppVersion-v6.12.2-informational?style=flat-square)
+![Version: 0.1.111](https://img.shields.io/badge/Version-0.1.111-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.2](https://img.shields.io/badge/AppVersion-v6.12.2-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -31,6 +31,8 @@ Deploy fylr to your Kubernetes cluster
 | autoscaling.minReplicas | int | `1` |  |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` |  |
 | extraEnvVars | list | `[]` |  |
+| extraVolumeMounts | list | `[]` |  |
+| extraVolumes | list | `[]` |  |
 | fullnameOverride | string | `""` |  |
 | fylr.allowPurge | bool | `true` |  |
 | fylr.db | object | `{"driver":"postgres","init":{"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}},"maxIdleConns":10,"maxOpenConns":100,"postgres":{"database":"fylr","host":"localhost","options":{},"password":"password","port":5432,"sslmode":"disable","user":"fylr"}}` | defines database settings |

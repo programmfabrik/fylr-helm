@@ -1,6 +1,6 @@
 # execserver
 
-![Version: 0.1.55](https://img.shields.io/badge/Version-0.1.55-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.2](https://img.shields.io/badge/AppVersion-v6.12.2-informational?style=flat-square)
+![Version: 0.1.56](https://img.shields.io/badge/Version-0.1.56-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.12.2](https://img.shields.io/badge/AppVersion-v6.12.2-informational?style=flat-square)
 
 A Helm chart for fylr as execserver in Kubernetes
 
@@ -19,6 +19,7 @@ A Helm chart for fylr as execserver in Kubernetes
 | autoscaling.maxReplicas | int | `5` | The maximum number of replicas |
 | autoscaling.minReplicas | int | `1` | The minimum number of replicas |
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage |
+| extraEnvVars | list | `[]` | extra environment variables |
 | fullnameOverride | string | `""` |  |
 | fylr | object | `{"execserver":{"services":{"convert":{"enabled":true,"waitGroup":"medium"},"exec":{"enabled":true,"waitGroup":"fast"},"ffmpeg":{"enabled":true,"waitGroup":"slow"},"iiif":{"enabled":true,"waitGroup":"fast"},"inkscape":{"enabled":true,"waitGroup":"slow"},"metadata":{"enabled":true,"waitGroup":"fast"},"node":{"enabled":true,"waitGroup":"fast"},"pdf2pages":{"enabled":true,"waitGroup":"slow"},"python3":{"enabled":true,"waitGroup":"fast"},"soffice":{"enabled":true,"waitGroup":"slow"},"xslt":{"enabled":true,"waitGroup":"fast"}},"waitGroups":{"fast":10,"medium":6,"slow":2}},"logger":{"addHostname":true,"format":"console","level":"info","noColor":false,"timeFormat":"2006-01-02T15:04:05Z07:00"}}` | Application configuration |
 | fylr.execserver | object | `{"services":{"convert":{"enabled":true,"waitGroup":"medium"},"exec":{"enabled":true,"waitGroup":"fast"},"ffmpeg":{"enabled":true,"waitGroup":"slow"},"iiif":{"enabled":true,"waitGroup":"fast"},"inkscape":{"enabled":true,"waitGroup":"slow"},"metadata":{"enabled":true,"waitGroup":"fast"},"node":{"enabled":true,"waitGroup":"fast"},"pdf2pages":{"enabled":true,"waitGroup":"slow"},"python3":{"enabled":true,"waitGroup":"fast"},"soffice":{"enabled":true,"waitGroup":"slow"},"xslt":{"enabled":true,"waitGroup":"fast"}},"waitGroups":{"fast":10,"medium":6,"slow":2}}` | Settings related to the execserver |
