@@ -39,6 +39,10 @@ spec:
             - name: http
               containerPort: 7070
               protocol: TCP
+          env:
+          {{- with .Values.extraEnvVars }}
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
           #livenessProbe:
           #  httpGet:
           #    path: /healthz
@@ -52,7 +56,7 @@ spec:
           volumeMounts:
             - mountPath: /fylr/config
               name: fylr-config
-            {{ if .Values.persistent.tmp.enabled -}} 
+            {{ if .Values.persistent.tmp.enabled -}}
             - mountPath: /tmp
               name: execserver-tmp
             {{- end }}
@@ -60,7 +64,7 @@ spec:
         - name: "fylr-config"
           configMap:
             name: {{ include "execserver.fullname" . }}
-        {{ if .Values.persistent.tmp.enabled -}}  
+        {{ if .Values.persistent.tmp.enabled -}}
         - name: "execserver-tmp"
           persistentVolumeClaim:
             claimName: {{ include "execserver.storage.volumes.tmp.name" . }}
