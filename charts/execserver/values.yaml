@@ -61,6 +61,9 @@ service:
   # -- The port on which to expose the service
   port: 8070
 
+# -- extra environment variables
+extraEnvVars: []
+
 # -- Whether to configure monitoring for the application
 monitoring:
   # -- Whether to create a ServiceMonitor resource for Prometheus Operator
