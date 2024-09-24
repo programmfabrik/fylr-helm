@@ -227,6 +227,10 @@ spec:
 
             {{ include "fylr.deployment.volume.mounts" . | nindent 12 }}
 
+            {{- with .Values.extraVolumeMounts }}
+              {{- toYaml . | nindent 12 }}
+            {{- end }}
+
       volumes:
         - name: "fylr-config"
           configMap:
@@ -249,6 +253,11 @@ spec:
         {{- end }}
 
         {{ include "fylr.deployment.volumes" . | nindent 8 -}}
+
+        {{- with .Values.extraVolumes }}
+          {{- toYaml . | nindent 8 }}
+        {{- end }}
+
 
       {{- with .Values.nodeSelector }}
       nodeSelector:

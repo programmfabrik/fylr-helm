@@ -20,6 +20,10 @@ fullnameOverride: ""
 extraEnvVars: []
 includeStorageSecret: true
 
+extraVolumes: []
+extraVolumeMounts: []
+
+
 serviceAccount:
   # -- (bool) Specifies whether a service account should be created
   create: true
