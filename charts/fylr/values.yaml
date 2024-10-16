@@ -130,6 +130,8 @@ monitoring:
     scrapeTimeout: "10s"
 
 fylr:
+  # -- (string) Optionnaly provides additional configmap having fylr config to be merged with the config file made out of the values provided here, the configmap needs to be present in the same namespace as the helm release
+  configAsConfigmap: "name"
   # -- (string) public external url of the server. This url needs to be fully qualified
   externalURL: "http://localhost"
   # -- (bool) set to true to allow /api/settings/purge. should be disabled for production!
