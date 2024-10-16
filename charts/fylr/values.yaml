@@ -138,6 +138,9 @@ fylr:
 
   allowPurge: true
 
+  # -- (string) encryption key for passwords and other sensible data in fylr, if not set a random key will be generated
+  encryptionKey: ""
+
   ## Configure liveness, readiness and startup probes
   ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes
   ##
