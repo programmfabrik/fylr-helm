@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.118](https://img.shields.io/badge/Version-0.1.118-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.13.3](https://img.shields.io/badge/AppVersion-v6.13.3-informational?style=flat-square)
+![Version: 0.1.119](https://img.shields.io/badge/Version-0.1.119-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.13.3](https://img.shields.io/badge/AppVersion-v6.13.3-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -35,6 +35,7 @@ Deploy fylr to your Kubernetes cluster
 | extraVolumes | list | `[]` |  |
 | fullnameOverride | string | `""` |  |
 | fylr.allowPurge | bool | `true` |  |
+| fylr.configAsConfigmap | string | `"name"` | Optionnaly provides additional configmap having fylr config to be merged with the config file made out of the values provided here, the configmap needs to be present in the same namespace as the helm release |
 | fylr.db | object | `{"driver":"postgres","init":{"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}},"maxIdleConns":10,"maxOpenConns":100,"postgres":{"database":"fylr","host":"localhost","options":{},"password":"password","port":5432,"sslmode":"disable","user":"fylr"}}` | defines database settings |
 | fylr.db.driver | string | `"postgres"` | driver defines the driver for the database server. NOTE: this is ignored if postgresql-ha.enabled is set to true. |
 | fylr.db.init | object | `{"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}}` | The init block is used to pre-fill the database when its created or purged. |
