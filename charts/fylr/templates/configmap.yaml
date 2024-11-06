@@ -86,13 +86,12 @@ data:
           {{- toYaml .Values.fylr.execserver.addresses | nindent 10 }}
           {{- end }}
       services+:
-        webapp:
+        webapp+:
           addr: :8080
           oauth2:
             clientID: "fylr-web-frontend"
             internalURL:  "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
-          reverseProxy:
-            api: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
+          reverseProxy+:
             backend: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
           {{- if .Values.fylr.services.webapp.basicAuth }}
           basicAuth:
