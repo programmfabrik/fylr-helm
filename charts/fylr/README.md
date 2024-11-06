@@ -77,6 +77,8 @@ helm install ${RELEASE_NAME} fylr/fylr \
 
 ## Good to know
 
+With fylr chart version 0.1.127 we broke compatibility with fylr versions before 6.14 (https://github.com/programmfabrik/fylr-helm/commit/1cdebcb089438d067fd086e038b8e2ddc6d40b2a).
+
 ### Storage locations known bug
 
 Known Bug: Locations are only created if they are present in at least one of the three lines below `defaults:` (`originals:`, `versions:`, `backups:`), so it is currently not enough to just define them below `definitions:`, you also have to use them in the `defaults:` mapping.
