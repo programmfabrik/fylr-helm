@@ -65,7 +65,7 @@ jobs:
         run: |
           helm-docs --chart-search-root ./charts --document-dependency-values
 
-      - uses: actions/upload-artifact@v3
+      - uses: actions/upload-artifact@v4
         with:
           name: helm-docs
           retention-days: 1
@@ -93,7 +93,7 @@ jobs:
           git config user.email "${{ env.gh_actor }}@users.noreply.github.com"
 
       - name: Download documentation
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: helm-docs
           path: charts
