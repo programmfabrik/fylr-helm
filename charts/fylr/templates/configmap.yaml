@@ -98,20 +98,12 @@ data:
           basicAuth:
             {{- toYaml .Values.fylr.services.webapp.basicAuth | nindent 12 }}
           {{- end }}
-        api:
+        api+:
           webDAVHotfolderPath: /fylr/webDAVHotfolder
           addr: :8081
-          oauth2Server:
+          oauth2Server+:
             allowHttpRedirects: {{ .Values.fylr.services.api.oauth2Server.allowHttpRedirects | default false }}
-            clients:
-              fylr-web-frontend:
-                redirectURIs:
-                  - {{ .Values.fylr.externalURL }}/oauth2/callback
-                scopes:
-                  - "read"
-                  - "write"
-                  - "offline"
-                public: true
+            clients+:
               # add custom clients
               {{- if .Values.fylr.services.api.oauth2Server.clients }}
               {{- toYaml .Values.fylr.services.api.oauth2Server.clients | nindent 14 }}
