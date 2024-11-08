@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.127](https://img.shields.io/badge/Version-0.1.127-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.14.2](https://img.shields.io/badge/AppVersion-v6.14.2-informational?style=flat-square)
+![Version: 0.1.128](https://img.shields.io/badge/Version-0.1.128-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.14.2](https://img.shields.io/badge/AppVersion-v6.14.2-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -59,6 +59,7 @@ Deploy fylr to your Kubernetes cluster
 | fylr.elastic.password | string | `""` | password for the elastic server NOTE: This is ignored if elasticsearch.enabled is set to true. |
 | fylr.elastic.settings | string | `""` | Where to find the Elastic search index settings. If you provide your own file make sure to base it on the default resources/index/index_settings.json which is included in the distribution. |
 | fylr.elastic.username | string | `""` | username for the elastic server NOTE: This is ignored if elasticsearch.enabled is set to true. |
+| fylr.encryptionKey | string | `""` | encryption key for passwords and other sensible data in fylr, if not set a random key will be generated |
 | fylr.execserver | object | `{"addresses":[],"connectTimeoutSec":120,"parallel":4,"pluginJobTimeoutSec":2400}` | defines the settings for the execserver connection |
 | fylr.execserver.addresses | list | `[]` | addresses represents a list of execserver services. If execserver.enabled is set to true, this option will be ignored. We expect the url in the format of "http://localhost:8080". # NOTE: This is merged with the execserver service address provided by the execserver helm chart, if execserver.enabled is set to true. |
 | fylr.execserver.connectTimeoutSec | int | `120` | connectTimeout sets the maximum seconds the server will wait until a worker gets a job. Defaults to 120 seconds. |
