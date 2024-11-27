@@ -1,6 +1,6 @@
 # execserver
 
-![Version: 0.1.62](https://img.shields.io/badge/Version-0.1.62-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.14.2](https://img.shields.io/badge/AppVersion-v6.14.2-informational?style=flat-square)
+![Version: 0.1.63](https://img.shields.io/badge/Version-0.1.63-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.14.2](https://img.shields.io/badge/AppVersion-v6.14.2-informational?style=flat-square)
 
 A Helm chart for fylr as execserver in Kubernetes
 
@@ -21,32 +21,9 @@ A Helm chart for fylr as execserver in Kubernetes
 | autoscaling.targetCPUUtilizationPercentage | int | `80` | The target CPU utilization percentage |
 | extraEnvVars | list | `[]` | extra environment variables |
 | fullnameOverride | string | `""` |  |
-| fylr | object | `{"execserver":{"services":{"convert":{"enabled":true,"waitGroup":"medium"},"exec":{"enabled":true,"waitGroup":"fast"},"ffmpeg":{"enabled":true,"waitGroup":"slow"},"iiif":{"enabled":true,"waitGroup":"fast"},"inkscape":{"enabled":true,"waitGroup":"slow"},"metadata":{"enabled":true,"waitGroup":"fast"},"node":{"enabled":true,"waitGroup":"fast"},"pdf2pages":{"enabled":true,"waitGroup":"slow"},"python3":{"enabled":true,"waitGroup":"fast"},"soffice":{"enabled":true,"waitGroup":"slow"},"xslt":{"enabled":true,"waitGroup":"fast"}},"waitGroups":{"fast":10,"medium":6,"slow":2}},"logger":{"addHostname":true,"format":"console","level":"info","noColor":false,"timeFormat":"2006-01-02T15:04:05Z07:00"}}` | Application configuration |
-| fylr.execserver | object | `{"services":{"convert":{"enabled":true,"waitGroup":"medium"},"exec":{"enabled":true,"waitGroup":"fast"},"ffmpeg":{"enabled":true,"waitGroup":"slow"},"iiif":{"enabled":true,"waitGroup":"fast"},"inkscape":{"enabled":true,"waitGroup":"slow"},"metadata":{"enabled":true,"waitGroup":"fast"},"node":{"enabled":true,"waitGroup":"fast"},"pdf2pages":{"enabled":true,"waitGroup":"slow"},"python3":{"enabled":true,"waitGroup":"fast"},"soffice":{"enabled":true,"waitGroup":"slow"},"xslt":{"enabled":true,"waitGroup":"fast"}},"waitGroups":{"fast":10,"medium":6,"slow":2}}` | Settings related to the execserver |
-| fylr.execserver.services | object | `{"convert":{"enabled":true,"waitGroup":"medium"},"exec":{"enabled":true,"waitGroup":"fast"},"ffmpeg":{"enabled":true,"waitGroup":"slow"},"iiif":{"enabled":true,"waitGroup":"fast"},"inkscape":{"enabled":true,"waitGroup":"slow"},"metadata":{"enabled":true,"waitGroup":"fast"},"node":{"enabled":true,"waitGroup":"fast"},"pdf2pages":{"enabled":true,"waitGroup":"slow"},"python3":{"enabled":true,"waitGroup":"fast"},"soffice":{"enabled":true,"waitGroup":"slow"},"xslt":{"enabled":true,"waitGroup":"fast"}}` | Specify a set of services that should be executed by the execserver |
-| fylr.execserver.services.convert.enabled | bool | `true` | Enable or disable the convert service |
-| fylr.execserver.services.convert.waitGroup | string | `"medium"` | Specify the waitGroup the service should be executed in |
-| fylr.execserver.services.exec.enabled | bool | `true` | Enable or disable the exec service |
-| fylr.execserver.services.exec.waitGroup | string | `"fast"` | Specify the waitGroup the service should be executed in |
-| fylr.execserver.services.ffmpeg.enabled | bool | `true` | Enable or disable the ffmpeg service |
-| fylr.execserver.services.ffmpeg.waitGroup | string | `"slow"` | Specify the waitGroup the service should be executed in |
-| fylr.execserver.services.iiif.enabled | bool | `true` | Enable or disable the iiif service |
-| fylr.execserver.services.iiif.waitGroup | string | `"fast"` | Specify the waitGroup the service should be executed in |
-| fylr.execserver.services.inkscape.enabled | bool | `true` | Enable or disable the inkscape service |
-| fylr.execserver.services.inkscape.waitGroup | string | `"slow"` | Specify the waitGroup the service should be executed in |
-| fylr.execserver.services.metadata.enabled | bool | `true` | Enable or disable the metadata service |
-| fylr.execserver.services.metadata.waitGroup | string | `"fast"` | Specify the waitGroup the service should be executed in |
-| fylr.execserver.services.node.enabled | bool | `true` | Enable or disable the node service |
-| fylr.execserver.services.node.waitGroup | string | `"fast"` | Specify the waitGroup the service should be executed in |
-| fylr.execserver.services.pdf2pages.enabled | bool | `true` | Enable or disable the pdf2pages service |
-| fylr.execserver.services.pdf2pages.waitGroup | string | `"slow"` | Specify the waitGroup the service should be executed in |
-| fylr.execserver.services.python3.enabled | bool | `true` | Enable or disable the python3 service |
-| fylr.execserver.services.python3.waitGroup | string | `"fast"` | Specify the waitGroup the service should be executed in |
-| fylr.execserver.services.soffice.enabled | bool | `true` | Enable or disable the soffice service |
-| fylr.execserver.services.soffice.waitGroup | string | `"slow"` | Specify the waitGroup the service should be executed in |
-| fylr.execserver.services.xslt.enabled | bool | `true` | Enable or disable the xslt service |
-| fylr.execserver.services.xslt.waitGroup | string | `"fast"` | Specify the waitGroup the service should be executed in |
-| fylr.execserver.waitGroups | object | `{"fast":10,"medium":6,"slow":2}` | Parallelism of the execserver define several groups with a different number of jobs running in parallel we expect a map[string]int |
+| fylr | object | `{"execserver":{"waitGroups":{"fast":8,"medium":6,"slow":2}},"logger":{"addHostname":true,"format":"console","level":"info","noColor":false,"timeFormat":"2006-01-02T15:04:05Z07:00"}}` | Application configuration |
+| fylr.execserver | object | `{"waitGroups":{"fast":8,"medium":6,"slow":2}}` | Settings related to the execserver |
+| fylr.execserver.waitGroups | object | `{"fast":8,"medium":6,"slow":2}` | Parallelism of the execserver define several groups with a different number of jobs running in parallel we expect a map[string]int |
 | fylr.logger | object | `{"addHostname":true,"format":"console","level":"info","noColor":false,"timeFormat":"2006-01-02T15:04:05Z07:00"}` | Log settings |
 | fylr.logger.addHostname | bool | `true` | add hostname to log output |
 | fylr.logger.format | string | `"console"` | Set to "json" or "console". Default: "console" |
