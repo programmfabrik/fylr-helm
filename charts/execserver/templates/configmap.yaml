@@ -36,4 +36,9 @@ data:
             {{ $k }}:
               processes: {{ $v -}}
             {{ end }}
-
+          {{- if .Values.fylr.execserver }}
+          {{- if .Values.fylr.execserver.services }}
+          services+:
+            {{- toYaml .Values.fylr.execserver.services | nindent 12 }}
+          {{- end }}
+          {{- end }}

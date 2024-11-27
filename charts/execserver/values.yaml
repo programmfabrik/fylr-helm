@@ -161,65 +161,14 @@ fylr:
     waitGroups:
       slow: 2
       medium: 6
-      fast: 10
+      fast: 8
       # ... you could add your own here
+      #pythonplugins: 4
+      #nodeplugins: 4
 
-# beware: the follwoing is not yet used by charts/execserver/templates/configmap.yaml
-
-    # -- Specify a set of services that should be executed by the execserver
-    services:
-      exec:
-        # -- Enable or disable the exec service
-        enabled: true
-        # -- Specify the waitGroup the service should be executed in
-        waitGroup: fast
-      python3:
-        # -- Enable or disable the python3 service
-        enabled: true
-        # -- Specify the waitGroup the service should be executed in
-        waitGroup: fast
-      node:
-        # -- Enable or disable the node service
-        enabled: true
-        # -- Specify the waitGroup the service should be executed in
-        waitGroup: fast
-      convert:
-        # -- Enable or disable the convert service
-        enabled: true
-        # -- Specify the waitGroup the service should be executed in
-        waitGroup: medium
-      ffmpeg:
-        # -- Enable or disable the ffmpeg service
-        enabled: true
-        # -- Specify the waitGroup the service should be executed in
-        waitGroup: slow
-      inkscape:
-        # -- Enable or disable the inkscape service
-        enabled: true
-        # -- Specify the waitGroup the service should be executed in
-        waitGroup: slow
-      soffice:
-        # -- Enable or disable the soffice service
-        enabled: true
-        # -- Specify the waitGroup the service should be executed in
-        waitGroup: slow
-      pdf2pages:
-        # -- Enable or disable the pdf2pages service
-        enabled: true
-        # -- Specify the waitGroup the service should be executed in
-        waitGroup: slow
-      xslt:
-        # -- Enable or disable the xslt service
-        enabled: true
-        # -- Specify the waitGroup the service should be executed in
-        waitGroup: fast
-      metadata:
-        # -- Enable or disable the metadata service
-        enabled: true
-        # -- Specify the waitGroup the service should be executed in
-        waitGroup: fast
-      iiif:
-        # -- Enable or disable the iiif service
-        enabled: true
-        # -- Specify the waitGroup the service should be executed in
-        waitGroup: fast
+    # -- Specify services that should be executed by the execserver, in addition to the default ones
+    #services:
+    #  python3:
+    #    waitgroup: pythonplugins
+    #  node:
+    #    waitgroup: nodeplugins
