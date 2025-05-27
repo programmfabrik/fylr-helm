@@ -1,0 +1,52 @@
+{{- if .Values.autoManageDB.enabled -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: autodb-create-{{ .Values.autoManageDB.name }}
+  labels:
+    {{- include "fylr.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+data:
+  init-role-db.sh: |
+    #!/bin/bash
+    
+    # Wait for PostgreSQL to be ready
+    until psql -h "$PGHOST" -U "$PGUSER" -c '\l'; do
+      echo "Waiting for PostgreSQL to be ready..."
+      sleep 2
+    done
+
+    # Check if role exists
+    echo "Checking if role $DB_USER exists..."
+    ROLE_EXISTS=$(psql -h "$PGHOST" -U "$PGUSER" -t -c "SELECT 1 FROM pg_roles WHERE rolname = '$DB_USER'")
+    
+    # Check if database exists
+    echo "Checking if database $DB_NAME exists..."
+    DB_EXISTS=$(psql -h "$PGHOST" -U "$PGUSER" -t -c "SELECT 1 FROM pg_database WHERE datname = '$DB_NAME'")
+    
+    # Check both conditions together
+    if [ -z "$ROLE_EXISTS" ] || [ -z "$DB_EXISTS" ]; then
+      # Create role if it doesn't exist
+      if [ -z "$ROLE_EXISTS" ]; then
+        echo "Creating role $DB_USER..."
+        psql -h "$PGHOST" -U "$PGUSER" -c "CREATE ROLE $DB_USER WITH LOGIN PASSWORD '$DB_PASSWORD';"
+      else
+        echo "Role $DB_USER already exists"
+      fi
+      
+      # Create database if it doesn't exist
+      if [ -z "$DB_EXISTS" ]; then
+        echo "Creating database $DB_NAME..."
+        psql -h "$PGHOST" -U "$PGUSER" -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;"
+      else
+        echo "Database $DB_NAME already exists"
+      fi
+    else
+      echo "Both role $DB_USER and database $DB_NAME already exist, nothing to do."
+    fi
+
+    echo "Role and database creation complete. Job finished."
+{{- end }}

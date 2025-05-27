@@ -1,0 +1,60 @@
+{{- if .Values.autoManageDB.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: autodb-create-{{ .Values.autoManageDB.name }}
+  labels:
+    {{- include "fylr.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": pre-install
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      # to allow it to run only on Postgres node
+      affinity:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+            - matchExpressions:
+              - key: node-role.kubernetes.io/postgres
+                operator: Exists
+      tolerations:
+      - key: node-role.kubernetes.io/postgres
+        operator: Exists
+        effect: NoSchedule
+      containers:
+        - name: psql-init
+          image: postgres:17.5 # should match the postgres cluster image to avoid compatibility issues
+          env:
+            - name: PGPASSWORD
+              value: {{ .Values.autoManageDB.pgPass }}
+
+            - name: PGHOST
+              value: {{ .Values.autoManageDB.pghost }}
+
+            - name: PGUSER
+              value: {{ .Values.autoManageDB.pgUser }}
+
+            - name: DB_NAME
+              value: {{ .Values.autoManageDB.name }}
+
+            - name: DB_USER
+              value: {{ .Values.autoManageDB.user }}
+
+            - name: DB_PASSWORD
+              value: {{ .Values.autoManageDB.password }}
+
+          command: ["/bin/sh", "-c"]
+          args:
+            - "sh /scripts/init-role-db.sh"
+          volumeMounts:
+            - name: scripts
+              mountPath: /scripts
+      volumes:
+        - name: scripts
+          configMap:
+            name: autodb-create-{{ .Values.autoManageDB.name }}
+{{- end }}
