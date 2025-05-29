@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 0.1.154](https://img.shields.io/badge/Version-0.1.154-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.20.2](https://img.shields.io/badge/AppVersion-v6.20.2-informational?style=flat-square)
+![Version: 0.1.155](https://img.shields.io/badge/Version-0.1.155-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.20.2](https://img.shields.io/badge/AppVersion-v6.20.2-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -26,6 +26,13 @@ Deploy fylr to your Kubernetes cluster
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
+| autoManageDB.enabled | bool | `false` |  |
+| autoManageDB.name | string | `"fylr_db"` |  |
+| autoManageDB.password | string | `"securepassword"` |  |
+| autoManageDB.pgPass | string | `"super pass"` |  |
+| autoManageDB.pgUser | string | `"super user"` |  |
+| autoManageDB.pghost | string | `"url"` |  |
+| autoManageDB.user | string | `"fylr_user"` |  |
 | autoscaling.enabled | bool | `false` |  |
 | autoscaling.maxReplicas | int | `100` |  |
 | autoscaling.minReplicas | int | `1` |  |
@@ -42,7 +49,7 @@ Deploy fylr to your Kubernetes cluster
 | fylr.db.init | object | `{"email":{"from":""},"email_server":{"cram_md5_auth":{"password":"","username":""},"helo_domain":"","insecure_skip_verify":false,"login_auth":{"password":"","username":""},"plain_auth":{"password":"","username":""},"server_addr":"","type":"starttls"}}` | The init block is used to pre-fill the database when its created or purged. |
 | fylr.db.maxIdleConns | int | `10` | maxIdleConns has to be not more than maxOpenConns https://golang.org/pkg/database/sql/#DB.SetMaxIdleConns, default: 0 |
 | fylr.db.maxOpenConns | int | `100` | This has to be at 4 + execserver.parallel + elastic.parallel. Two of these connections will be dedicated to a separate connection pool managing the sequences (Postgres only) https://golang.org/pkg/database/sql/#DB.SetMaxOpenConns, default: 0 |
-| fylr.db.postgres | object | `{"database":"fylr","host":"localhost","options":{},"password":"password","port":5432,"sslmode":"disable","user":"fylr"}` | postgresql connection settings NOTE: this is ignored if postgresql-ha.enabled is set to true. |
+| fylr.db.postgres | object | `{"database":"fylr","host":"localhost","options":{},"password":"password","port":5432,"sslmode":"disable","user":"fylr"}` | postgresql connection settings NOTE: this is ignored if postgresql-ha.enabled is set to true. If you enable autoManageDB, please fill the db info here. |
 | fylr.db.postgres.database | string | `"fylr"` | database is the database to use for the postgres connection. |
 | fylr.db.postgres.host | string | `"localhost"` | host is the host of the postgres server. |
 | fylr.db.postgres.options | object | `{}` | options is a map of additional options to be passed to the database connection string. See https://www.postgresql.org/docs/current/libpq-connect.html#LIBPQ-PARAMKEYWORDS |
