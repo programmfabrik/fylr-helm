@@ -35,6 +35,8 @@ serviceAccount:
 
 podAnnotations: {}
 
+deploymentAnnotations: {}
+
 # -- (object) Pod security context
 podSecurityContext:
   # -- (int) This is a requirement when running with attached volumes.

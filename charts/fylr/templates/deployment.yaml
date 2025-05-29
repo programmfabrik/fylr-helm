@@ -2,6 +2,10 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
+  {{- with .Values.deploymentAnnotations }}
+  annotations:
+    {{- toYaml . | nindent 8 }}
+  {{- end }}
   name: {{ include "fylr.fullname" . }}
   labels:
     {{- include "fylr.labels" . | nindent 4 }}
