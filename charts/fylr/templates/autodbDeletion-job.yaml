@@ -1,0 +1,25 @@
+{{- if .Values.autoManageDB.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: autodb-delete-{{ .Values.autoManageDB.name }}
+  labels:
+    {{- include "fylr.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "post-delete"
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: psql-delete
+          image: postgres:17.5
+          env:
+            - name: PGPASSWORD
+              value: "{{ .Values.autoManageDB.pgPass }}"
+          command: ["/bin/sh", "-c"]
+          args:
+            - psql -h {{ .Values.autoManageDB.pghost }} -U {{ .Values.autoManageDB.pgUser }} -d postgres -c "DROP DATABASE IF EXISTS \"{{ .Values.autoManageDB.name }}\";" -c "DROP ROLE IF EXISTS \"{{ .Values.autoManageDB.user }}\";"
+{{- end }}

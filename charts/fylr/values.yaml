@@ -321,6 +321,7 @@ fylr:
     driver: "postgres"
     # -- (object) postgresql connection settings
     # NOTE: this is ignored if postgresql-ha.enabled is set to true.
+    # If you enable autoManageDB, please fill the db info here.
     postgres:
       # -- (string) host is the host of the postgres server.
       host: "localhost"
@@ -599,6 +600,22 @@ minio:
           - 's3:*'
           conditions:
             - StringEquals: '"aws:username": "fylr"'
+
+# If enabled, the chart will create a database on the provided database server URL $pghost using a Helm pre-install hook with the given details.
+# It will also delete the database when the chart is uninstalled using a Helm post-delete hook.
+autoManageDB:
+  # Set to true to enable auto creation/deletion
+  enabled: false
+  # Database Postgres URl 
+  pghost: "url" 
+  pgUser: "super user"
+  pgPass: "super pass"
+  # database name to create in the $pghost database server.
+  name: "fylr_db"
+  # The user owning the database to create in the $pghost database server.
+  user: "fylr_user" 
+  # The password to assign to the user $user created in the $pghost database server.
+  password: "securepassword" 
 
 # @ignored defines the settings for the postgresql application
 # for more information see: https://github.com/bitnami/charts/tree/master/bitnami/postgresql-ha
