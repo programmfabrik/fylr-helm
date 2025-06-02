@@ -32,7 +32,7 @@ data:
       # Create role if it doesn't exist
       if [ -z "$ROLE_EXISTS" ]; then
         echo "Creating role $DB_USER..."
-        psql -h "$PGHOST" -U "$PGUSER" -c "CREATE ROLE $DB_USER WITH LOGIN PASSWORD '$DB_PASSWORD';"
+        psql -h "$PGHOST" -U "$PGUSER" -c "CREATE ROLE \"$DB_USER\" WITH LOGIN PASSWORD '$DB_PASSWORD';"
       else
         echo "Role $DB_USER already exists"
       fi
@@ -40,7 +40,7 @@ data:
       # Create database if it doesn't exist
       if [ -z "$DB_EXISTS" ]; then
         echo "Creating database $DB_NAME..."
-        psql -h "$PGHOST" -U "$PGUSER" -c "CREATE DATABASE $DB_NAME OWNER $DB_USER;"
+        psql -h "$PGHOST" -U "$PGUSER" -c "CREATE DATABASE \"$DB_NAME\" OWNER \"$DB_USER\";"
       else
         echo "Database $DB_NAME already exists"
       fi
