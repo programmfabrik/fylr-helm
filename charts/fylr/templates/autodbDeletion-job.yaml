@@ -3,6 +3,7 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: autodb-delete-{{ .Values.autoManageDB.name }}
+  namespace: default
   labels:
     {{- include "fylr.labels" . | nindent 4 }}
   annotations:
