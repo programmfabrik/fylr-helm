@@ -7,15 +7,15 @@ dependencies:
   version: 10.0.1
 - name: elasticsearch
   repository: https://charts.bitnami.com/bitnami
-  version: 19.5.0
+  version: 19.21.2
 - name: opensearch
   repository: https://charts.bitnami.com/bitnami
   version: 1.2.6
 - name: execserver
   repository: https://programmfabrik.github.io/fylr-helm
-  version: 0.1.75
+  version: 0.1.76
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 12.1.0
-digest: sha256:8a49a581cd419ad3d07a3f0a9e6d92c054e8991bda045154ce6e1c82113ab8ae
-generated: "2025-06-06T15:49:42.303529965+02:00"
+digest: sha256:847fb5da3a18a88b2e9949fec8894edd65b151bf7d951a42ea67adb9685ad91e
+generated: "2025-07-02T19:30:43.910307307+02:00"
