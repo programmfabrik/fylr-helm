@@ -612,10 +612,10 @@ autoManageDB:
   pgPass: "super pass"
   # database name to create in the $pghost database server.
   name: "fylr_db"
-  # The user owning the database to create in the $pghost database server.
+  # The use r owning the database to create in the $pghost database server.
   user: "fylr_user" 
   # The password to assign to the user $user created in the $pghost database server.
-  password: "securepassword" 
+  password: "securepassword"
 
 # @ignored defines the settings for the postgresql application
 # for more information see: https://github.com/bitnami/charts/tree/master/bitnami/postgresql-ha
@@ -664,6 +664,15 @@ postgresql:
   primary:
     persistence:
       storageClass: ""
+
+## If enabled, delete OpenSearch indices from the provided URL shared OpenSearch after a FYLR instance is uninstalled.
+## The indices to delete are in this pattern releaseName-fylr-*, this pattern is used to idientify which indices to delete
+autoDeleteIndices:
+  # Set to true to enable auto deletion
+  enabled: false
+  # Shared Openseach/Elasticsearch from which the indices will be cleaned up
+  openseachEndpoint: "url"
+
 ## For more infos: https://github.com/bitnami/charts/blob/main/bitnami/opensearch/values.yaml
 opensearch:
   ## Wether to enable or disable opensearch

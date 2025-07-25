@@ -1,0 +1,38 @@
+{{- if .Values.autoDeleteIndices.enabled -}}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: auto-indices-delete-{{ .Release.Name }}
+  namespace: default
+  labels:
+    {{- include "fylr.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": "post-delete"
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+spec:
+  template: 
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: indices-delete
+          image: curlimages/curl:8.15.0
+          command: ["/bin/sh", "-c"]
+          args:
+          - |
+            OPENSEARCH_ENDPOINT={{ .Values.autoDeleteIndices.openseachEndpoint }} 
+
+            INDEX_PATTERN="{{ .Release.Name }}-fylr-*"
+
+            echo "Attempting to delete OpenSearch indices matching: ${INDEX_PATTERN}"
+            echo "Connecting to: ${OPENSEARCH_ENDPOINT}"
+            
+            curl -X DELETE "${OPENSEARCH_ENDPOINT}/${INDEX_PATTERN}"
+
+            if [ $? -eq 0 ]; then
+              echo "Successfully initiated index deletion."
+            else
+              echo "Failed to delete indices. Check logs for details."
+              exit 1
+            fi
+{{- end }}
