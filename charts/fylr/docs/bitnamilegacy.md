@@ -1,10 +1,10 @@
 # Why other helm charts
 
-To get you started, the fylr Helm chart includes dependencies to PostgreSQL, and an indexers (choose Elasticsearch or Opensearch).
+To get you started, the fylr Helm chart includes dependencies to PostgreSQL and indexers (choose Elasticsearch or Opensearch).
 
 You may want to replace these by standalone clusters. Or by more recent versions.
 
-But in case you do keep using them, support is not provided by us, Programmfabrik GmbH. We still share some information to ease your start.
+In any case, support is not provided by us, Programmfabrik GmbH, as we only support fylr. We still share some information to ease your start.
 
 # Breaking changes
 
@@ -14,12 +14,12 @@ At August 28th, 2025, Bitnami migrates its containers from the public catalog (d
 
 There is a lot more to this, see: https://github.com/bitnami/containers/issues/83267
 
-Most crucially, to prevent your installation from being unable to find container images, you can adapt your values.yaml, shown below.
+Most crucially, to prevent your installation from being unable to find container images, you can adapt your values.yaml, as shown below.
 
 
 # Using Bitnami legacy containers
 
-As these images will receive no security updates, even they will have to be replaced in the future. But for now, they give some breathing room.
+Legacy container images will receive no security updates, so even they will have to be replaced in the future. But for now, they give some breathing room.
 
 
 ## PostgreSQL without high availability
