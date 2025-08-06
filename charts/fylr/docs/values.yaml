@@ -1,0 +1,149 @@
+# example of a real-world values.yaml
+
+ingress:
+  enabled: true
+  className: ""
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+  hosts:
+  - host: fylr.example.com
+    paths:
+    - path: /
+      pathType: ImplementationSpecific
+  tls:
+  - secretName: fylr-example-tls
+    hosts:
+      - fylr.example.com
+
+fylr:
+  externalURL: "https://fylr.example.com"
+  persistent:
+    tmp:
+      enabled: true
+      accessModes: ["ReadWriteMany"]
+      storageClass: "longhorn"
+      size: "30Gi"
+    webDAVHotfolder:
+      enabled: true
+      accessModes: ["ReadWriteMany"]
+      storageClass: "longhorn"
+      size: "10Gi"
+    defaults:
+      originals: "s3"
+      versions: "s3"
+      backups: "disk1"
+    definitions:
+      disk1:
+        kind: disk
+        allowPurge: true
+        disk:
+          storageClass: "longhorn"
+          accessModes: ["ReadWriteMany"]
+          size: 10Gi
+      s3:
+        kind: s3
+        allowPurge: true
+        s3:
+          path: "my-example-path"
+          bucket: "my-example-bucket"
+          endpoint: "https://s3.provider.example.com/"
+          accessKey: "example"
+          secretKey: "example"
+          region: "example"
+          useSSL: true
+          allowRedirect: false
+  services:
+    execserver:
+      env:
+        - MAGICK_MEMORY_LIMIT=512MiB
+        - MAGICK_MAP_LIMIT=512MiB
+        - MAGICK_DISK_LIMIT=10GiB
+        - MAGICK_TEMPORARY_PATH=.
+
+image:
+  # image that includes 3rd party tools: (so that an separate execserver is not needed)
+  repository: docker.fylr.io/fylr/fylr
+execserver:
+  enabled: false
+
+minio:
+  enabled: false
+
+elasticsearch:
+  enabled: false
+
+opensearch:
+  enabled: true
+  extraEnvs:
+  - name: discovery.type
+    value: single-node
+  - name: cluster.initial_master_nodes
+    value: null
+  master:
+    masterOnly: false
+    replicaCount: 1
+    persistence:
+      storageClass: longhorn
+      size: 1Gi
+      enabled: true
+      persistentVolumeClaimRetentionPolicy:
+        enabled: true
+        whenScaled: Retain
+        whenDeleted: Delete
+  data:
+    replicaCount: 0
+  coordinating:
+    replicaCount: 0
+  ingest:
+    replicaCount: 0
+  # from here on, this is about using the legacy container images of bitnami
+  image:
+    repository: bitnamilegacy/opensearch
+  dashboards:
+    image:
+      repository: bitnamilegacy/opensearch-dashboards
+  volumePermissions:
+    image:
+      repository: bitnamilegacy/os-shell
+      tag: 12-debian-12-r49
+  sysctlImage:
+    image:
+      repository: bitnamilegacy/os-shell
+      tag: 12-debian-12-r49
+  snapshots:
+    image:
+      repository: bitnamilegacy/os-shell
+      tag: 12-debian-12-r49
+  global:
+    security:
+      allowInsecureImages: true
+
+postgresql-ha:
+  enabled: false
+
+postgresql:
+  enabled: true
+  primary:
+    persistence:
+      storageClass: "longhorn"
+      volumeName: "data"
+  auth:
+    postgresPassword: "replace example password"
+    username: "fylr"
+    password: "fylr"
+    database: "fylr"
+  # from here on, this is about using the legacy container images of bitnami
+  # https://github.com/bitnami/containers/issues/83267
+  image:
+    repository: bitnamilegacy/postgresql
+  volumePermissions:
+    image:
+      repository: bitnamilegacy/os-shell
+  metrics:
+    image:
+      repository: bitnamilegacy/postgres-exporter
+  global:
+    security:
+      allowInsecureImages: true
+

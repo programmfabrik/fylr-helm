@@ -10,58 +10,11 @@ The following steps show how to install and run *fylr* on Kubernetes. You need a
 helm repo add fylr https://programmfabrik.github.io/fylr-helm
 ```
 
-2. Create a file `values.yaml` for fylr:
+2. Create a file `values.yaml` for fylr.
 
-```yaml
-ingress:
-  enabled: true
-  className: "nginx"
-  annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
-    nginx.ingress.kubernetes.io/proxy-body-size: "0"
-    nginx.ingress.kubernetes.io/enable-modsecurity: "false"
-    nginx.ingress.kubernetes.io/proxy-request-buffering: "off"
-    nginx.ingress.kubernetes.io/proxy-send-timeout: "300"
-  hosts:
-  - host: fylr.example.com
-    paths:
-    - path: /
-      pathType: ImplementationSpecific
-  tls:
-  - secretName: fylr-example-tls
-    hosts:
-      - fylr.example.com
-fylr:
-  externalURL: "https://fylr.example.com"
-  persistent:
-    defaults:
-      originals: "disk1"
-      versions: "disk1"
-      backups: "disk1"
-    definitions:
-      disk1:
-        kind: disk
-        allowPurge: false
-        disk:
-          storageClass: "local-path"
-          accessModes: ["ReadWriteOnce"]
-          size: 10Gi
-minio:
-  enabled: false
-postgresql-ha:
-  enabled: true
-  persistence:
-    storageClass: local-path
-elasticsearch:
-  master:
-    persistence:
-      storageClass: local-path
-  data:
-    persistence:
-      storageClass: local-path
-```
+* You may look at a realistic example file [here](docs/values.yaml)
 
-You may want to replace all strings with example, local-path and letsencrypt.
+ * You probably want to replace the examples there with your ingress, storage, and all strings with `example`.
 
 3. Install the fylr Helm chart:
 
@@ -78,6 +31,10 @@ helm install ${RELEASE_NAME} fylr/fylr \
 ## Good to know
 
 With fylr chart version 0.1.127 we broke compatibility with fylr versions before 6.14 (https://github.com/programmfabrik/fylr-helm/commit/1cdebcb089438d067fd086e038b8e2ddc6d40b2a).
+
+### Breaking change by Bitnami for Indexer and PostgreSQL
+
+See [docs/bitnamilegacy.md](docs/bitnamilegacy.md).
 
 ### Storage locations known bug
 
