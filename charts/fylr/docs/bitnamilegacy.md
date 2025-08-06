@@ -1,4 +1,4 @@
-= Why other helm charts
+# Why other helm charts
 
 To get you started, the fylr Helm chart includes dependencies to PostgreSQL, and an indexers (choose Elasticsearch or Opensearch).
 
@@ -6,7 +6,7 @@ You may want to replace these by standalone clusters. Or by more recent versions
 
 But in case you do keep using them, support is not provided by us, Programmfabrik GmbH. We still share some information to ease your start.
 
-= Breaking changes
+# Breaking changes
 
 We were made aware that the mentioned Helm charts will have breaking changes by their developer, Bitnami, and want to share this with you:
 
@@ -17,15 +17,15 @@ There is a lot more to this, see: https://github.com/bitnami/containers/issues/8
 Most crucially, to prevent your installation from being unable to find container images, you can adapt your values.yaml, shown below.
 
 
-= Using Bitnami legacy containers
+# Using Bitnami legacy containers
 
 As these images will receive no security updates, even they will have to be replaced in the future. But for now, they give some breathing room.
 
 
-== PostgreSQL without high availability
+## PostgreSQL without high availability
 
 For our test, it was enough to add the part below `[...]` to values.yaml:
-```
+```yaml
 postgresql-ha:
   enabled: false
 
@@ -49,10 +49,10 @@ This is taken from https://github.com/bitnami/containers/issues/83267
 
 In case you need to add version tags, you can look up valid tags at https://hub.docker.com/u/bitnamilegacy.
 
-== PostgreSQL with high availability
+## PostgreSQL with high availability
 
 For our test, it was enough to add the part below `[...]` to values.yaml:
-```
+```yaml
 postgresql:
   enabled: false
 
@@ -78,10 +78,10 @@ postgresql-ha:
 
 In case you need to add version tags (like `12-debian-12-r49` above), you can look up valid tags at https://hub.docker.com/u/bitnamilegacy.
 
-== ElasticSearch
+## ElasticSearch
 
 For our test, it was enough to add the part below `[...]` to values.yaml:
-```
+```yaml
 opensearch:
   enabled: false
 
@@ -108,10 +108,10 @@ elasticsearch:
 
 In case you need to add version tags (like `12-debian-12-r49` above), you can look up valid tags at https://hub.docker.com/u/bitnamilegacy.
 
-== OpenSearch
+## OpenSearch
 
 For our test, it was enough to add the part below `[...]` to values.yaml:
-```
+```yaml
 elasticsearch:
   enabled: false
 

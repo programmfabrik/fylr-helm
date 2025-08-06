@@ -12,7 +12,7 @@ helm repo add fylr https://programmfabrik.github.io/fylr-helm
 
 2. Create a file `values.yaml` for fylr.
 
-* You may look at a realistic example file [here](docs/values.yaml)
+* You may look at a realistic example file [here](docs/values.yaml).
 
  * You probably want to replace the examples there with your ingress, storage, and all strings with `example`.
 
