@@ -135,7 +135,7 @@ data:
           tempDir: {{ .Values.fylr.services.execserver.tempDir }}
           {{- end }}
           {{- if .Values.fylr.services.execserver.env }}
-          env:
+          env+:
           {{- toYaml .Values.fylr.services.execserver.env | nindent 12 }}
           {{- end }}
           {{- end }}
