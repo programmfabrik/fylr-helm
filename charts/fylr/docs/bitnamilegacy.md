@@ -98,9 +98,8 @@ elasticsearch:
       repository: bitnamilegacy/os-shell
       tag: 12-debian-12-r49
   sysctlImage:
-    image:
-      repository: bitnamilegacy/os-shell
-      tag: 12-debian-12-r49
+    repository: bitnamilegacy/os-shell
+    tag: 12-debian-12-r49
   global:
     security:
       allowInsecureImages: true
