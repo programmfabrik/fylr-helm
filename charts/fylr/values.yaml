@@ -652,10 +652,6 @@ postgresql-ha:
 # for more information see: https://github.com/bitnami/charts/tree/master/bitnami/postgresql
 postgresql:
   enabled: false
-  image:
-    registry: docker.io
-    repository: bitnami/postgresql
-    tag: 16.3.0-debian-12-r18
   auth:
     postgresPassword: "fylr"
     username: "fylr"
@@ -664,6 +660,22 @@ postgresql:
   primary:
     persistence:
       storageClass: ""
+  # BEWARE: replace these, they do not get security updates, see https://github.com/bitnami/containers/issues/83267
+  image:
+    registry: docker.io
+    repository: bitnamilegacy/postgresql
+    tag: 17.6.0-debian-12-r4
+  volumePermissions:
+    image:
+      repository: bitnamilegacy/os-shell
+      tag: 12-debian-12-r51
+  metrics:
+    image:
+      repository: bitnamilegacy/postgres-exporter
+      tag: 0.17.1-debian-12-r16
+  global:
+    security:
+      allowInsecureImages: true
 
 ## If enabled, delete OpenSearch indices from the provided URL shared OpenSearch after a FYLR instance is uninstalled.
 ## The indices to delete are in this pattern releaseName-fylr-*, this pattern is used to idientify which indices to delete
