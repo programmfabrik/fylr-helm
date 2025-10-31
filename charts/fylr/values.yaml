@@ -705,30 +705,59 @@ autoDeleteIndices:
 
 ## For more infos: https://github.com/bitnami/charts/blob/main/bitnami/opensearch/values.yaml
 opensearch:
-  ## Wether to enable or disable opensearch
-  enabled: false
+  ## @param enabled: Wether to enable or disable opensearch. Programmfabrik recommends OpenSearch, so default: enabled.
+  enabled: true
   ## @param clusterName OpenSearch cluster name
-  ##
   clusterName: open
   ## @param containerPorts.restAPI OpenSearch REST API port
   ## @param containerPorts.transport OpenSearch Transport port
-  ##
   containerPorts:
     restAPI: 9200
     transport: 9300
   ## @param plugins Comma, semi-colon or space separated list of plugins to install at initialization
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/opensearch#environment-variables
-  ##
   plugins: "analysis-icu"
+
+  ## single node setup block start
+  extraEnvs:
+  - name: discovery.type
+    value: single-node
+  - name: cluster.initial_master_nodes
+    value: null
   ## @section Master-eligible nodes parameters
   master:
     ## @param master.masterOnly Deploy the OpenSearch master-eligible nodes as master-only nodes. Recommended for high-demand deployments.
-    ## If you are
-    masterOnly: true
+    masterOnly: false
     ## @param master.replicaCount Number of master-eligible replicas to deploy
-    ##
-    replicaCount: 2
-    ## @param master.extraRoles Append extra roles to the node role
+    replicaCount: 1
+  data:
+    replicaCount: 0
+  coordinating:
+    replicaCount: 0
+  ingest:
+    replicaCount: 0
+  ## single node setup block end
+
+  # BEWARE: replace these, they do not get security updates, see https://github.com/bitnami/containers/issues/83267
+  image:
+    repository: bitnamilegacy/opensearch
+  dashboards:
+    image:
+      repository: bitnamilegacy/opensearch-dashboards
+  volumePermissions:
+    image:
+      repository: bitnamilegacy/os-shell
+      tag: 12-debian-12-r51
+  sysctlImage:
+    repository: bitnamilegacy/os-shell
+    tag: 12-debian-12-r51
+  snapshots:
+    image:
+      repository: bitnamilegacy/os-shell
+      tag: 12-debian-12-r51
+  global:
+    security:
+      allowInsecureImages: true
 
 
 # @ignored defines the settings for the elasticsearch application
@@ -749,7 +778,7 @@ elasticsearch:
     security:
       allowInsecureImages: true
 
-  enabled: true
+  enabled: false
   clusterName: fylr
   ## @param plugins Comma, semi-colon or space separated list of plugins to install at initialization
   ## ref: https://github.com/bitnami/containers/tree/main/bitnami/elasticsearch#environment-variables
