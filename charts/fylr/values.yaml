@@ -734,6 +734,21 @@ opensearch:
 # @ignored defines the settings for the elasticsearch application
 # for more information see: https://github.com/bitnami/charts/blob/master/bitnami/elasticsearch/values.yaml
 elasticsearch:
+  # BEWARE: replace these, they do not get security updates, see https://github.com/bitnami/containers/issues/83267
+  image:
+    repository: bitnamilegacy/elasticsearch
+    tag: 9.1.2-debian-12-r0
+  volumePermissions:
+    image:
+      repository: bitnamilegacy/os-shell
+      tag: 12-debian-12-r51
+  sysctlImage:
+    repository: bitnamilegacy/os-shell
+    tag: 12-debian-12-r51
+  global:
+    security:
+      allowInsecureImages: true
+
   enabled: true
   clusterName: fylr
   ## @param plugins Comma, semi-colon or space separated list of plugins to install at initialization
@@ -1831,9 +1846,10 @@ elasticsearch:
     ## @param metrics.image.pullSecrets Metrics exporter image pull secrets
     ##
     image:
+      # BEWARE: replace, does not get security updates, see https://github.com/bitnami/containers/issues/83267
       registry: docker.io
-      repository: bitnami/elasticsearch-exporter
-      tag: 1.5.0-debian-11-r21
+      repository: bitnamilegacy/elasticsearch-exporter
+      tag: 1.9.0-debian-12-r16
       digest: ""
       pullPolicy: IfNotPresent
       ## Optionally specify an array of imagePullSecrets.
