@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 1.1.183](https://img.shields.io/badge/Version-1.1.183-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.26.0](https://img.shields.io/badge/AppVersion-v6.26.0-informational?style=flat-square)
+![Version: 1.1.184](https://img.shields.io/badge/Version-1.1.184-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.26.0](https://img.shields.io/badge/AppVersion-v6.26.0-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -155,10 +155,26 @@ Deploy fylr to your Kubernetes cluster
 | opensearch.clusterName | string | `"open"` |  |
 | opensearch.containerPorts.restAPI | int | `9200` |  |
 | opensearch.containerPorts.transport | int | `9300` |  |
-| opensearch.enabled | bool | `false` |  |
-| opensearch.master.masterOnly | bool | `true` |  |
-| opensearch.master.replicaCount | int | `2` |  |
+| opensearch.coordinating.replicaCount | int | `0` |  |
+| opensearch.dashboards.image.repository | string | `"bitnamilegacy/opensearch-dashboards"` |  |
+| opensearch.data.replicaCount | int | `0` |  |
+| opensearch.enabled | bool | `true` |  |
+| opensearch.extraEnvs[0].name | string | `"discovery.type"` |  |
+| opensearch.extraEnvs[0].value | string | `"single-node"` |  |
+| opensearch.extraEnvs[1].name | string | `"cluster.initial_master_nodes"` |  |
+| opensearch.extraEnvs[1].value | string | `nil` |  |
+| opensearch.global.security.allowInsecureImages | bool | `true` |  |
+| opensearch.image.repository | string | `"bitnamilegacy/opensearch"` |  |
+| opensearch.ingest.replicaCount | int | `0` |  |
+| opensearch.master.masterOnly | bool | `false` |  |
+| opensearch.master.replicaCount | int | `1` |  |
 | opensearch.plugins | string | `"analysis-icu"` |  |
+| opensearch.snapshots.image.repository | string | `"bitnamilegacy/os-shell"` |  |
+| opensearch.snapshots.image.tag | string | `"12-debian-12-r51"` |  |
+| opensearch.sysctlImage.repository | string | `"bitnamilegacy/os-shell"` |  |
+| opensearch.sysctlImage.tag | string | `"12-debian-12-r51"` |  |
+| opensearch.volumePermissions.image.repository | string | `"bitnamilegacy/os-shell"` |  |
+| opensearch.volumePermissions.image.tag | string | `"12-debian-12-r51"` |  |
 | podAnnotations | object | `{}` |  |
 | podSecurityContext | object | `{"fsGroup":2000}` | Pod security context |
 | podSecurityContext.fsGroup | int | `2000` | This is a requirement when running with attached volumes. |
