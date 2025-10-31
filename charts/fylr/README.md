@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 1.1.179](https://img.shields.io/badge/Version-1.1.179-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.26.0](https://img.shields.io/badge/AppVersion-v6.26.0-informational?style=flat-square)
+![Version: 1.1.180](https://img.shields.io/badge/Version-1.1.180-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.26.0](https://img.shields.io/badge/AppVersion-v6.26.0-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -17,7 +17,7 @@ Deploy fylr to your Kubernetes cluster
 | https://charts.bitnami.com/bitnami | elasticsearch | 19.21.2 |
 | https://charts.bitnami.com/bitnami | opensearch | 1.2.6 |
 | https://charts.bitnami.com/bitnami | postgresql | 16.7.27 |
-| https://charts.bitnami.com/bitnami | postgresql-ha | 10.0.1 |
+| https://charts.bitnami.com/bitnami | postgresql-ha | 16.3.2 |
 | https://charts.min.io/ | minio | 4.0.14 |
 | https://programmfabrik.github.io/fylr-helm | execserver | 0.1.84 |
 
