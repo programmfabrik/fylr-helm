@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 1.1.178](https://img.shields.io/badge/Version-1.1.178-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.26.0](https://img.shields.io/badge/AppVersion-v6.26.0-informational?style=flat-square)
+![Version: 1.1.179](https://img.shields.io/badge/Version-1.1.179-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.26.0](https://img.shields.io/badge/AppVersion-v6.26.0-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -16,7 +16,7 @@ Deploy fylr to your Kubernetes cluster
 |------------|------|---------|
 | https://charts.bitnami.com/bitnami | elasticsearch | 19.21.2 |
 | https://charts.bitnami.com/bitnami | opensearch | 1.2.6 |
-| https://charts.bitnami.com/bitnami | postgresql | 12.1.0 |
+| https://charts.bitnami.com/bitnami | postgresql | 16.7.27 |
 | https://charts.bitnami.com/bitnami | postgresql-ha | 10.0.1 |
 | https://charts.min.io/ | minio | 4.0.14 |
 | https://programmfabrik.github.io/fylr-helm | execserver | 0.1.84 |
@@ -167,10 +167,15 @@ Deploy fylr to your Kubernetes cluster
 | postgresql.auth.postgresPassword | string | `"fylr"` |  |
 | postgresql.auth.username | string | `"fylr"` |  |
 | postgresql.enabled | bool | `false` |  |
+| postgresql.global.security.allowInsecureImages | bool | `true` |  |
 | postgresql.image.registry | string | `"docker.io"` |  |
-| postgresql.image.repository | string | `"bitnami/postgresql"` |  |
-| postgresql.image.tag | string | `"16.3.0-debian-12-r18"` |  |
+| postgresql.image.repository | string | `"bitnamilegacy/postgresql"` |  |
+| postgresql.image.tag | string | `"17.6.0-debian-12-r4"` |  |
+| postgresql.metrics.image.repository | string | `"bitnamilegacy/postgres-exporter"` |  |
+| postgresql.metrics.image.tag | string | `"0.17.1-debian-12-r16"` |  |
 | postgresql.primary.persistence.storageClass | string | `""` |  |
+| postgresql.volumePermissions.image.repository | string | `"bitnamilegacy/os-shell"` |  |
+| postgresql.volumePermissions.image.tag | string | `"12-debian-12-r51"` |  |
 | replicaCount | int | `1` |  |
 | resources | object | `{}` |  |
 | securityContext | object | `{}` |  |
