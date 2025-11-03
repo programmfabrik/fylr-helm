@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 1.1.184](https://img.shields.io/badge/Version-1.1.184-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.26.0](https://img.shields.io/badge/AppVersion-v6.26.0-informational?style=flat-square)
+![Version: 1.1.185](https://img.shields.io/badge/Version-1.1.185-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.26.0](https://img.shields.io/badge/AppVersion-v6.26.0-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -186,9 +186,7 @@ Deploy fylr to your Kubernetes cluster
 | postgresql.global.security.allowInsecureImages | bool | `true` |  |
 | postgresql.image.registry | string | `"docker.io"` |  |
 | postgresql.image.repository | string | `"bitnamilegacy/postgresql"` |  |
-| postgresql.image.tag | string | `"17.6.0-debian-12-r4"` |  |
 | postgresql.metrics.image.repository | string | `"bitnamilegacy/postgres-exporter"` |  |
-| postgresql.metrics.image.tag | string | `"0.17.1-debian-12-r16"` |  |
 | postgresql.primary.persistence.storageClass | string | `""` |  |
 | postgresql.volumePermissions.image.repository | string | `"bitnamilegacy/os-shell"` |  |
 | postgresql.volumePermissions.image.tag | string | `"12-debian-12-r51"` |  |
