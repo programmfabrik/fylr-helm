@@ -31,7 +31,7 @@ dependencies:
     condition: minio.enabled
   # https://github.com/bitnami/charts/tree/master/bitnami/postgresql-ha
   - name: postgresql-ha
-    version: 16.3.2
+    version: 12.1.0
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql-ha.enabled
   # https://github.com/bitnami/charts/tree/master/bitnami/elasticsearch
@@ -51,6 +51,6 @@ dependencies:
     condition: execserver.enabled
   # https://github.com/bitnami/charts/tree/master/bitnami/postgresql
   - name: postgresql
-    version: 16.7.27
+    version: 12.1.0
     repository: https://charts.bitnami.com/bitnami
     condition: postgresql.enabled
