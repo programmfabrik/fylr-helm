@@ -1081,6 +1081,45 @@ entries:
     version: 0.1.1
   fylr:
   - apiVersion: v2
+    appVersion: v6.27.0
+    created: "2025-12-04T15:40:38.476240833Z"
+    dependencies:
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.min.io/
+      version: 4.0.14
+    - condition: postgresql-ha.enabled
+      name: postgresql-ha
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.1.0
+    - condition: elasticsearch.enabled
+      name: elasticsearch
+      repository: https://charts.bitnami.com/bitnami
+      version: 19.21.2
+    - condition: opensearch.enabled
+      name: opensearch
+      repository: https://charts.bitnami.com/bitnami
+      version: 1.2.6
+    - condition: execserver.enabled
+      name: execserver
+      repository: https://programmfabrik.github.io/fylr-helm
+      version: 0.1.85
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.1.0
+    description: Deploy fylr to your Kubernetes cluster
+    digest: af30b38dc898b7c4dcb04ce79a4bf629ebc4433620c5462886970658b2e70d82
+    maintainers:
+    - email: support@programmfabrik.de
+      name: programmfabrik
+      url: https://programmfabrik.de
+    name: fylr
+    type: application
+    urls:
+    - https://github.com/programmfabrik/fylr-helm/releases/download/fylr-1.1.189/fylr-1.1.189.tgz
+    version: 1.1.189
+  - apiVersion: v2
     appVersion: v6.26.0
     created: "2025-12-04T14:59:24.287873782Z"
     dependencies:
@@ -7463,4 +7502,4 @@ entries:
     urls:
     - https://github.com/programmfabrik/fylr-helm/releases/download/fylr-0.1.2/fylr-0.1.2.tgz
     version: 0.1.2
-generated: "2025-12-04T14:59:24.288451309Z"
+generated: "2025-12-04T15:40:38.47689202Z"
