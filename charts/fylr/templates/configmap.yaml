@@ -64,12 +64,14 @@ data:
         defaults:
           {{- toYaml .Values.fylr.plugin.defaults | nindent 10 }}
       allowpurge: {{ .Values.fylr.allowPurge }}
-      elastic:
+      elastic+:
         logger: {{ .Values.fylr.elastic.logger | default "" | quote }}
         parallel: {{ .Values.fylr.elastic.parallel | default 4 }}
         objectsPerJob: {{ .Values.fylr.elastic.objectsPerJob | default 100 }}
-        maxMem: {{ .Values.fylr.elastic.maxMem | default "100mb" | quote }}
         fielddata: {{ .Values.fylr.elastic.fielddata | default false }}
+        {{- if .Values.fylr.elastic.maxMem }}
+        maxMem: {{ .Values.fylr.elastic.maxMem | quote }}
+        {{- end }}
       execserver:
         parallel: {{ .Values.fylr.execserver.parallel | default 4 }}
         pluginJobTimeoutSec: {{ .Values.fylr.execserver.pluginJobTimeoutSec | default 2400 }}
