@@ -438,7 +438,7 @@ fylr:
     # -- (int) number of objects per job passed to the indexer process
     objectsPerJob: 100
     # -- (string) limit of payloads sent to Elastic
-    #maxMem: 25mb
+    maxMem: 25mb
     # -- (bool) fielddata (debug feature). if set to true, fields are mapped including their fielddata
     # in the reverse index. with that, the inspect view of the indexed version of
     # the object shows a per field list of stored terms. This can be useful for debugging
