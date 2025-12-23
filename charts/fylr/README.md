@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 1.1.192](https://img.shields.io/badge/Version-1.1.192-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.28.0](https://img.shields.io/badge/AppVersion-v6.28.0-informational?style=flat-square)
+![Version: 1.1.193](https://img.shields.io/badge/Version-1.1.193-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.28.0](https://img.shields.io/badge/AppVersion-v6.28.0-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -63,6 +63,7 @@ Deploy fylr to your Kubernetes cluster
 | fylr.elastic.addresses | list | `["http://localhost:9200"]` | addresses of the elastic servers NOTE: This is ignored if elasticsearch.enabled is set to true. |
 | fylr.elastic.fielddata | bool | `false` | fielddata (debug feature). if set to true, fields are mapped including their fielddata in the reverse index. with that, the inspect view of the indexed version of the object shows a per field list of stored terms. This can be useful for debugging of analyzer settings. |
 | fylr.elastic.logger | string | `""` | logger used for the elastic client "Text": TextLogger prints the log message in plain text. "Color": ColorLogger prints the log message in a terminal-optimized plain text. "Curl": CurlLogger prints the log message as a runnable curl command. "JSON": JSONLogger prints the log message as JSON. |
+| fylr.elastic.maxMem | string | `"25mb"` | limit of payloads sent to Elastic |
 | fylr.elastic.objectsPerJob | int | `100` | number of objects per job passed to the indexer process |
 | fylr.elastic.parallel | int | `4` | number of parallel workers to index documents, default to 1, set to 0 to disable |
 | fylr.elastic.password | string | `""` | password for the elastic server NOTE: This is ignored if elasticsearch.enabled is set to true. |
