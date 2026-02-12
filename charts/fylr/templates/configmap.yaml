@@ -61,6 +61,8 @@ data:
       plugin:
         paths:
           {{- toYaml .Values.fylr.plugin.paths | nindent 10 }}
+        urls:
+          {{- toYaml .Values.fylr.plugin.urls | nindent 10 }}
         defaults:
           {{- toYaml .Values.fylr.plugin.defaults | nindent 10 }}
       allowpurge: {{ .Values.fylr.allowPurge }}

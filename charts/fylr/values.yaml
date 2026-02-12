@@ -404,7 +404,6 @@ fylr:
       - "/fylr/files/plugins/easydb/easydb-drupal-plugin"
       - "/fylr/files/plugins/easydb/easydb-easydb4migration-plugin"
       - "/fylr/files/plugins/easydb/easydb-editor-tagfilter-defaults-plugin"
-      - "/fylr/files/plugins/easydb/easydb-eventmanager-plugin"
       - "/fylr/files/plugins/easydb/easydb-export-transport-ftp-plugin"
       - "/fylr/files/plugins/easydb/easydb-falconio-plugin"
       - "/fylr/files/plugins/easydb/easydb-hijri-gregorian-converter-plugin"
@@ -414,6 +413,9 @@ fylr:
       - "/fylr/files/plugins/easydb/easydb-remote-plugin"
       - "/fylr/files/plugins/easydb/easydb-typo3-plugin"
       - "/fylr/files/plugins/easydb/easydb-wordpress-plugin"
+    urls:
+      - "https://github.com/programmfabrik/fylr-plugin-server-pdf/releases/latest/download/fylr-plugin-server-pdf.zip"
+
     # -- (object) explicitly defines settings for the plugin with the given name.
     defaults:
       # -- (object) a plugin to be configured (by name)
@@ -422,6 +424,16 @@ fylr:
         enabled: false
         # -- (string) update_policy: automatic, always, never, defaults to automatic
         update: "never"
+      example-plugin:
+        # enable, set to false to disable the plugin, defaults to true
+        enabled: false
+        # update_policy: automatic, always, never, defaults to automatic
+        update: "never"
+      server-pdf:
+        enabled: true
+      pdf-creator:
+        enabled: true
+
   elastic:
     # -- (string) logger used for the elastic client
     # "Text": TextLogger prints the log message in plain text.
