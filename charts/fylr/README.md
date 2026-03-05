@@ -75,6 +75,25 @@ Note: fylr does not create the bucket.
 
 Depending on your configuration, you can deploy fylr with a persistent volume. If you do this, these volumes are created once and are not deleted when you uninstall fylr. If you want to delete the volumes, you must do so manually.
 
+### Help against excessive memory use
+
+Additionally to kubernetes memory limits you can also direct the GO-Lang mechanisms to aim for a specific maximum memory use. This has in the past helped preventing Out-of-memory-kills by kubernetes.
+
+To use this, set the GOMEMLIMIT environment variable to 90% of the hard limit.
+
+In values.yaml for an example of 10G:
+```
+extraEnvVars:
+  - name: GOMEMLIMIT
+    value: 9GiB
+
+resources:
+  limits:
+    memory: 10Gi
+```
+
+This is not applicable to the memory usage of the execserver starting 3rd party tools, as they are not affected by Go mechanisms.
+
 ### Secrets
 
 - `fylr*utils`
