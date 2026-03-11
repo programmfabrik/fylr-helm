@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 1.1.197](https://img.shields.io/badge/Version-1.1.197-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.29.1](https://img.shields.io/badge/AppVersion-v6.29.1-informational?style=flat-square)
+![Version: 1.1.198](https://img.shields.io/badge/Version-1.1.198-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.29.1](https://img.shields.io/badge/AppVersion-v6.29.1-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
