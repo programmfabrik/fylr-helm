@@ -628,6 +628,9 @@ autoManageDB:
   user: "fylr_user" 
   # The password to assign to the user $user created in the $pghost database server.
   password: "securepassword"
+autoCleanS3objects:
+  # Set this to true to enable automatic cleanup of S3 objects from the bucket configured in the persistence section once the chart is uninstalled.
+  enabled: false
 
 # @ignored defines the settings for the postgresql application
 # for more information see: https://github.com/bitnami/charts/tree/master/bitnami/postgresql-ha

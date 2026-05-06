@@ -1,0 +1,82 @@
+{{- if and .Values.autoCleanS3objects.enabled (has "s3" (values .Values.fylr.persistent.defaults)) }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: auto-s3objects-delete-{{ .Release.Name }}
+  # It should be the default ns as the release ns will be gone when this hook will run, so do not change
+  namespace: default
+  labels:
+    {{- include "fylr.labels" . | nindent 4 }}
+  annotations:
+    # post delete won't properly work because we're relying on the s3 secret having the s3 creds, if we use post delete, the secret is already gone
+    "helm.sh/hook": "pre-delete"
+    "helm.sh/hook-weight": "0"
+    "helm.sh/hook-delete-policy": before-hook-creation,hook-succeeded
+
+spec:
+  template: 
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - image: alpine:3.23.3
+          name: s3-cleaning
+          command:
+            - /bin/sh
+            - -c
+            - |
+              apk add --no-cache aws-cli
+              echo "Starting cleanup of prefix $S3_PREFIX from the bucket $S3_BUCKET ..."
+              
+              aws s3api list-objects-v2 \
+                --bucket $S3_BUCKET \
+                --prefix "$S3_PREFIX" \
+                --endpoint-url $S3_ENDPOINT \
+                --region $S3_REGION \
+                --query "Contents[].Key" \
+                --output text | tr '\t' '\n' | \
+              xargs -P 10 -I {} aws s3api delete-object \
+                --bucket $S3_BUCKET \
+                --key "{}" \
+                --endpoint-url $S3_ENDPOINT \
+                --region $S3_REGION
+
+              echo "Cleanup complete."
+          env:
+            - name: AWS_ACCESS_KEY_ID
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.storage.name" . }}
+                  key: CFG_FYLR_DB_INIT_LOCATIONS_s3_CONFIG_S3_ACCESSKEY
+
+            - name: AWS_SECRET_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.storage.name" . }}
+                  key: CFG_FYLR_DB_INIT_LOCATIONS_s3_CONFIG_S3_SECRETKEY
+
+            - name: S3_BUCKET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.storage.name" . }}
+                  key: CFG_FYLR_DB_INIT_LOCATIONS_s3_CONFIG_S3_BUCKET
+
+            - name: S3_REGION
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.storage.name" . }}
+                  key: CFG_FYLR_DB_INIT_LOCATIONS_s3_CONFIG_S3_REGION
+
+            - name: S3_ENDPOINT
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.storage.name" . }}
+                  key: CFG_FYLR_DB_INIT_LOCATIONS_s3_CONFIG_S3_ENDPOINT
+
+            - name: S3_PREFIX
+              valueFrom:
+                secretKeyRef:
+                  name: {{ include "fylr.secret.storage.name" . }}
+                  key: CFG_FYLR_DB_INIT_LOCATIONS_s3_PREFIX
+            - name: AWS_CLI_DEBUG
+              value: "true"
+{{- end }}
