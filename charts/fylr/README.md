@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 1.1.205](https://img.shields.io/badge/Version-1.1.205-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.32.0](https://img.shields.io/badge/AppVersion-v6.32.0-informational?style=flat-square)
+![Version: 1.1.206](https://img.shields.io/badge/Version-1.1.206-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.32.0](https://img.shields.io/badge/AppVersion-v6.32.0-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -26,6 +26,7 @@ Deploy fylr to your Kubernetes cluster
 | Key | Type | Default | Description |
 |-----|------|---------|-------------|
 | affinity | object | `{}` |  |
+| autoCleanS3objects.enabled | bool | `false` |  |
 | autoDeleteIndices.enabled | bool | `false` |  |
 | autoDeleteIndices.openseachEndpoint | string | `"url"` |  |
 | autoManageDB.enabled | bool | `false` |  |
