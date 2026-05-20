@@ -71,6 +71,19 @@ You may place assets and backups into e.g. amazon s3 instead of kubernetes volum
 
 Note: fylr does not create the bucket.
 
+### s3 auto cleanup
+
+When deleting an instance, this triggers the deletion of the directory of the instance in S3.
+
+For more information, ask haziz@dam-united.com.
+
+Include in your values.yaml:
+
+```yaml
+autoCleanS3objects:
+  enabled: true
+```
+
 ### Persistent Volumes
 
 Depending on your configuration, you can deploy fylr with a persistent volume. If you do this, these volumes are created once and are not deleted when you uninstall fylr. If you want to delete the volumes, you must do so manually.
