@@ -29,11 +29,12 @@ spec:
               
               aws s3api list-objects-v2 \
                 --bucket $S3_BUCKET \
-                --prefix "$S3_PREFIX" \
+                --prefix "$S3_PREFIX"fylr- \
                 --endpoint-url $S3_ENDPOINT \
                 --region $S3_REGION \
                 --query "Contents[].Key" \
                 --output text | tr '\t' '\n' | \
+              tee /dev/stderr | \
               xargs -P 10 -I {} aws s3api delete-object \
                 --bucket $S3_BUCKET \
                 --key "{}" \
