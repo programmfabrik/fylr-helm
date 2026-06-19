@@ -64,6 +64,11 @@ service:
 # -- extra environment variables
 extraEnvVars: []
 
+# -- extra volume mounts
+extraVolumes: []
+extraVolumeMounts: []
+
+
 # -- Whether to configure monitoring for the application
 monitoring:
   # -- Whether to create a ServiceMonitor resource for Prometheus Operator
