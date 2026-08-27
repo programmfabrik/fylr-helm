@@ -11,11 +11,12 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      # the webapp Service, not the release: this chart names no Service after
-      # the release itself, so the bare fullname never resolved
+      # The backend, not the webapp: the webapp answers any request whose Host
+      # is not fylr.externalURL with a redirect to it, and that host does not
+      # resolve inside the cluster. /healthz is what the probes use.
       args:
         - '-q'
         - '-O'
         - '/dev/null'
-        - 'http://{{ include "fylr.service-webapp-name" . }}:{{ .Values.services.webapp.port }}/'
+        - 'http://{{ include "fylr.service-backend-name" . }}:{{ .Values.services.backend.port }}/healthz'
   restartPolicy: Never

@@ -186,9 +186,8 @@ jobs:
             -f ci/values-ci.yaml \
             --wait --timeout 20m
 
-      - name: Chart tests
-        run: helm test "$RELEASE" --namespace "$NAMESPACE" --timeout 10m
-
+      # Before helm test on purpose: the chart's own hooks are the weaker
+      # signal, and a failure in one would otherwise hide the smoke result.
       - name: Smoke test the API
         env:
           HOST: fylr.test
@@ -196,6 +195,9 @@ jobs:
           APP_VERSION=$(awk -F'"' '/^appVersion:/ {print $2}' charts/fylr/Chart.yaml)
           echo "chart appVersion: $APP_VERSION"
           BASE="http://$(minikube ip)" EXPECT_VERSION="$APP_VERSION" ./ci/smoke.sh
+
+      - name: Chart tests
+        run: helm test "$RELEASE" --namespace "$NAMESPACE" --timeout 10m
 
       - name: Collect cluster state
         if: always()
