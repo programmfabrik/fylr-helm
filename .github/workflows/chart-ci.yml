@@ -201,7 +201,11 @@ jobs:
       # once minio has finished is what an operator has to do as well.
       - name: Restart fylr once minio has finished its setup hooks
         run: |
-          kubectl -n "$NAMESPACE" wait --for=condition=complete --timeout=5m job --all || true
+          # the hooks carry hook-delete-policy: hook-succeeded, so by the time
+          # helm returns there is usually nothing left to wait for
+          if [ -n "$(kubectl -n "$NAMESPACE" get jobs -o name 2>/dev/null)" ]; then
+            kubectl -n "$NAMESPACE" wait --for=condition=complete --timeout=5m job --all
+          fi
           kubectl -n "$NAMESPACE" rollout restart deployment "$RELEASE-fylr"
           kubectl -n "$NAMESPACE" rollout status deployment "$RELEASE-fylr" --timeout=10m
 

@@ -11,6 +11,7 @@
 #   BASE            where the ingress answers, e.g. http://192.168.49.2
 #   HOST            Host header to send, must match fylr.externalURL's host
 #   EXPECT_VERSION  chart appVersion; asserted against the running instance
+#   READY_TIMEOUT   seconds to wait for the ingress to route (default 180)
 #   PRODUCE_TIMEOUT seconds to wait for the upload's versions (default 300)
 
 set -euo pipefail
@@ -22,6 +23,7 @@ LOGIN=${LOGIN:-root}
 PASSWORD=${PASSWORD:-admin}
 EXPECT_VERSION=${EXPECT_VERSION:-}
 EXPECT_EXTERNAL_URL=${EXPECT_EXTERNAL_URL:-http://$HOST}
+READY_TIMEOUT=${READY_TIMEOUT:-180}
 PRODUCE_TIMEOUT=${PRODUCE_TIMEOUT:-300}
 
 TOKEN=""
@@ -55,6 +57,26 @@ api() {
 # not what we expected. Callers report BODY themselves, so a parse failure
 # never hides the response that caused it.
 jqf() { jq -r "$@" <<< "$BODY" 2>/dev/null || true; }
+
+# ---------------------------------------------------------------------------
+# A ready fylr pod is not yet a routable one: the ingress controller picks up
+# the new endpoint on its own schedule, and a 502 from nginx in the first
+# assertion reads like fylr rejecting the login. Wait for the ingress to reach
+# fylr at all before testing what fylr does.
+
+step "the ingress routes to fylr (max ${READY_TIMEOUT}s)"
+deadline=$((SECONDS + READY_TIMEOUT))
+while [ $SECONDS -lt $deadline ]; do
+    api GET /api/v1/settings
+    case "$CODE" in
+        000|502|503|504) sleep 3 ;;
+        *) break ;;
+    esac
+done
+case "$CODE" in
+    000|502|503|504) fail "the ingress still answers $CODE after ${READY_TIMEOUT}s: $BODY" ;;
+esac
+echo "ingress answers $CODE"
 
 # ---------------------------------------------------------------------------
 
