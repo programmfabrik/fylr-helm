@@ -50,8 +50,10 @@ external_url=$(jq -r '.external_url // empty' <<< "$settings")
 [ -n "$version" ] || fail "no version in /api/v1/settings: $settings"
 echo "version=$version external_url=$external_url"
 
-if [ -n "$EXPECT_VERSION" ] && [ "$version" != "${EXPECT_VERSION#v}" ]; then
-    fail "chart appVersion is $EXPECT_VERSION but the instance reports $version"
+# compared without the leading v, which Chart.yaml and /api/v1/settings both
+# carry today but neither promises
+if [ -n "$EXPECT_VERSION" ] && [ "${version#v}" != "${EXPECT_VERSION#v}" ]; then
+    fail "chart appVersion is ${EXPECT_VERSION#v} but the instance reports ${version#v}"
 fi
 if [ "${external_url%/}" != "${EXPECT_EXTERNAL_URL%/}" ]; then
     fail "instance reports external_url $external_url, expected $EXPECT_EXTERNAL_URL"
