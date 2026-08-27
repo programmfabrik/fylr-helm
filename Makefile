@@ -37,7 +37,7 @@ lint-execserver:
 lint-fylr:
 	ct lint \
 		--charts charts/fylr \
-		--chart-dirs charts/fylr \
+		--chart-dirs charts/ \
 		--chart-yaml-schema config/chart_schema.yaml \
 		--lint-conf config/lintconf.yaml \
 		--debug \
