@@ -11,7 +11,7 @@ image:
   # -- (string) Docker image pull policy. See https://kubernetes.io/docs/concepts/containers/images/#updating-images
   pullPolicy: IfNotPresent
   # -- (string) Overrides the image tag whose default is the chart appVersion.
-  #tag: "v6.8.2"
+  # tag: "v6.8.2"
 
 imagePullSecrets: []
 nameOverride: ""
@@ -367,13 +367,13 @@ fylr:
           username: ""
 
       # -- (object) Inline base config. Default is empty.
-      #config:
-        #system:
-          #config:
+      # config:
+        # system:
+          # config:
             # example: enable the service to send emails.
             # docs: https://docs.fylr.io/for-system-administrators/configuration/pre-load-frontend-config
-            #notification_scheduler:
-              #active: true
+            # notification_scheduler:
+              # active: true
 
   # -- (object) defines plugin settings
   plugin:
@@ -491,7 +491,7 @@ fylr:
         allowHttpRedirects: true
         # -- (object) additional oauth2 clients to be added to the oauth2 server.
         # For the web application, we automatically generate a key pair and assign it to the oauth2 client.
-        #clients:
+        # clients:
           # my-client-id:
           #   # secret must be given as bcrypt hash
           #   secret: $2y$04$81xGNnm8PS1uiIzjbos6Le3NzFaNB0goNqnBpOx7S/EyrayzJCNAq # foo
@@ -529,7 +529,7 @@ execserver:
     pullPolicy: IfNotPresent
     # -- The image tag
     # Overrides the image tag whose default value is the appVersion of the chart.
-    #tag: "v6.8.2"
+    # tag: "v6.8.2"
 
 # -- Pod Security Context. See https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
   podSecurityContext:
@@ -618,14 +618,14 @@ minio:
 autoManageDB:
   # Set to true to enable auto creation/deletion
   enabled: false
-  # Database Postgres URl 
-  pghost: "url" 
+  # Database Postgres URl
+  pghost: "url"
   pgUser: "super user"
   pgPass: "super pass"
   # database name to create in the $pghost database server.
   name: "fylr_db"
   # The user owning the database to create in the $pghost database server.
-  user: "fylr_user" 
+  user: "fylr_user"
   # The password to assign to the user $user created in the $pghost database server.
   password: "securepassword"
 autoCleanS3objects:
