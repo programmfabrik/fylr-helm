@@ -127,6 +127,14 @@ a single postgres rather than `postgresql-ha`, one minio, smaller volumes — an
 enables the three probes the chart ships switched off. Nothing in it changes
 how fylr itself is configured.
 
+The job restarts fylr between installing and smoke testing. That is not
+cosmetic: minio creates its bucket, its policy and the user fylr authenticates
+as in `post-install` hooks, so none of them exist while the rest of the release
+comes up, and fylr connects its storage locations once at startup without ever
+retrying one that failed. A fresh install with the bundled minio therefore
+always leaves the S3 location in `error`, and uploads fail until fylr is
+restarted — with the chart's own values as much as with these.
+
 To reproduce against your own cluster:
 
 ```bash

@@ -147,8 +147,14 @@ jobs:
           helm repo add bitnami https://charts.bitnami.com/bitnami
           helm repo add programmfabrik https://programmfabrik.github.io/fylr-helm
 
+      # minikube resolves the requested Kubernetes version against the GitHub
+      # API. Unauthenticated that is rate limited per runner IP, which these
+      # runners share - one run died on "403 API rate limit exceeded" before
+      # the cluster existed. The automatic token lifts the limit.
       - name: Start minikube
         uses: medyagh/setup-minikube@v0.0.21
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           kubernetes-version: v${{ matrix.kubernetes_version }}
           driver: docker
@@ -185,6 +191,19 @@ jobs:
             --namespace "$NAMESPACE" --create-namespace \
             -f ci/values-ci.yaml \
             --wait --timeout 20m
+
+      # minio creates its bucket, its policy and the user fylr authenticates as
+      # in post-install hooks, so none of them exist while every other resource
+      # is coming up. fylr connects its storage locations once at startup and
+      # never retries one that failed (internal/global/storage_location.go), so
+      # a fresh install with the bundled minio always lands with the S3
+      # location in "error" and cannot store a single file. Restarting fylr
+      # once minio has finished is what an operator has to do as well.
+      - name: Restart fylr once minio has finished its setup hooks
+        run: |
+          kubectl -n "$NAMESPACE" wait --for=condition=complete --timeout=5m job --all || true
+          kubectl -n "$NAMESPACE" rollout restart deployment "$RELEASE-fylr"
+          kubectl -n "$NAMESPACE" rollout status deployment "$RELEASE-fylr" --timeout=10m
 
       # Before helm test on purpose: the chart's own hooks are the weaker
       # signal, and a failure in one would otherwise hide the smoke result.
