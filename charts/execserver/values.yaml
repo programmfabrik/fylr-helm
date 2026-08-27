@@ -139,6 +139,12 @@ tolerations: []
 # -- The affinity settings to use. See https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
 affinity: {}
 
+# -- Settings for the `helm test` hook
+tests:
+  # -- (string) Comma separated execserver services the test requires the
+  # deployment to know. A service missing from the image fails the test.
+  validationServices: "node,python3,convert,ffmpeg,soffice,metadata,pdf2pages,xslt,iiif"
+
 # -- Application configuration
 fylr:
   # -- Log settings

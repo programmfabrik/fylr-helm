@@ -11,5 +11,11 @@ spec:
     - name: wget
       image: busybox
       command: ['wget']
-      args: ['{{ include "fylr.fullname" . }}:{{ .Values.services.webapp.port }}']
+      # the webapp Service, not the release: this chart names no Service after
+      # the release itself, so the bare fullname never resolved
+      args:
+        - '-q'
+        - '-O'
+        - '/dev/null'
+        - 'http://{{ include "fylr.service-webapp-name" . }}:{{ .Values.services.webapp.port }}/'
   restartPolicy: Never
