@@ -1,0 +1,22 @@
+# The optional resources of the standalone execserver chart: autoscaling, an
+# ingress, a persistent /tmp and both Prometheus Operator monitors.
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 8
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: execserver.example.org
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+persistent:
+  tmp:
+    enabled: true
+monitoring:
+  service:
+    enabled: true
+  pod:
+    enabled: true

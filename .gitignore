@@ -1,1 +1,3 @@
 .envrc
+# ci/render-check.sh output
+_render/

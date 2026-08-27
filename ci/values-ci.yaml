@@ -1,0 +1,71 @@
+# The stack the CI installs on minikube (#80603).
+#
+# GitHub-hosted runners give a public repository 4 vCPU and 16 GB, which the
+# chart's defaults do not fit: postgresql-ha is three pods behind pgpool and
+# minio defaults to a distributed ring. Everything here is a size reduction or
+# a CI address — nothing changes how fylr itself is configured, so what runs is
+# still the shipped chart.
+#
+# The release MUST be named "testinstance": values.yaml hard-codes the minio
+# endpoint as http://testinstance-minio:9000.
+
+# A single postgres rather than the repmgr/pgpool trio.
+postgresql-ha:
+  enabled: false
+postgresql:
+  enabled: true
+  primary:
+    persistence:
+      size: 2Gi
+
+# One node, one disk. The distributed ring needs four.
+minio:
+  mode: standalone
+  replicas: 1
+  persistence:
+    size: 2Gi
+  resources:
+    requests:
+      memory: 256Mi
+      cpu: 100m
+
+# opensearch is already single-node in values.yaml (master.replicaCount 1, the
+# other roles 0); only the disk is oversized for a run that indexes one object.
+opensearch:
+  master:
+    persistence:
+      size: 2Gi
+
+execserver:
+  replicaCount: 1
+
+# minikube's ingress addon answers on the node IP; ci/smoke.sh sends the Host
+# header. externalURL has to agree with it or the oauth2 redirects point
+# somewhere the test cannot follow.
+ingress:
+  enabled: true
+  className: nginx
+  hosts:
+    - host: fylr.test
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+
+fylr:
+  externalURL: http://fylr.test
+
+  # Fixed, so a restarted pod can still read what the previous one encrypted.
+  encryptionKey: "ci-only-encryption-key-not-a-secret"
+
+  # The chart ships all three off. Enabled here so `helm --wait` waits for a
+  # fylr that actually serves, and so CI is the place a broken probe surfaces
+  # rather than a customer's rollout.
+  startupProbe:
+    enabled: true
+    failureThreshold: 120
+  readinessProbe:
+    enabled: true
+    periodSeconds: 10
+  livenessProbe:
+    enabled: true
+    periodSeconds: 30

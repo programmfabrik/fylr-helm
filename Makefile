@@ -107,3 +107,41 @@ uninstall-fylr:
 	helm uninstall testinstance \
 		--namespace ${NAMESPACE} \
 		--kubeconfig ${KUBE_CONFIG}
+
+# ---------------------------------------------------------------------------
+# CI (#80603). The same three steps GitHub Actions runs, so a failure there is
+# reproducible on any cluster.
+
+RELEASE?=testinstance
+CI_NAMESPACE?=fylr-ci
+
+# render-check: render every case in ci/render-cases/ and validate the
+# manifests. Needs helm and kubeconform, no cluster.
+.PHONY: render-check
+render-check:
+	./ci/render-check.sh
+
+# ci-install: install the chart with the slimmed CI values. The release name is
+# fixed because values.yaml hard-codes the minio endpoint as
+# http://testinstance-minio:9000.
+.PHONY: ci-install
+ci-install:
+	helm dependency build charts/fylr
+	helm upgrade --install ${RELEASE} charts/fylr \
+		--namespace ${CI_NAMESPACE} \
+		--create-namespace \
+		-f ci/values-ci.yaml \
+		--wait --timeout 20m
+	helm test ${RELEASE} --namespace ${CI_NAMESPACE} --timeout 10m
+
+# ci-smoke: drive the API of an installed release. BASE has to point at the
+# ingress; on minikube that is the node address.
+.PHONY: ci-smoke
+ci-smoke:
+	BASE=$${BASE:-http://$$(minikube ip)} \
+	EXPECT_VERSION=$$(awk -F'"' '/^appVersion:/ {print $$2}' charts/fylr/Chart.yaml) \
+	./ci/smoke.sh
+
+.PHONY: ci-uninstall
+ci-uninstall:
+	helm uninstall ${RELEASE} --namespace ${CI_NAMESPACE}

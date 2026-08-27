@@ -1,0 +1,2 @@
+# The chart as it ships: postgresql-ha, opensearch, minio, execserver, ingress.
+# Empty on purpose — the case is "values.yaml unchanged".

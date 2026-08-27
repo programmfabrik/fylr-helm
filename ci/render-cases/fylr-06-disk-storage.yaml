@@ -1,0 +1,34 @@
+# Disk locations instead of S3, plus the two optional volumes. Exercises the
+# persistentVolumeClaim template and the volume-mount helpers, none of which
+# the S3 default reaches.
+minio:
+  enabled: false
+fylr:
+  persistent:
+    tmp:
+      enabled: true
+      accessModes: ["ReadWriteOnce"]
+      size: 5Gi
+    webDAVHotfolder:
+      enabled: true
+      accessModes: ["ReadWriteOnce"]
+      size: 5Gi
+    defaults:
+      originals: disk1
+      versions: disk2
+      backups: disk2
+    definitions:
+      disk1:
+        kind: disk
+        allowPurge: false
+        disk:
+          storageClass: ""
+          accessModes: ["ReadWriteOnce"]
+          size: 5Gi
+      disk2:
+        kind: disk
+        allowPurge: false
+        disk:
+          storageClass: ""
+          accessModes: ["ReadWriteOnce"]
+          size: 5Gi

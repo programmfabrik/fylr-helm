@@ -1,0 +1,6 @@
+# A single postgres instead of the repmgr/pgpool pair. This is what the CI
+# install runs and what most small deployments use.
+postgresql-ha:
+  enabled: false
+postgresql:
+  enabled: true

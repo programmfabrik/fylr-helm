@@ -90,3 +90,57 @@ make uninstall-execserver
 ```bash
 make uninstall-fylr
 ```
+
+------
+
+## Continuous integration
+
+`.github/workflows/chart-ci.yml` runs on every push that touches `charts/`,
+`ci/` or the `Makefile`, and on pull requests against `main`.
+
+### render
+
+Lints both charts with `ct`, then renders each overlay in `ci/render-cases/`
+and validates every manifest against the Kubernetes API schemas for two
+Kubernetes versions. No cluster, about a minute. Reproduce it locally with
+[helm](https://helm.sh) and [kubeconform](https://github.com/yannh/kubeconform)
+installed:
+
+```bash
+make render-check
+```
+
+A case file is named `<chart>-<nn>-<slug>.yaml` and is a values overlay for
+`charts/<chart>`. Add one whenever a combination of values ought to keep
+working — an overlay costs a second and covers a shape nobody installs by hand.
+
+### install and smoke
+
+Installs `charts/fylr` on a single-node minikube cluster and drives the API:
+authenticate, check the running version and external URL against the chart,
+upload an image, wait for the execserver to produce its versions, and search.
+`helm test` on its own only wgets a port, which a fylr that cannot reach its
+database still answers.
+
+`ci/values-ci.yaml` slims the stack to what a GitHub-hosted runner can hold —
+a single postgres rather than `postgresql-ha`, one minio, smaller volumes — and
+enables the three probes the chart ships switched off. Nothing in it changes
+how fylr itself is configured.
+
+To reproduce against your own cluster:
+
+```bash
+make ci-install
+```
+
+```bash
+make ci-smoke
+```
+
+`ci-smoke` reads the ingress address from `minikube ip`; set `BASE` to override
+it. The release must be called `testinstance`, because `values.yaml` hard-codes
+the minio endpoint as `http://testinstance-minio:9000`.
+
+```bash
+make ci-uninstall
+```

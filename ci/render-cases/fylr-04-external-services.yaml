@@ -1,0 +1,41 @@
+# Every dependency lives outside the release: a managed database, a managed
+# index, an S3 provider, and a shared execserver pool addressed by URL. Nothing
+# but fylr itself is deployed.
+postgresql-ha:
+  enabled: false
+postgresql:
+  enabled: false
+opensearch:
+  enabled: false
+elasticsearch:
+  enabled: false
+minio:
+  enabled: false
+execserver:
+  enabled: false
+fylr:
+  externalURL: https://fylr.example.org
+  db:
+    postgres:
+      host: postgres.example.org
+      port: 5432
+      user: fylr
+      password: fylr
+      database: fylr
+      sslmode: require
+  elastic:
+    addresses:
+      - https://opensearch.example.org:9200
+  execserver:
+    addresses:
+      - http://execserver-pool.example.org:7070
+  persistent:
+    definitions:
+      s3:
+        s3:
+          endpoint: https://s3.example.org
+          bucket: fylr
+          accessKey: key
+          secretKey: secret
+          useSSL: true
+          allowRedirect: true

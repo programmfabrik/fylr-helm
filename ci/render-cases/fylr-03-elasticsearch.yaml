@@ -1,0 +1,6 @@
+# Elasticsearch instead of OpenSearch. Renders a different subchart entirely,
+# so it breaks independently of the default.
+opensearch:
+  enabled: false
+elasticsearch:
+  enabled: true

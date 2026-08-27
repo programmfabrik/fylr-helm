@@ -1,0 +1,18 @@
+# Everything the chart leaves off by default: the three probes, the HPA, and
+# the Prometheus ServiceMonitor. The ServiceMonitor is a CRD, so this case is
+# what makes the CRD schema lookup in the render job worth having.
+fylr:
+  startupProbe:
+    enabled: true
+  readinessProbe:
+    enabled: true
+  livenessProbe:
+    enabled: true
+autoscaling:
+  enabled: true
+  minReplicas: 2
+  maxReplicas: 6
+monitoring:
+  enabled: true
+  serviceMonitor:
+    enabled: true

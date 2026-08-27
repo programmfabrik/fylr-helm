@@ -1,0 +1,224 @@
+name: chart CI
+
+# Replaces the two "module tests" workflows, which were disabled and had never
+# run (#80603). Every job here runs on GitHub-hosted runners: this repository
+# is public, and the organisation's self-hosted runner groups do not admit
+# public repositories.
+
+on:
+  push:
+    branches:
+      - "**"
+    paths:
+      - charts/**
+      - ci/**
+      - Makefile
+      - .github/workflows/chart-ci.yml
+  pull_request:
+    branches:
+      - main
+    paths:
+      - charts/**
+      - ci/**
+      - Makefile
+      - .github/workflows/chart-ci.yml
+  workflow_dispatch:
+
+# Chart pushes come in bursts (the release flow lands two commits in a row) and
+# a pull request from a branch in this repository would otherwise be built
+# twice, once per event. Keying on the branch NAME makes both events land in
+# the same group, so only the newest run of a branch holds a cluster.
+concurrency:
+  group: chart-ci-${{ github.event.pull_request.head.ref || github.ref_name }}
+  cancel-in-progress: true
+
+env:
+  HELM_VERSION: v3.19.0
+  CT_VERSION: v3.14.0
+  KUBECONFORM_VERSION: v0.8.0
+  # The release name is not free: values.yaml hard-codes the minio endpoint as
+  # http://testinstance-minio:9000.
+  RELEASE: testinstance
+  NAMESPACE: fylr-ci
+
+jobs:
+  # Renders both charts across the overlays in ci/render-cases/ and validates
+  # every manifest against the Kubernetes schemas. No cluster, ~1 minute, and
+  # it is what catches an apiVersion the charts outlived.
+  render:
+    name: render (k8s ${{ matrix.kubernetes_version }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # The upper bound is the newest Kubernetes kubeconform's schema
+        # repository publishes, which trails upstream by a release or two.
+        kubernetes_version: ["1.33.0", "1.36.0"]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # ct compares against the target branch to decide what changed and
+          # whether the chart version was bumped
+          fetch-depth: 0
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v5
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Add chart repositories
+        run: |
+          helm repo add minio https://charts.min.io/
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add programmfabrik https://programmfabrik.github.io/fylr-helm
+
+      # ct lint runs Yamale and yamllint, both Python
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Set up chart-testing
+        uses: helm/chart-testing-action@v2
+        with:
+          version: ${{ env.CT_VERSION }}
+
+      - name: Lint both charts
+        env:
+          EXTRA_ARGS: --target-branch ${{ github.event.repository.default_branch }}
+        run: make lint
+
+      - name: Install kubeconform
+        run: |
+          curl -fsSL "https://github.com/yannh/kubeconform/releases/download/${KUBECONFORM_VERSION}/kubeconform-linux-amd64.tar.gz" \
+            | sudo tar -xz -C /usr/local/bin kubeconform
+          kubeconform -v
+
+      - name: Render and validate every case
+        env:
+          KUBE_VERSION: ${{ matrix.kubernetes_version }}
+        run: ./ci/render-check.sh
+
+      - name: Upload rendered manifests
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: rendered-manifests-${{ matrix.kubernetes_version }}
+          path: _render/
+          retention-days: 5
+
+  # Installs charts/fylr on a real single-node cluster and drives the API.
+  # `helm test` alone only wgets a port; ci/smoke.sh proves the database
+  # secret, the minio location, the execserver Service and the index.
+  install-smoke:
+    name: install and smoke (k8s ${{ matrix.kubernetes_version }})
+    runs-on: ubuntu-latest
+    needs:
+      - render
+    strategy:
+      fail-fast: false
+      matrix:
+        # The upper bound is the newest Kubernetes kubeconform's schema
+        # repository publishes, which trails upstream by a release or two.
+        kubernetes_version: ["1.33.0", "1.36.0"]
+    steps:
+      # The execserver image is ~5.5 GB unpacked and the runner ships with
+      # ~21 GB free. Dropping the toolchains this job never uses buys ~20 GB.
+      - name: Free disk space
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
+                      /usr/local/share/boost "${AGENT_TOOLSDIRECTORY:-}" \
+                      /usr/local/share/powershell /usr/share/swift
+          sudo docker image prune --all --force || true
+          df -h /
+
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Set up Helm
+        uses: azure/setup-helm@v5
+        with:
+          version: ${{ env.HELM_VERSION }}
+
+      - name: Add chart repositories
+        run: |
+          helm repo add minio https://charts.min.io/
+          helm repo add bitnami https://charts.bitnami.com/bitnami
+          helm repo add programmfabrik https://programmfabrik.github.io/fylr-helm
+
+      - name: Start minikube
+        uses: medyagh/setup-minikube@v0.0.21
+        with:
+          kubernetes-version: v${{ matrix.kubernetes_version }}
+          driver: docker
+          cpus: max
+          memory: max
+          addons: ingress,metrics-server
+
+      - name: Cluster info
+        run: |
+          kubectl get nodes -o wide
+          kubectl get ingressclass
+          echo "node ip: $(minikube ip)"
+
+      - name: Build chart dependencies
+        run: helm dependency build charts/fylr
+
+      # Pulled here rather than inside `helm --wait`: the execserver image is
+      # the slowest part of the install by a wide margin, and a pull that runs
+      # inside the wait reads as "the chart timed out".
+      - name: Pull the fylr images into the cluster
+        run: |
+          helm template "$RELEASE" charts/fylr -f ci/values-ci.yaml \
+            | grep -oE 'image: "?docker\.fylr\.io/[^" ]+' \
+            | sed -E 's/^image: "?//' | sort -u | tee images.txt
+          while read -r img; do
+            echo "== pulling $img"
+            minikube image pull "$img"
+          done < images.txt
+          df -h /
+
+      - name: Install the chart
+        run: |
+          helm upgrade --install "$RELEASE" charts/fylr \
+            --namespace "$NAMESPACE" --create-namespace \
+            -f ci/values-ci.yaml \
+            --wait --timeout 20m
+
+      - name: Chart tests
+        run: helm test "$RELEASE" --namespace "$NAMESPACE" --timeout 10m
+
+      - name: Smoke test the API
+        env:
+          HOST: fylr.test
+        run: |
+          APP_VERSION=$(awk -F'"' '/^appVersion:/ {print $2}' charts/fylr/Chart.yaml)
+          echo "chart appVersion: $APP_VERSION"
+          BASE="http://$(minikube ip)" EXPECT_VERSION="$APP_VERSION" ./ci/smoke.sh
+
+      - name: Collect cluster state
+        if: always()
+        run: |
+          mkdir -p logs
+          kubectl -n "$NAMESPACE" get all -o wide > logs/resources.txt 2>&1 || true
+          kubectl -n "$NAMESPACE" get events --sort-by=.lastTimestamp > logs/events.txt 2>&1 || true
+          kubectl -n "$NAMESPACE" describe pods > logs/describe-pods.txt 2>&1 || true
+          for pod in $(kubectl -n "$NAMESPACE" get pods -o name 2>/dev/null); do
+            kubectl -n "$NAMESPACE" logs "$pod" --all-containers --tail=2000 \
+              > "logs/$(basename "$pod").log" 2>&1 || true
+          done
+          helm get manifest "$RELEASE" --namespace "$NAMESPACE" > logs/manifest.yaml 2>&1 || true
+          helm get values "$RELEASE" --namespace "$NAMESPACE" --all > logs/values.yaml 2>&1 || true
+
+      - name: Upload cluster state
+        if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: install-smoke-logs-${{ matrix.kubernetes_version }}
+          path: logs/
+          retention-days: 5
+
+      - name: Uninstall
+        if: always()
+        run: helm uninstall "$RELEASE" --namespace "$NAMESPACE" --timeout 5m || true
