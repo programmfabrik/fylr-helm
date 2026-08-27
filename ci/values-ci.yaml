@@ -55,7 +55,8 @@ fylr:
   externalURL: http://fylr.test
 
   # Fixed, so a restarted pod can still read what the previous one encrypted.
-  encryptionKey: "ci-only-encryption-key-not-a-secret"
+  # Exactly 32 bytes — fylr refuses to start otherwise.
+  encryptionKey: "fylr-helm-ci-encryption-key-0000"
 
   # The chart ships all three off. Enabled here so `helm --wait` waits for a
   # fylr that actually serves, and so CI is the place a broken probe surfaces
