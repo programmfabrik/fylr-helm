@@ -123,15 +123,14 @@ jobs:
         # repository publishes, which trails upstream by a release or two.
         kubernetes_version: ["1.33.0", "1.36.0"]
     steps:
-      # The execserver image is ~5.5 GB unpacked and the runner ships with
-      # ~21 GB free. Dropping the toolchains this job never uses buys ~20 GB.
-      - name: Free disk space
+      # Recorded, not freed: these runners carry 145 GB with ~115 GB free, so
+      # the 5.5 GB execserver image is not the constraint. Memory is - see the
+      # cluster size below.
+      - name: Runner capacity
         run: |
-          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc \
-                      /usr/local/share/boost "${AGENT_TOOLSDIRECTORY:-}" \
-                      /usr/local/share/powershell /usr/share/swift
-          sudo docker image prune --all --force || true
           df -h /
+          free -g
+          nproc
 
       - name: Checkout
         uses: actions/checkout@v7
@@ -159,7 +158,10 @@ jobs:
           kubernetes-version: v${{ matrix.kubernetes_version }}
           driver: docker
           cpus: max
-          memory: max
+          # NOT max. The runner has 15989 MiB in total and minikube says so:
+          # "The requested memory allocation of 15989MiB does not leave room
+          # for system overhead". A job died mid image-load under that setting.
+          memory: 12g
           addons: ingress,metrics-server
 
       - name: Cluster info
