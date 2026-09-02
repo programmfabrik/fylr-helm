@@ -1,0 +1,85 @@
+# The shape a real cloud deployment has (#80603): the bundled postgres and
+# opensearch, no minio, both optional volumes on ReadWriteMany against a named
+# storage class, and a TLS ingress driven by cert-manager.
+#
+# Nothing else renders this combination. fylr-04 puts every dependency outside
+# the release, fylr-06 keeps the chart's default postgres-ha and has no ingress,
+# and the execserver env override is reached by no case at all.
+#
+# All three locations are on disk.
+ingress:
+  enabled: true
+  className: ""
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
+    traefik.ingress.kubernetes.io/router.middlewares: default-redirect-https@kubernetescrd
+  hosts:
+    - host: fylr.example.org
+      paths:
+        - path: /
+          pathType: ImplementationSpecific
+  tls:
+    - secretName: fylr-example-org-tls
+      hosts:
+        - fylr.example.org
+
+fylr:
+  externalURL: https://fylr.example.org
+  persistent:
+    tmp:
+      enabled: true
+      accessModes: ["ReadWriteMany"]
+      storageClass: "longhorn"
+      size: 30Gi
+    webDAVHotfolder:
+      enabled: true
+      accessModes: ["ReadWriteMany"]
+      storageClass: "longhorn"
+      size: 10Gi
+    defaults:
+      originals: "disk1"
+      versions: "disk1"
+      backups: "disk2"
+    definitions:
+      disk1:
+        kind: disk
+        allowPurge: true
+        disk:
+          storageClass: "longhorn"
+          accessModes: ["ReadWriteMany"]
+          size: 30Gi
+      disk2:
+        kind: disk
+        allowPurge: true
+        disk:
+          storageClass: "longhorn"
+          accessModes: ["ReadWriteMany"]
+          size: 10Gi
+  services:
+    execserver:
+      env:
+        - MAGICK_MEMORY_LIMIT=512MiB
+        - MAGICK_MAP_LIMIT=512MiB
+        - MAGICK_DISK_LIMIT=10GiB
+        - MAGICK_TEMPORARY_PATH=.
+
+# The execserver comes with the fylr deployment, not as a separate release.
+execserver:
+  enabled: false
+
+minio:
+  enabled: false
+
+postgresql-ha:
+  enabled: false
+postgresql:
+  enabled: true
+  primary:
+    persistence:
+      storageClass: "longhorn"
+
+opensearch:
+  master:
+    persistence:
+      storageClass: longhorn
+      size: 1Gi
