@@ -152,3 +152,37 @@ the minio endpoint as `http://testinstance-minio:9000`.
 ```bash
 make ci-uninstall
 ```
+
+### the whole thing on one machine
+
+`test_local.sh` runs both jobs end to end against a throwaway minikube, so a
+chart change can be tested without any live cluster:
+
+```bash
+./test_local.sh
+```
+
+About eight minutes cold, most of it pulling the fylr images. It needs `helm`,
+`kubectl`, `minikube`, `kubeconform`, `jq`, `curl` and a docker it may talk to,
+and nothing else — no helm repositories registered, no kubeconfig, no existing
+minikube. A fresh clone on a fresh machine is the case it is written for.
+
+Everything it creates outside the cluster goes into `/tmp/test_helm`: minikube's
+home, the kubeconfig, kubectl's and helm's caches, helm's repository list. It
+writes nothing into the clone, and your own `~/.minikube` and `~/.config/helm`
+are neither read nor written, so the run cannot pick up a repository you happen
+to have added — or leave one. The exception is `~/.kube`, which minikube writes
+through its own bundled kubectl; the script deletes it afterwards if it created
+it, and leaves it untouched if it was already there. Set `WORK` to move the
+directory.
+
+The cluster runs in its own minikube profile (`test-helm`) and is deleted
+again when the run ends — on success, on failure, and on Ctrl-C — along with
+`/tmp/test_helm` and the kicbase image. Nothing is left behind, and `git status`
+is the check. A second run therefore pays the downloads again.
+
+| | |
+|---|---|
+| `K8S=1.36.0 ./test_local.sh` | the other Kubernetes version in the matrix |
+| `KEEP=1 ./test_local.sh` | leave the cluster up to look at it |
+| `./test_local.sh clean` | tear down what an aborted run left |
