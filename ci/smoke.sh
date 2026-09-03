@@ -46,6 +46,9 @@ KUBE_CACHE_DIR=${KUBE_CACHE_DIR:-}
 EXPECT_SERVICES=${EXPECT_SERVICES:-$(awk -F'"' '/^  validationServices:/ {print $2}' \
     charts/execserver/values.yaml 2>/dev/null || true)}
 
+OBJECTTYPE=${OBJECTTYPE:-smoke}
+INDEX_TIMEOUT=${INDEX_TIMEOUT:-180}
+
 TOKEN=""
 BODY=""
 CODE=""
@@ -244,8 +247,11 @@ else
 fi
 
 # ---------------------------------------------------------------------------
-# fylr indexes its own users at startup, so this needs no datamodel: if the
-# index is unreachable or was never created, the search errors or finds nobody.
+# A cheap first word from the index, before spending time on a datamodel: fylr
+# seeds four users at setup - root plus system:deep_link, system:oai_pmh and
+# system:deleted_user - and indexes them at startup. An index that is
+# unreachable or was never created fails here with a clear error instead of
+# looking like a datamodel problem three steps later.
 
 step "the index answers"
 api POST /api/v1/search -H "Content-Type: application/json" \
@@ -253,7 +259,130 @@ api POST /api/v1/search -H "Content-Type: application/json" \
 hits=$(jqf '.count // empty')
 [ -n "$hits" ] || fail "search returned no count ($CODE): $BODY"
 [ "$hits" -ge 1 ] || fail "the user index is empty"
-echo "search found $hits user(s)"
+echo "found $hits seeded users: $(jqf '[.objects[]?.user.login? // empty] | join(" ")')"
 
-printf '\nsmoke OK - fylr %s, execserver services %s, file %s produced %d versions, index served %s users\n' \
-    "$version" "$services_ok" "$eas_id" "$count" "$hits"
+# ---------------------------------------------------------------------------
+# The rest is the test a person does by hand in the frontend: make an object
+# type that takes file uploads, put an object in it with a file, and see the
+# object come back from a search with its preview. Nothing else here makes
+# postgres, the execserver and opensearch prove they work as one thing.
+#
+# The datamodel goes in as a schema, a maskset and a commit, which is the order
+# the product's own API tests use. system_fields is left empty on purpose:
+# fylr fills in the defaults, and naming one explicitly means guessing which
+# modes that field allows for this table.
+
+step "create the objecttype $OBJECTTYPE, which takes file uploads"
+api GET /api/v1/schema/user/HEAD
+[ "$CODE" = 200 ] || fail "cannot read the schema ($CODE): $BODY"
+schema=$BODY
+
+if jq -e --arg ot "$OBJECTTYPE" 'any(.tables[]?; .name == $ot)' <<< "$schema" >/dev/null 2>&1; then
+    echo "$OBJECTTYPE is already in the datamodel, reusing it"
+else
+    tid=$(jq -r '.max_table_id + 1' <<< "$schema")
+    c1=$(jq -r '.max_column_id + 1' <<< "$schema")
+    c2=$(jq -r '.max_column_id + 2' <<< "$schema")
+    sver=$(jq -r '.version + 1' <<< "$schema")
+
+    api POST /api/v1/schema/user/HEAD -H "Content-Type: application/json" \
+        -d "$(jq --arg ot "$OBJECTTYPE" --argjson tid "$tid" \
+                 --argjson c1 "$c1" --argjson c2 "$c2" '
+              .version = (.version + 1)
+            | .based_on_version = (.version - 1)
+            | .max_table_id = $tid
+            | .max_column_id = $c2
+            | .tables += [{
+                name: $ot, table_id: $tid,
+                pool_link: true, acl_table: true, has_tags: false,
+                is_hierarchical: false, polyhierarchical: false,
+                in_main_search: true, comment: "",
+                unique_keys: [], bidirectional: [],
+                columns: [
+                  {kind:"column", name:"title", type:"text_oneline",
+                   not_null:false, column_id:$c1, custom_settings:{}, name_localized:null},
+                  {kind:"column", name:"file", type:"eas",
+                   not_null:false, column_id:$c2, custom_settings:{}, name_localized:null}
+                ]}]' <<< "$schema")"
+    [ "$CODE" = 200 ] || fail "the schema was refused ($CODE): $BODY"
+
+    api GET /api/v1/mask/HEAD
+    [ "$CODE" = 200 ] || fail "cannot read the maskset ($CODE): $BODY"
+    api POST /api/v1/mask/HEAD -H "Content-Type: application/json" \
+        -d "$(jq --arg ot "$OBJECTTYPE" --argjson tid "$tid" \
+                 --argjson c1 "$c1" --argjson c2 "$c2" --argjson sver "$sver" '
+              .type = "user"
+            | .version = ((.version // 0) + 1)
+            | .based_on_schema_version = $sver
+            | .max_mask_id = ((.max_mask_id // 0) + 1)
+            | .masks = ((.masks // []) + [{
+                name: ($ot + "__all_fields"), mask_id: .max_mask_id,
+                table_id: $tid, table_name_hint: $ot, is_preferred: true,
+                hide_in_detail: false, hide_in_editor: false,
+                hide_in_print_dialog: false, standard_numbering: "",
+                require_comment: "never", comment: "", system_fields: {},
+                fields: [
+                  {kind:"field", column_id:$c1, column_name_hint:"title",
+                   edit:{mode:"edit"},
+                   output:{detail:true, text:true, table:true,
+                           standard:{format:"comma", order:1}, standard_eas:{}},
+                   search:{expert:true, fulltext:true, facet:false, nested:false},
+                   custom_settings:{}, inheritance:{inherit:false, show_in_detail:true}},
+                  {kind:"field", column_id:$c2, column_name_hint:"file",
+                   edit:{mode:"edit"},
+                   output:{detail:true, text:true, table:true,
+                           standard:{}, standard_eas:{order:1}},
+                   search:{expert:true, fulltext:true, facet:false, nested:false},
+                   custom_settings:{}, inheritance:{inherit:false, show_in_detail:true}}
+                ]}])' <<< "$BODY")"
+    [ "$CODE" = 200 ] || fail "the maskset was refused ($CODE): $BODY"
+
+    api POST "/api/v1/schema/commit?confirm=yes"
+    [ "$(jqf '.status // empty')" = ok ] || fail "the schema commit failed ($CODE): $BODY"
+    echo "$OBJECTTYPE created with a text field and a file field"
+fi
+
+# ---------------------------------------------------------------------------
+
+step "create an object holding file $eas_id"
+api POST "/api/v1/db/$OBJECTTYPE" -H "Content-Type: application/json" \
+    -d "$(jq -cn --arg ot "$OBJECTTYPE" --argjson eas "$eas_id" '
+          [{ _objecttype: $ot, _mask: ($ot + "__all_fields"),
+             ($ot): { _version: 1,
+                      _pool: { pool: { "lookup:_id": { reference: "system:standard" } } },
+                      title: "fylr-helm smoke test",
+                      file: [{ _id: $eas, preferred: true }] } }]')"
+object_id=$(jqf --arg ot "$OBJECTTYPE" '.[0][$ot]._id // empty')
+[ -n "$object_id" ] || fail "the object was refused ($CODE): $BODY"
+echo "created $OBJECTTYPE $object_id"
+
+# ---------------------------------------------------------------------------
+# The object has to come back from a search carrying the file, and the file has
+# to still have the versions the execserver made. That is what the start page
+# shows a person: the new object, with a preview on it.
+
+step "the object comes back from a search, with its file (max ${INDEX_TIMEOUT}s)"
+deadline=$((SECONDS + INDEX_TIMEOUT))
+found=0
+while [ $SECONDS -lt $deadline ]; do
+    api POST /api/v1/search -H "Content-Type: application/json" \
+        -d "{\"type\":\"object\",\"objecttypes\":[\"$OBJECTTYPE\"],\"generate_rights\":false,\"search\":[]}"
+    found=$(jqf '.count // 0')
+    [ "${found:-0}" -ge 1 ] && break
+    sleep 2
+done
+[ "${found:-0}" -ge 1 ] || fail "$OBJECTTYPE $object_id never reached the index in ${INDEX_TIMEOUT}s ($CODE): $BODY"
+
+indexed_file=$(jqf --arg ot "$OBJECTTYPE" '.objects[0][$ot].file[0]._id // empty')
+indexed_versions=$(jqf --arg ot "$OBJECTTYPE" \
+    '[.objects[0][$ot].file[0].versions // {} | keys[]] | join(" ")')
+[ "$indexed_file" = "$eas_id" ] \
+    || fail "the indexed object carries file '$indexed_file', expected $eas_id ($CODE): $BODY"
+echo "search found $found object(s), carrying file $indexed_file with versions: $indexed_versions"
+
+indexed_count=$(wc -w <<< "$indexed_versions")
+[ "$indexed_count" -ge 2 ] \
+    || fail "the indexed object shows only [$indexed_versions] - no preview to display"
+
+printf '\nsmoke OK - fylr %s, execserver services %s, file %s produced %d versions, %s %s indexed with %d of them\n' \
+    "$version" "$services_ok" "$eas_id" "$count" "$OBJECTTYPE" "$object_id" "$indexed_count"

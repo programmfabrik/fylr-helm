@@ -119,8 +119,18 @@ working — an overlay costs a second and covers a shape nobody installs by hand
 Installs `charts/fylr` on a single-node minikube cluster and drives the API:
 authenticate, check the running version and external URL against the chart,
 upload an image, wait for the execserver to produce its versions, ask the
-execserver which services it offers, and search. `helm test` on its own only
-wgets a port, which a fylr that cannot reach its database still answers.
+execserver which services it offers, then create an objecttype that takes file
+uploads, put an object in it holding that file, and search for it. `helm test`
+on its own only wgets a port, which a fylr that cannot reach its database still
+answers.
+
+The object is the part that makes postgres, the execserver and opensearch prove
+they work as one thing — it is the test a person does by hand in the frontend,
+and it fails if any of the three is wired up wrong. The datamodel goes in as a
+schema, a maskset and a commit, the order the product's own API tests use, and
+`OBJECTTYPE` (default `smoke`) names it. An objecttype of that name already in
+the datamodel is reused rather than replaced, so the test can be pointed at an
+instance that is not empty.
 
 The execserver check reads `/broker/status`, which reports the want-book the
 execserver built from its config, and asserts every service named in
