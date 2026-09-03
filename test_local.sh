@@ -94,11 +94,25 @@ cleanup(){
     return $rc
 }
 trap 'cleanup' EXIT
-trap 'exit 130' INT TERM
+# HUP matters: a run started over ssh whose connection drops is killed by it,
+# and without this the EXIT trap never fires and the cluster stays up.
+trap 'exit 130' INT TERM HUP
 
 if [ "$1" = "clean" ]; then
     exit 0   # the EXIT trap does the work
 fi
+
+# An earlier run that was killed hard leaves its cluster behind, and minikube
+# start would happily adopt it - the install then upgrades a stale release
+# instead of testing a fresh one. Start from nothing, always.
+if minikube status -p "$PROFILE" >/dev/null 2>&1; then
+    step "remove the cluster an earlier run left"
+    minikube delete -p "$PROFILE" 2>&1 | tail -2
+elif docker ps -aq --filter "name=^${PROFILE}$" | grep -q .; then
+    step "remove the orphaned $PROFILE container an earlier run left"
+    docker rm -f "$PROFILE" 2>&1 | tail -1
+fi
+rm -rf "$WORK" && mkdir -p "$WORK" || exit 1
 
 step "render every case and validate the manifests (no cluster)"
 ./ci/render-check.sh || exit 1
