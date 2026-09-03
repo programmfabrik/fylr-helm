@@ -118,9 +118,17 @@ working — an overlay costs a second and covers a shape nobody installs by hand
 
 Installs `charts/fylr` on a single-node minikube cluster and drives the API:
 authenticate, check the running version and external URL against the chart,
-upload an image, wait for the execserver to produce its versions, and search.
-`helm test` on its own only wgets a port, which a fylr that cannot reach its
-database still answers.
+upload an image, wait for the execserver to produce its versions, ask the
+execserver which services it offers, and search. `helm test` on its own only
+wgets a port, which a fylr that cannot reach its database still answers.
+
+The execserver check reads `/broker/status`, which reports the want-book the
+execserver built from its config, and asserts every service named in
+`charts/execserver/values.yaml` under `tests.validationServices` is in it. The
+execserver is a ClusterIP service, so the script port-forwards to it — give it
+`EXECSERVER_SVC` (with `NAMESPACE`) to do that, or `EXECSERVER_URL` if you have
+another route. With neither it skips the step, which is what a release that
+switches the execserver subchart off wants.
 
 `ci/values-ci.yaml` slims the stack to what a GitHub-hosted runner can hold —
 a single postgres rather than `postgresql-ha`, one minio, smaller volumes — and

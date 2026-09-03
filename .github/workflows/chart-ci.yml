@@ -219,7 +219,8 @@ jobs:
         run: |
           APP_VERSION=$(awk -F'"' '/^appVersion:/ {print $2}' charts/fylr/Chart.yaml)
           echo "chart appVersion: $APP_VERSION"
-          BASE="http://$(minikube ip)" EXPECT_VERSION="$APP_VERSION" ./ci/smoke.sh
+          BASE="http://$(minikube ip)" EXPECT_VERSION="$APP_VERSION" \
+            EXECSERVER_SVC="svc/$RELEASE-execserver" ./ci/smoke.sh
 
       - name: Chart tests
         run: helm test "$RELEASE" --namespace "$NAMESPACE" --timeout 10m

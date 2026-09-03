@@ -156,7 +156,9 @@ kubectl -n "$NAMESPACE" rollout status deployment "$RELEASE-fylr" --timeout=10m 
 step "smoke test the API"
 APP_VERSION=$(awk -F'"' '/^appVersion:/ {print $2}' charts/fylr/Chart.yaml)
 echo "chart appVersion: $APP_VERSION"
-BASE="http://$(minikube ip -p "$PROFILE")" HOST=fylr.test EXPECT_VERSION="$APP_VERSION" ./ci/smoke.sh
+BASE="http://$(minikube ip -p "$PROFILE")" HOST=fylr.test EXPECT_VERSION="$APP_VERSION" \
+    NAMESPACE="$NAMESPACE" EXECSERVER_SVC="svc/$RELEASE-execserver" \
+    KUBE_CACHE_DIR="$WORK/kube-cache" ./ci/smoke.sh
 SMOKE=$?
 
 step "helm test"

@@ -13,6 +13,17 @@
 #   EXPECT_VERSION  chart appVersion; asserted against the running instance
 #   READY_TIMEOUT   seconds to wait for the ingress to route (default 180)
 #   PRODUCE_TIMEOUT seconds to wait for the upload's versions (default 300)
+#
+# The execserver check needs a way to reach the execserver, which is a ClusterIP
+# service the ingress does not publish. Give it either:
+#
+#   EXECSERVER_URL  where it answers, e.g. http://127.0.0.1:18070
+#   EXECSERVER_SVC  a service for this script to port-forward to, with
+#                   NAMESPACE, EXECSERVER_PORT (8070) and PF_PORT (18070)
+#
+# With neither set the check is skipped, which is what a release without the
+# execserver subchart wants. EXPECT_SERVICES overrides the list it asserts;
+# the default is what charts/execserver/values.yaml calls validationServices.
 
 set -euo pipefail
 cd "$(dirname "$0")/.."
@@ -25,6 +36,15 @@ EXPECT_VERSION=${EXPECT_VERSION:-}
 EXPECT_EXTERNAL_URL=${EXPECT_EXTERNAL_URL:-http://$HOST}
 READY_TIMEOUT=${READY_TIMEOUT:-180}
 PRODUCE_TIMEOUT=${PRODUCE_TIMEOUT:-300}
+
+EXECSERVER_URL=${EXECSERVER_URL:-}
+EXECSERVER_SVC=${EXECSERVER_SVC:-}
+EXECSERVER_PORT=${EXECSERVER_PORT:-8070}
+PF_PORT=${PF_PORT:-18070}
+NAMESPACE=${NAMESPACE:-}
+KUBE_CACHE_DIR=${KUBE_CACHE_DIR:-}
+EXPECT_SERVICES=${EXPECT_SERVICES:-$(awk -F'"' '/^  validationServices:/ {print $2}' \
+    charts/execserver/values.yaml 2>/dev/null || true)}
 
 TOKEN=""
 BODY=""
@@ -148,6 +168,82 @@ count=$(wc -w <<< "$versions_done")
 [ "$count" -ge 2 ] || fail "only [$versions_done] produced - the execserver did no work"
 
 # ---------------------------------------------------------------------------
+# Every service the chart's own execserver test names has to be one the
+# execserver actually offers. That test cannot show this. It reads the answer
+# to /job/<service> with jq, but an execserver that does not have the service
+# replies 404 with the plain text `Unknown service "name"` - jq fails on it,
+# the error message comes out empty, and the service is reported as passing.
+#
+# Two ways to ask, because the endpoint changed under us: from 6.35 the broker
+# rewrite dropped /job/<service> and added /broker/status, which returns the
+# want-book as JSON. Ask that first and fall back to probing each service.
+
+es_get() {
+    local out
+    if out=$(curl -sS --max-time 30 -w $'\n%{http_code}' "$EXECSERVER_URL$1" 2>&1); then
+        ES_CODE=${out##*$'\n'}
+        ES_BODY=${out%$'\n'*}
+    else
+        ES_CODE=000
+        ES_BODY=$out
+    fi
+}
+
+step "the execserver offers the services the chart names"
+services_ok=skipped
+if [ -z "$EXECSERVER_URL" ] && [ -z "$EXECSERVER_SVC" ]; then
+    echo "neither EXECSERVER_URL nor EXECSERVER_SVC set - skipped"
+else
+    [ -n "$EXPECT_SERVICES" ] || fail "EXPECT_SERVICES is empty and charts/execserver/values.yaml did not yield one"
+    wanted=${EXPECT_SERVICES//,/ }
+
+    if [ -z "$EXECSERVER_URL" ]; then
+        command -v kubectl >/dev/null || fail "EXECSERVER_SVC is set but kubectl is not installed"
+        kc=(kubectl)
+        [ -n "$NAMESPACE" ] && kc+=(-n "$NAMESPACE")
+        [ -n "$KUBE_CACHE_DIR" ] && kc+=(--cache-dir "$KUBE_CACHE_DIR")
+        "${kc[@]}" port-forward "$EXECSERVER_SVC" "$PF_PORT:$EXECSERVER_PORT" >/dev/null 2>&1 &
+        pf_pid=$!
+        trap 'kill $pf_pid 2>/dev/null || true' EXIT
+        EXECSERVER_URL=http://127.0.0.1:$PF_PORT
+        deadline=$((SECONDS + 60))
+        until curl -sf --max-time 3 "$EXECSERVER_URL/healthz" >/dev/null 2>&1; do
+            kill -0 $pf_pid 2>/dev/null || fail "port-forward to $EXECSERVER_SVC died"
+            [ $SECONDS -lt $deadline ] || fail "port-forward to $EXECSERVER_SVC never answered on $PF_PORT"
+            sleep 1
+        done
+    fi
+
+    echo "asking $EXECSERVER_URL for: $wanted"
+    missing=""
+    es_get /broker/status
+    offered=$(jq -r '.service_stats // {} | keys | join(" ")' <<< "$ES_BODY" 2>/dev/null || true)
+
+    if [ -n "$offered" ]; then
+        for want in $wanted; do
+            grep -qw -- "$want" <<< "$offered" || missing="$missing $want"
+        done
+        echo "the want-book lists: $offered"
+    else
+        # No want-book, so this is a 6.34 execserver: ask it for a job of each
+        # service and read the refusal. "Unknown service" is the one that means
+        # the service is not configured; anything else means it is.
+        for want in $wanted; do
+            es_get "/job/$want"
+            case "$ES_BODY" in
+                *"Unknown service"*)   missing="$missing $want" ;;
+                *"404 page not found"*) fail "the execserver serves neither /broker/status nor /job/<service> ($ES_CODE): $ES_BODY" ;;
+            esac
+        done
+        echo "probed /job/<service>, this execserver has no want-book endpoint"
+    fi
+
+    [ -z "$missing" ] || fail "the execserver does not offer:$missing"
+    services_ok=$(wc -w <<< "$wanted")
+    echo "all $services_ok present"
+fi
+
+# ---------------------------------------------------------------------------
 # fylr indexes its own users at startup, so this needs no datamodel: if the
 # index is unreachable or was never created, the search errors or finds nobody.
 
@@ -159,5 +255,5 @@ hits=$(jqf '.count // empty')
 [ "$hits" -ge 1 ] || fail "the user index is empty"
 echo "search found $hits user(s)"
 
-printf '\nsmoke OK - fylr %s, file %s produced %d versions, index served %s users\n' \
-    "$version" "$eas_id" "$count" "$hits"
+printf '\nsmoke OK - fylr %s, execserver services %s, file %s produced %d versions, index served %s users\n' \
+    "$version" "$services_ok" "$eas_id" "$count" "$hits"
