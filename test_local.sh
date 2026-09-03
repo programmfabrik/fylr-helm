@@ -69,8 +69,15 @@ kubectl(){ command kubectl --cache-dir="$WORK/kube-cache" "$@"; }
 
 # ... so ~/.kube can still appear, written by minikube. Remove it afterwards
 # only if it was not there before: an existing one is yours, cache and all.
-KUBE_DIR_EXISTED=0
-[ -e "$HOME/.kube" ] && KUBE_DIR_EXISTED=1
+# A KEEP=1 run leaves it standing along with the cluster, so the answer is
+# written down for the `clean` that eventually follows.
+if [ -e "$WORK/.kube-was-ours" ]; then
+    KUBE_DIR_EXISTED=0
+elif [ -e "$HOME/.kube" ]; then
+    KUBE_DIR_EXISTED=1
+else
+    KUBE_DIR_EXISTED=0
+fi
 
 step(){ printf "\n########## %s  [%s]\n" "$*" "$(date +%H:%M:%S)"; }
 
@@ -130,6 +137,7 @@ elif docker ps -aq --filter "name=^${PROFILE}$" | grep -q .; then
     docker rm -f "$PROFILE" 2>&1 | tail -1
 fi
 rm -rf "$WORK" && mkdir -p "$WORK" || exit 1
+[ "$KUBE_DIR_EXISTED" = 0 ] && : > "$WORK/.kube-was-ours"
 
 step "render every case and validate the manifests (no cluster)"
 ./ci/render-check.sh || exit 1
