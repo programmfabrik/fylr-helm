@@ -6,7 +6,7 @@
 #
 #   ./test_local.sh              full run, cleans up afterwards
 #   K8S=1.36.0 ./test_local.sh   the other kubernetes version in the matrix
-#   KEEP=1 ./test_local.sh       leave the cluster up to look at it
+#   KEEP=1 ./test_local.sh       leave the cluster up and browse it
 #   ./test_local.sh clean        tear down what an aborted run left
 #
 # Needs helm, kubectl, minikube, kubeconform, jq, curl and a docker the current
@@ -32,6 +32,22 @@ PROFILE=${PROFILE:-test-helm}
 RELEASE=${RELEASE:-testinstance}   # values.yaml hard-codes testinstance-minio
 NAMESPACE=${NAMESPACE:-fylr-ci}
 KEEP=${KEEP:-}
+
+# Where a browser reaches this instance. The cluster lives inside a docker
+# network nothing outside the machine can route to, so minikube publishes the
+# ingress on a port of the machine itself and fylr is told to expect exactly
+# that address - a Host header that disagrees with fylr.externalURL earns a
+# redirect to it, not a page.
+#
+# The address is the one this machine talks to the internet with, which is what
+# `ip route get` reports. Reading `ip addr` instead would have to choose
+# between it and the docker and libvirt bridges.
+PUBLISH_PORT=${PUBLISH_PORT:-9095}
+HOST_IP=${HOST_IP:-$(ip route get 1.1.1.1 2>/dev/null | awk '{print $7; exit}')}
+[ -n "$HOST_IP" ] || HOST_IP=$(ip -o -4 addr show scope global | awk 'NR==1{split($4,a,"/"); print a[1]}')
+[ -n "$HOST_IP" ] || { echo "cannot work out this machine's address - set HOST_IP"; exit 1; }
+EXTERNAL_URL=${EXTERNAL_URL:-http://$HOST_IP:$PUBLISH_PORT}
+BROWSE_HOST=${EXTERNAL_URL#http://}
 
 # Keep every bit of tool state in one throwaway directory instead of in $HOME.
 # It makes the run reproducible - helm starts with no repositories, minikube
@@ -66,8 +82,9 @@ cleanup(){
 
     if [ -n "$KEEP" ]; then
         step "KEEP set - leaving profile $PROFILE up"
+        echo "browse it at $EXTERNAL_URL - log in as root / admin"
         echo "kubectl needs the run's own config: export KUBECONFIG=$KUBECONFIG"
-        echo "tear it down later with: $0 clean"
+        echo "tear it down with: $0 clean"
         return $rc
     fi
 
@@ -137,7 +154,8 @@ step "start minikube (kubernetes $K8S, profile $PROFILE)"
 FORCE=""
 [ "$(id -u)" = 0 ] && FORCE="--force"   # the docker driver refuses to run as root without it
 minikube start -p "$PROFILE" --kubernetes-version="v$K8S" --driver=docker $FORCE \
-    --cpus=max --memory=12g --addons=ingress,metrics-server 2>&1 | tail -20 || exit 1
+    --cpus=max --memory=12g --addons=ingress,metrics-server \
+    --ports="$PUBLISH_PORT:80" 2>&1 | tail -20 || exit 1
 kubectl get nodes -o wide
 
 step "build chart dependencies"
@@ -153,9 +171,14 @@ while read -r img; do
 done < "$WORK/images.txt"
 
 step "install the chart"
+# The ingress rule loses its host: Kubernetes rejects an IP address as an
+# Ingress host, and a rule without one answers whatever the browser sends.
 helm upgrade --install "$RELEASE" charts/fylr \
     --namespace "$NAMESPACE" --create-namespace \
-    -f ci/values-ci.yaml --wait --timeout 20m 2>&1 | tail -20 || exit 1
+    -f ci/values-ci.yaml \
+    --set "fylr.externalURL=$EXTERNAL_URL" \
+    --set "ingress.hosts[0].host=" \
+    --wait --timeout 20m 2>&1 | tail -20 || exit 1
 
 # fylr connects its storage locations once at startup and never retries one that
 # failed, while minio creates the bucket and the user in post-install hooks. See
@@ -169,8 +192,9 @@ kubectl -n "$NAMESPACE" rollout status deployment "$RELEASE-fylr" --timeout=10m 
 
 step "smoke test the API"
 APP_VERSION=$(awk -F'"' '/^appVersion:/ {print $2}' charts/fylr/Chart.yaml)
-echo "chart appVersion: $APP_VERSION"
-BASE="http://$(minikube ip -p "$PROFILE")" HOST=fylr.test EXPECT_VERSION="$APP_VERSION" \
+echo "chart appVersion: $APP_VERSION, reachable at $EXTERNAL_URL"
+BASE="$EXTERNAL_URL" HOST="$BROWSE_HOST" EXPECT_VERSION="$APP_VERSION" \
+    EXPECT_EXTERNAL_URL="$EXTERNAL_URL" \
     NAMESPACE="$NAMESPACE" EXECSERVER_SVC="svc/$RELEASE-execserver" \
     KUBE_CACHE_DIR="$WORK/kube-cache" ./ci/smoke.sh
 SMOKE=$?

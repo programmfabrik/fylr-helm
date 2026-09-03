@@ -199,8 +199,38 @@ again when the run ends — on success, on failure, and on Ctrl-C — along with
 `/tmp/test_helm` and the kicbase image. Nothing is left behind, and `git status`
 is the check. A second run therefore pays the downloads again.
 
+### looking at the instance in a browser
+
+`KEEP=1 ./test_local.sh` leaves the cluster up, and the run prints the address:
+
+```
+browse it at http://157.90.34.54:9095 - log in as root / admin
+```
+
+minikube publishes the ingress on port 9095 of the machine itself, and fylr is
+told that is its `externalURL`, so the address works from anywhere without an
+ssh tunnel or an `/etc/hosts` entry. It has to agree exactly: a `Host` header
+that differs from `fylr.externalURL` — a different port included — earns a 308
+to the configured URL rather than a page. The Ingress rule therefore carries no
+host at all, because Kubernetes rejects an IP address as an Ingress host.
+
+The address is the one the machine reaches the internet with, as
+`ip route get` reports it; reading `ip addr` instead would have to choose
+between it and the docker and libvirt bridges. Override any part of it:
+
+| | |
+|---|---|
+| `PUBLISH_PORT=9096` | a different port on the machine |
+| `HOST_IP=10.0.0.5` | a different address of it |
+| `EXTERNAL_URL=http://fylr.example.org:9095` | a name, if one resolves |
+
+While a run is going, that port serves a fylr whose root password is `admin` to
+anyone who can reach the machine. On a host with a public address, that is the
+internet. Runs are minutes; a cluster held with `KEEP=1` is as long as you leave
+it.
+
 | | |
 |---|---|
 | `K8S=1.36.0 ./test_local.sh` | the other Kubernetes version in the matrix |
-| `KEEP=1 ./test_local.sh` | leave the cluster up to look at it |
+| `KEEP=1 ./test_local.sh` | leave the cluster up and browse it |
 | `./test_local.sh clean` | tear down what an aborted run left |
