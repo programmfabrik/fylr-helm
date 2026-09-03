@@ -45,6 +45,11 @@ execserver:
 ingress:
   enabled: true
   className: nginx
+  annotations:
+    # Same as the chart default, repeated because setting `annotations` in a
+    # values file replaces the map rather than adding to it. Without it the
+    # ingress refuses uploads over 1 MB with 413.
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
   hosts:
     - host: fylr.test
       paths:

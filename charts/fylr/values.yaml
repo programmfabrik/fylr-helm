@@ -72,7 +72,13 @@ services:
 ingress:
   enabled: true
   className: "nginx"
-  annotations: {}
+  annotations:
+    # ingress-nginx caps a request body at 1 MB unless told otherwise, and it
+    # answers a larger upload with 413 before fylr ever sees the request - so a
+    # fylr behind it silently refuses every file over a megabyte. 0 removes the
+    # cap and leaves the limit to fylr and the storage location, which is where
+    # it belongs. Other ingress controllers ignore the annotation.
+    nginx.ingress.kubernetes.io/proxy-body-size: "0"
     # cert-manager.io/cluster-issuer: letsencrypt
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
