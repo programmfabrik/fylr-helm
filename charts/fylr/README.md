@@ -1,6 +1,6 @@
 # fylr
 
-![Version: 1.1.228](https://img.shields.io/badge/Version-1.1.228-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.34.5](https://img.shields.io/badge/AppVersion-v6.34.5-informational?style=flat-square)
+![Version: 1.1.229](https://img.shields.io/badge/Version-1.1.229-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.34.5](https://img.shields.io/badge/AppVersion-v6.34.5-informational?style=flat-square)
 
 Deploy fylr to your Kubernetes cluster
 
@@ -70,7 +70,7 @@ Deploy fylr to your Kubernetes cluster
 | fylr.elastic.password | string | `""` | password for the elastic server NOTE: This is ignored if elasticsearch.enabled is set to true. |
 | fylr.elastic.settings | string | `""` | Where to find the Elastic search index settings. If you provide your own file make sure to base it on the default resources/index/index_settings.json which is included in the distribution. |
 | fylr.elastic.username | string | `""` | username for the elastic server NOTE: This is ignored if elasticsearch.enabled is set to true. |
-| fylr.encryptionKey | string | `""` | encryption key for passwords and other sensible data in fylr, if not set a random key will be generated |
+| fylr.encryptionKey | string | `""` | AES key encrypting secrets at rest: storage credentials, the SMTP bind password and TOTP secrets. Must be exactly 32 bytes, fylr refuses to start otherwise. Nothing is generated when it is empty: those secrets are then stored in the clear and two-factor TOTP cannot be used at all. Changing it makes everything encrypted under the old key unreadable. |
 | fylr.execserver | object | `{"addresses":[],"connectTimeoutSec":120,"parallel":4,"pluginJobTimeoutSec":2400}` | defines the settings for the execserver connection |
 | fylr.execserver.addresses | list | `[]` | addresses represents a list of execserver services. If execserver.enabled is set to true, this option will be ignored. We expect the url in the format of "http://localhost:8080". # NOTE: This is merged with the execserver service address provided by the execserver helm chart, if execserver.enabled is set to true. |
 | fylr.execserver.connectTimeoutSec | int | `120` | connectTimeout sets the maximum seconds the server will wait until a worker gets a job. Defaults to 120 seconds. |
@@ -142,7 +142,7 @@ Deploy fylr to your Kubernetes cluster
 | image.repository | string | `"docker.fylr.io/fylr/fylr-server"` | Docker image repository |
 | imagePullSecrets | list | `[]` |  |
 | includeStorageSecret | bool | `true` |  |
-| ingress.annotations | object | `{}` |  |
+| ingress.annotations."nginx.ingress.kubernetes.io/proxy-body-size" | string | `"0"` |  |
 | ingress.className | string | `"nginx"` |  |
 | ingress.enabled | bool | `true` |  |
 | ingress.hosts[0].host | string | `"localhost"` |  |

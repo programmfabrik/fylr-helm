@@ -1,6 +1,6 @@
 # execserver
 
-![Version: 0.1.103](https://img.shields.io/badge/Version-0.1.103-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.34.5](https://img.shields.io/badge/AppVersion-v6.34.5-informational?style=flat-square)
+![Version: 0.1.104](https://img.shields.io/badge/Version-0.1.104-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.34.5](https://img.shields.io/badge/AppVersion-v6.34.5-informational?style=flat-square)
 
 A Helm chart for fylr as execserver in Kubernetes
 
@@ -67,6 +67,8 @@ A Helm chart for fylr as execserver in Kubernetes
 | serviceAccount.annotations | object | `{}` | Annotations to add to the service account |
 | serviceAccount.create | bool | `true` | Specifies whether a service account should be created |
 | serviceAccount.name | string | `""` | The name of the service account to use. If not set and create is true, a name is generated using the fullname template |
+| tests | object | `{"validationServices":"node,python3,convert,ffmpeg,soffice,metadata,pdf2pages,xslt,iiif"}` | Settings for the `helm test` hook |
+| tests.validationServices | string | `"node,python3,convert,ffmpeg,soffice,metadata,pdf2pages,xslt,iiif"` | Comma separated execserver services the test requires the deployment to know. A service missing from the image fails the test. |
 | tolerations | list | `[]` | The tolerations settings to use. See https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/ |
 
 ----------------------------------------------
