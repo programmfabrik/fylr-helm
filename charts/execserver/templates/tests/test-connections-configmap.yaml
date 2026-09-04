@@ -22,16 +22,41 @@ data:
       fi
       VALIDATION_SERVICES=$(sed -e "s/,/ /g" <<< "$VALIDATION_SERVICES")
       echo $VALIDATION_SERVICES
+      BASE="http://$SERVICE_ADDRESS"
       code=0
-      # for services in VALIDATION_SERVICES echo
+
+      # From fylr 6.35 the broker rewrite dropped /job/<service> and added
+      # /broker/status, which reports every service the execserver configured.
+      # Ask that first; an older execserver answers 404 and is asked service by
+      # service below.
+      wantbook=$(curl -s -o /tmp/wantbook -w '%{http_code}' "$BASE/broker/status")
+      if [ "$wantbook" == "200" ]; then
+          offered=$(jq -r '.service_stats // {} | keys | join(" ")' /tmp/wantbook)
+          echo "The execserver offers: $offered"
+          for SERVICE in $VALIDATION_SERVICES; do
+              if grep -qw -- "$SERVICE" <<< "$offered"; then
+                  echo "Check for service [ $SERVICE ] passed"
+              else
+                  echo "Error: the execserver does not offer [ $SERVICE ]"
+                  code=1
+              fi
+          done
+          exit $code
+      fi
+
       for SERVICE in $VALIDATION_SERVICES; do
           echo "Validating service: $SERVICE"
-          rslt="$(curl -X GET http://$SERVICE_ADDRESS/job/$SERVICE)"
-          errorMessage=$(jq .Error <<< $rslt | sed -e 's/"//g' -e 's/\\//g')
-          statusCode=$(jq .Status <<< $rslt)
-          if [ "$errorMessage" == "Unknown service $SERVICE" ]; then
+          # The status code decides, not the body. A service the execserver
+          # does not have answers 404 with the plain text `Unknown service
+          # "name"`, which is not JSON - reading it with jq yields nothing, and
+          # a comparison against that nothing passes whatever it is compared
+          # to. A service it does have refuses this job for having no id, with
+          # 500 and a JSON body. Anything but 404 therefore means the service
+          # is there and answered.
+          statusCode=$(curl -s -o /tmp/body -w '%{http_code}' -X GET "$BASE/job/$SERVICE")
+          if [ "$statusCode" == "404" ]; then
               echo "Status code is: $statusCode"
-              echo "Error: $errorMessage"
+              echo "Error: $(cat /tmp/body)"
               code=1
           else
               echo "Check for service [ $SERVICE ] passed"
