@@ -93,10 +93,113 @@ make uninstall-fylr
 
 ------
 
+## Testing a chart change on one machine
+
+`test_local.sh` runs the whole pipeline against a throwaway minikube — the same
+steps [`.github/workflows/chart-ci.yml`](.github/workflows/chart-ci.yml) runs,
+in the same order — so a chart change can be tested without a live cluster:
+
+```bash
+./test_local.sh
+```
+
+It renders and validates every case, starts a cluster, installs `charts/fylr`,
+drives the API, runs `helm test`, and deletes the cluster again. The last line
+is `RESULT smoke=0 helm-test=0`, and the exit status is non-zero if either
+failed. About eight minutes cold, most of it pulling the fylr images.
+
+| | |
+|---|---|
+| `K8S=1.36.0 ./test_local.sh` | the other Kubernetes version in the CI matrix |
+| `KEEP=1 ./test_local.sh` | leave the cluster up and browse it |
+| `./test_local.sh clean` | tear down what an aborted run left |
+
+### what the machine needs
+
+`helm`, `kubectl`, `minikube`, `kubeconform`, `jq`, `curl`, and a docker the
+current user may talk to — and nothing else. No helm repositories registered,
+no kubeconfig, no existing minikube: a fresh clone on a fresh machine is the
+case this is written for.
+
+**Memory: 16 GB.** The script asks minikube for 12 GB, which is what a
+GitHub-hosted runner (15989 MiB in total) can give before minikube objects that
+the allocation "does not leave room for system overhead".
+
+That 12 GB is headroom rather than demand. Measured on a finished run, the
+cluster had settled at **2.3 GB**:
+
+| | |
+|---|---|
+| opensearch | 431 MB |
+| minio | 201 MB |
+| fylr | 122 MB |
+| postgresql | 93 MB |
+| execserver | 48 MB |
+| kubelet, control plane, ingress, the rest | ~1.4 GB |
+
+So a smaller machine can run this perfectly well by lowering `--memory` on the
+`minikube start` line; 4 GB for the cluster leaves room to spare. Add about
+1 GB on top wherever `/tmp` is a tmpfs — the work directory holds minikube's
+caches and reached 894 MB.
+
+**Disk: 10 GB free.** `fylr` is a 5.65 GB image and `fylr-server` 620 MB, both
+pulled into the cluster on every run, and minikube's kicbase image is a further
+1.37 GB on the machine itself.
+
+### where it puts things
+
+Everything it creates outside the cluster goes into `/tmp/test_helm`: minikube's
+home, the kubeconfig, kubectl's and helm's caches, helm's repository list. It
+writes nothing into the clone, and your own `~/.minikube` and `~/.config/helm`
+are neither read nor written, so the run cannot pick up a repository you happen
+to have added — or leave one. The exception is `~/.kube`, which minikube writes
+through its own bundled kubectl; the script deletes it afterwards if it created
+it, and leaves it untouched if it was already there. Set `WORK` to move the
+directory.
+
+The cluster runs in its own minikube profile (`test-helm`) and is deleted
+again when the run ends — on success, on failure, and on Ctrl-C — along with
+`/tmp/test_helm` and the kicbase image. Nothing is left behind, and `git status`
+is the check. A second run therefore pays the downloads again.
+
+### looking at the instance in a browser
+
+`KEEP=1 ./test_local.sh` leaves the cluster up, and the run prints the address:
+
+```
+browse it at http://157.90.34.54:9095 - log in as root / admin
+```
+
+minikube publishes the ingress on port 9095 of the machine itself, and fylr is
+told that is its `externalURL`, so the address works from anywhere without an
+ssh tunnel or an `/etc/hosts` entry. It has to agree exactly: a `Host` header
+that differs from `fylr.externalURL` — a different port included — earns a 308
+to the configured URL rather than a page. The Ingress rule therefore carries no
+host at all, because Kubernetes rejects an IP address as an Ingress host.
+
+The address is the one the machine reaches the internet with, as
+`ip route get` reports it; reading `ip addr` instead would have to choose
+between it and the docker and libvirt bridges. Override any part of it:
+
+| | |
+|---|---|
+| `PUBLISH_PORT=9096` | a different port on the machine |
+| `HOST_IP=10.0.0.5` | a different address of it |
+| `EXTERNAL_URL=http://fylr.example.org:9095` | a name, if one resolves |
+
+While a run is going, that port serves a fylr whose root password is `admin` to
+anyone who can reach the machine. On a host with a public address, that is the
+internet. Runs are minutes; a cluster held with `KEEP=1` is as long as you leave
+it.
+
+------
+
 ## Continuous integration
 
 `.github/workflows/chart-ci.yml` runs on every push that touches `charts/`,
-`ci/` or the `Makefile`, and on pull requests against `main`.
+`ci/` or the `Makefile`, and on pull requests against `main`. It is the same
+work [`test_local.sh`](#testing-a-chart-change-on-one-machine) does by hand,
+split into two jobs.
 
 ### render
 
@@ -170,67 +273,3 @@ the minio endpoint as `http://testinstance-minio:9000`.
 ```bash
 make ci-uninstall
 ```
-
-### the whole thing on one machine
-
-`test_local.sh` runs both jobs end to end against a throwaway minikube, so a
-chart change can be tested without any live cluster:
-
-```bash
-./test_local.sh
-```
-
-About eight minutes cold, most of it pulling the fylr images. It needs `helm`,
-`kubectl`, `minikube`, `kubeconform`, `jq`, `curl` and a docker it may talk to,
-and nothing else — no helm repositories registered, no kubeconfig, no existing
-minikube. A fresh clone on a fresh machine is the case it is written for.
-
-Everything it creates outside the cluster goes into `/tmp/test_helm`: minikube's
-home, the kubeconfig, kubectl's and helm's caches, helm's repository list. It
-writes nothing into the clone, and your own `~/.minikube` and `~/.config/helm`
-are neither read nor written, so the run cannot pick up a repository you happen
-to have added — or leave one. The exception is `~/.kube`, which minikube writes
-through its own bundled kubectl; the script deletes it afterwards if it created
-it, and leaves it untouched if it was already there. Set `WORK` to move the
-directory.
-
-The cluster runs in its own minikube profile (`test-helm`) and is deleted
-again when the run ends — on success, on failure, and on Ctrl-C — along with
-`/tmp/test_helm` and the kicbase image. Nothing is left behind, and `git status`
-is the check. A second run therefore pays the downloads again.
-
-### looking at the instance in a browser
-
-`KEEP=1 ./test_local.sh` leaves the cluster up, and the run prints the address:
-
-```
-browse it at http://157.90.34.54:9095 - log in as root / admin
-```
-
-minikube publishes the ingress on port 9095 of the machine itself, and fylr is
-told that is its `externalURL`, so the address works from anywhere without an
-ssh tunnel or an `/etc/hosts` entry. It has to agree exactly: a `Host` header
-that differs from `fylr.externalURL` — a different port included — earns a 308
-to the configured URL rather than a page. The Ingress rule therefore carries no
-host at all, because Kubernetes rejects an IP address as an Ingress host.
-
-The address is the one the machine reaches the internet with, as
-`ip route get` reports it; reading `ip addr` instead would have to choose
-between it and the docker and libvirt bridges. Override any part of it:
-
-| | |
-|---|---|
-| `PUBLISH_PORT=9096` | a different port on the machine |
-| `HOST_IP=10.0.0.5` | a different address of it |
-| `EXTERNAL_URL=http://fylr.example.org:9095` | a name, if one resolves |
-
-While a run is going, that port serves a fylr whose root password is `admin` to
-anyone who can reach the machine. On a host with a public address, that is the
-internet. Runs are minutes; a cluster held with `KEEP=1` is as long as you leave
-it.
-
-| | |
-|---|---|
-| `K8S=1.36.0 ./test_local.sh` | the other Kubernetes version in the matrix |
-| `KEEP=1 ./test_local.sh` | leave the cluster up and browse it |
-| `./test_local.sh clean` | tear down what an aborted run left |
