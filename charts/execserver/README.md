@@ -1,6 +1,6 @@
 # execserver
 
-![Version: 0.1.104](https://img.shields.io/badge/Version-0.1.104-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.34.5](https://img.shields.io/badge/AppVersion-v6.34.5-informational?style=flat-square)
+![Version: 0.1.105](https://img.shields.io/badge/Version-0.1.105-informational?style=flat-square) ![Type: application](https://img.shields.io/badge/Type-application-informational?style=flat-square) ![AppVersion: v6.34.5](https://img.shields.io/badge/AppVersion-v6.34.5-informational?style=flat-square)
 
 A Helm chart for fylr as execserver in Kubernetes
 
