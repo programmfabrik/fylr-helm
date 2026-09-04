@@ -13,9 +13,9 @@ dependencies:
   version: 1.2.6
 - name: execserver
   repository: https://programmfabrik.github.io/fylr-helm
-  version: 0.1.103
+  version: 0.1.104
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 12.1.0
-digest: sha256:ea08cc2c810681643e421276959931164d040bad6996f6bc3269fad93351c8de
-generated: "2026-09-02T19:35:55.124651225+02:00"
+digest: sha256:e9a4e83bf84079244fc0e2d89a8c8d795da801a2d6628ef064a8adae1fbaff4d
+generated: "2026-09-04T10:17:21.175386267+02:00"
