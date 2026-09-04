@@ -3,6 +3,20 @@ entries:
   execserver:
   - apiVersion: v2
     appVersion: v6.34.5
+    created: "2026-09-04T16:22:35.266629444Z"
+    description: A Helm chart for fylr as execserver in Kubernetes
+    digest: fb412569eda3b5cc262dc7a8c1f024218184cd56387d9537d163ee9e8c335277
+    maintainers:
+    - email: support@programmfabrik.de
+      name: programmfabrik
+      url: https://programmfabrik.de
+    name: execserver
+    type: application
+    urls:
+    - https://github.com/programmfabrik/fylr-helm/releases/download/execserver-0.1.105/execserver-0.1.105.tgz
+    version: 0.1.105
+  - apiVersion: v2
+    appVersion: v6.34.5
     created: "2026-09-03T21:51:32.335621731Z"
     description: A Helm chart for fylr as execserver in Kubernetes
     digest: 7c3ba8d637c24a65e295ae7b5715bfcf4cecf42afae06ef9dd37ed4fcd462c8f
@@ -9367,4 +9381,4 @@ entries:
     urls:
     - https://github.com/programmfabrik/fylr-helm/releases/download/fylr-0.1.2/fylr-0.1.2.tgz
     version: 0.1.2
-generated: "2026-09-04T14:54:44.774765772Z"
+generated: "2026-09-04T16:22:35.267166984Z"
