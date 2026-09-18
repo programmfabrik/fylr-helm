@@ -30,6 +30,7 @@ export PATH=/usr/local/bin:$PATH
 K8S=${K8S:-1.33.0}
 PROFILE=${PROFILE:-test-helm}
 RELEASE=${RELEASE:-testinstance}   # values.yaml hard-codes testinstance-minio
+ES_RELEASE=${ES_RELEASE:-execserver}   # charts/execserver installed on its own
 NAMESPACE=${NAMESPACE:-fylr-ci}
 KEEP=${KEEP:-}
 
@@ -98,6 +99,7 @@ cleanup(){
     step "cleanup"
     if minikube status -p "$PROFILE" >/dev/null 2>&1; then
         helm uninstall "$RELEASE" --namespace "$NAMESPACE" --wait --timeout 5m 2>&1 | tail -2
+        helm uninstall "$ES_RELEASE" --namespace "$NAMESPACE" --wait --timeout 5m 2>&1 | tail -2
         kubectl delete namespace "$NAMESPACE" --ignore-not-found --timeout=2m 2>&1 | tail -1
     fi
     minikube delete -p "$PROFILE" 2>&1 | tail -2
@@ -170,7 +172,11 @@ step "build chart dependencies"
 helm dependency build charts/fylr 2>&1 | tail -5 || exit 1
 
 step "pull the fylr images into the cluster"
-helm template "$RELEASE" charts/fylr -f ci/values-ci.yaml \
+# Both charts: during a release the execserver chart carries the newer
+# appVersion for a commit or two, and its image would otherwise be pulled
+# inside helm --wait instead of here.
+{ helm template "$RELEASE" charts/fylr -f ci/values-ci.yaml
+  helm template "$ES_RELEASE" charts/execserver; } \
     | grep -oE 'image: "?docker\.fylr\.io/[^" ]+' \
     | sed -E 's/^image: "?//' | sort -u | tee "$WORK/images.txt"
 while read -r img; do
@@ -211,6 +217,15 @@ step "helm test"
 helm test "$RELEASE" --namespace "$NAMESPACE" --timeout 10m 2>&1 | tail -20
 HT=$?
 
+# The execserver runs inside the fylr release too, but as the published
+# subchart Chart.lock pins - not as charts/execserver here. Installing it on
+# its own is the only thing that puts this tree's copy on a cluster.
+step "install charts/execserver on its own and test it"
+helm upgrade --install "$ES_RELEASE" charts/execserver \
+    --namespace "$NAMESPACE" --wait --timeout 10m 2>&1 | tail -5 || exit 1
+helm test "$ES_RELEASE" --namespace "$NAMESPACE" --timeout 10m 2>&1 | tail -12
+ES=$?
+
 kubectl -n "$NAMESPACE" get pods
-step "RESULT smoke=$SMOKE helm-test=$HT"
-exit $(( SMOKE || HT ))
+step "RESULT smoke=$SMOKE helm-test=$HT execserver-test=$ES"
+exit $(( SMOKE || HT || ES ))

@@ -39,6 +39,8 @@ env:
   # The release name is not free: values.yaml hard-codes the minio endpoint as
   # http://testinstance-minio:9000.
   RELEASE: testinstance
+  # charts/execserver installed on its own, alongside the fylr release
+  ES_RELEASE: execserver
   NAMESPACE: fylr-ci
 
 jobs:
@@ -178,7 +180,11 @@ jobs:
       # inside the wait reads as "the chart timed out".
       - name: Pull the fylr images into the cluster
         run: |
-          helm template "$RELEASE" charts/fylr -f ci/values-ci.yaml \
+          # Both charts: during a release the execserver chart carries the
+          # newer appVersion for a commit or two, and its image would then be
+          # pulled inside helm --wait instead of here.
+          { helm template "$RELEASE" charts/fylr -f ci/values-ci.yaml
+            helm template "$ES_RELEASE" charts/execserver; } \
             | grep -oE 'image: "?docker\.fylr\.io/[^" ]+' \
             | sed -E 's/^image: "?//' | sort -u | tee images.txt
           while read -r img; do
@@ -225,6 +231,21 @@ jobs:
       - name: Chart tests
         run: helm test "$RELEASE" --namespace "$NAMESPACE" --timeout 10m
 
+      # The execserver runs inside the fylr release too, but as the published
+      # subchart Chart.lock pins - not as charts/execserver in this tree. A
+      # change to its templates would otherwise be linted and rendered here and
+      # never installed, which is how a test hook that could not fail sat in
+      # the chart unnoticed. Its own release in the same cluster; the image is
+      # already loaded, so this costs a pod and a few seconds.
+      - name: Install charts/execserver on its own
+        run: |
+          helm upgrade --install "$ES_RELEASE" charts/execserver \
+            --namespace "$NAMESPACE" \
+            --wait --timeout 10m
+
+      - name: Chart tests for charts/execserver
+        run: helm test "$ES_RELEASE" --namespace "$NAMESPACE" --timeout 10m
+
       - name: Collect cluster state
         if: always()
         run: |
@@ -249,4 +270,6 @@ jobs:
 
       - name: Uninstall
         if: always()
-        run: helm uninstall "$RELEASE" --namespace "$NAMESPACE" --timeout 5m || true
+        run: |
+          helm uninstall "$RELEASE" --namespace "$NAMESPACE" --timeout 5m || true
+          helm uninstall "$ES_RELEASE" --namespace "$NAMESPACE" --timeout 5m || true

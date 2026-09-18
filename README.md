@@ -104,9 +104,11 @@ in the same order — so a chart change can be tested without a live cluster:
 ```
 
 It renders and validates every case, starts a cluster, installs `charts/fylr`,
-drives the API, runs `helm test`, and deletes the cluster again. The last line
-is `RESULT smoke=0 helm-test=0`, and the exit status is non-zero if either
-failed. About eight minutes cold, most of it pulling the fylr images.
+drives the API, runs `helm test`, installs `charts/execserver` on its own and
+tests that too, then deletes the cluster again. The last line is
+`RESULT smoke=0 helm-test=0 execserver-test=0`, and the exit status is non-zero
+if any of them failed. About eight minutes cold, most of it pulling the fylr
+images.
 
 | | |
 |---|---|
@@ -269,6 +271,12 @@ make ci-smoke
 `ci-smoke` reads the ingress address from `minikube ip`; set `BASE` to override
 it. The release must be called `testinstance`, because `values.yaml` hard-codes
 the minio endpoint as `http://testinstance-minio:9000`.
+
+The job then installs `charts/execserver` on its own into the same cluster and
+runs its `helm test`. The execserver is already part of the fylr release, but
+there it is the published subchart `Chart.lock` pins — so without this step a
+change under `charts/execserver/templates/` would be linted and rendered and
+never installed anywhere.
 
 ```bash
 make ci-uninstall
