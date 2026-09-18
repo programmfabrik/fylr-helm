@@ -2,6 +2,20 @@ apiVersion: v1
 entries:
   execserver:
   - apiVersion: v2
+    appVersion: v6.34.6
+    created: "2026-09-18T12:02:48.018482016Z"
+    description: A Helm chart for fylr as execserver in Kubernetes
+    digest: 53e1041ecd09ecfcf866ce6053b49fcb30ed619190283e0717e7b3b4b096a7d1
+    maintainers:
+    - email: support@programmfabrik.de
+      name: programmfabrik
+      url: https://programmfabrik.de
+    name: execserver
+    type: application
+    urls:
+    - https://github.com/programmfabrik/fylr-helm/releases/download/execserver-0.1.106/execserver-0.1.106.tgz
+    version: 0.1.106
+  - apiVersion: v2
     appVersion: v6.34.5
     created: "2026-09-04T16:22:35.266629444Z"
     description: A Helm chart for fylr as execserver in Kubernetes
@@ -1360,6 +1374,45 @@ entries:
     - https://github.com/programmfabrik/fylr-helm/releases/download/execserver-0.1.1/execserver-0.1.1.tgz
     version: 0.1.1
   fylr:
+  - apiVersion: v2
+    appVersion: v6.34.5
+    created: "2026-09-18T12:02:48.196358502Z"
+    dependencies:
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.min.io/
+      version: 4.0.14
+    - condition: postgresql-ha.enabled
+      name: postgresql-ha
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.1.0
+    - condition: elasticsearch.enabled
+      name: elasticsearch
+      repository: https://charts.bitnami.com/bitnami
+      version: 19.21.2
+    - condition: opensearch.enabled
+      name: opensearch
+      repository: https://charts.bitnami.com/bitnami
+      version: 1.2.6
+    - condition: execserver.enabled
+      name: execserver
+      repository: https://programmfabrik.github.io/fylr-helm
+      version: 0.1.105
+    - condition: postgresql.enabled
+      name: postgresql
+      repository: https://charts.bitnami.com/bitnami
+      version: 12.1.0
+    description: Deploy fylr to your Kubernetes cluster
+    digest: 557dfe184561ca1c5a0a3920b3f9bf776ab504af5bd95b782d7348ac3fa7d3f4
+    maintainers:
+    - email: support@programmfabrik.de
+      name: programmfabrik
+      url: https://programmfabrik.de
+    name: fylr
+    type: application
+    urls:
+    - https://github.com/programmfabrik/fylr-helm/releases/download/fylr-1.1.232/fylr-1.1.232.tgz
+    version: 1.1.232
   - apiVersion: v2
     appVersion: v6.34.5
     created: "2026-09-04T16:33:38.731717323Z"
@@ -9420,4 +9473,4 @@ entries:
     urls:
     - https://github.com/programmfabrik/fylr-helm/releases/download/fylr-0.1.2/fylr-0.1.2.tgz
     version: 0.1.2
-generated: "2026-09-04T16:33:38.73253577Z"
+generated: "2026-09-18T12:02:48.196861612Z"
