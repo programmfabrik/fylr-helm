@@ -116,6 +116,21 @@ images.
 | `KEEP=1 ./test_local.sh` | leave the cluster up and browse it |
 | `./test_local.sh clean` | tear down what an aborted run left |
 
+### when it fails
+
+helm reports only that it stopped waiting — `context deadline exceeded`, or
+`timed out waiting for the condition` — and never what it was waiting for, so
+an image that cannot be pulled reads exactly like a chart that is slow. Any run
+that is about to exit non-zero therefore prints
+[`ci/diagnose.sh`](ci/diagnose.sh) first, while the cluster is still up: the
+kubelet's own reason and message for every container that is not ready, the
+pods that were never scheduled and why, the hook jobs, the recent events, and
+the logs of the unhealthy pods. `chart-ci.yml` runs the same script on a failed
+job, so a red run says what happened without downloading the artifact.
+
+It runs before the `KEEP=1` branch returns as well, so a kept cluster is
+explained *and* still there to poke at.
+
 ### what the machine needs
 
 `helm`, `kubectl`, `minikube`, `kubeconform`, `jq`, `curl`, and a docker the

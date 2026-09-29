@@ -88,6 +88,14 @@ cleanup(){
     local rc=$?
     trap - EXIT INT TERM
 
+    # Before anything is torn down, and before the KEEP branch returns: helm
+    # says "context deadline exceeded" and stops there, so the reason has to be
+    # read out of the cluster while the cluster still exists.
+    if [ "$rc" != 0 ] && minikube status -p "$PROFILE" >/dev/null 2>&1; then
+        step "DIAGNOSTICS (exit $rc)"
+        NAMESPACE="$NAMESPACE" KUBE_CACHE_DIR="$WORK/kube-cache" ./ci/diagnose.sh
+    fi
+
     if [ -n "$KEEP" ]; then
         step "KEEP set - leaving profile $PROFILE up"
         echo "browse it at $EXTERNAL_URL - log in as root / admin"
@@ -213,8 +221,12 @@ BASE="$EXTERNAL_URL" HOST="$BROWSE_HOST" EXPECT_VERSION="$APP_VERSION" \
     KUBE_CACHE_DIR="$WORK/kube-cache" ./ci/smoke.sh
 SMOKE=$?
 
+# --logs prints what the test pods themselves wrote. Without it a failed hook
+# reports only "pod ... failed", and the assertion that actually tripped - the
+# service the execserver would not offer, the URL that did not answer - stays
+# inside a pod that helm has already deleted.
 step "helm test"
-helm test "$RELEASE" --namespace "$NAMESPACE" --timeout 10m 2>&1 | tail -20
+helm test "$RELEASE" --namespace "$NAMESPACE" --timeout 10m --logs 2>&1 | tail -40
 HT=$?
 
 # The execserver runs inside the fylr release too, but as the published
@@ -223,7 +235,7 @@ HT=$?
 step "install charts/execserver on its own and test it"
 helm upgrade --install "$ES_RELEASE" charts/execserver \
     --namespace "$NAMESPACE" --wait --timeout 10m 2>&1 | tail -5 || exit 1
-helm test "$ES_RELEASE" --namespace "$NAMESPACE" --timeout 10m 2>&1 | tail -12
+helm test "$ES_RELEASE" --namespace "$NAMESPACE" --timeout 10m --logs 2>&1 | tail -30
 ES=$?
 
 kubectl -n "$NAMESPACE" get pods

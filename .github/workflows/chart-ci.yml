@@ -228,8 +228,11 @@ jobs:
           BASE="http://$(minikube ip)" EXPECT_VERSION="$APP_VERSION" \
             EXECSERVER_SVC="svc/$RELEASE-execserver" ./ci/smoke.sh
 
+      # --logs prints what the test pods wrote. Without it a failed hook
+      # reports only "pod ... failed" and the assertion that tripped stays
+      # inside a pod helm has already deleted.
       - name: Chart tests
-        run: helm test "$RELEASE" --namespace "$NAMESPACE" --timeout 10m
+        run: helm test "$RELEASE" --namespace "$NAMESPACE" --timeout 10m --logs
 
       # The execserver runs inside the fylr release too, but as the published
       # subchart Chart.lock pins - not as charts/execserver in this tree. A
@@ -244,7 +247,15 @@ jobs:
             --wait --timeout 10m
 
       - name: Chart tests for charts/execserver
-        run: helm test "$ES_RELEASE" --namespace "$NAMESPACE" --timeout 10m
+        run: helm test "$ES_RELEASE" --namespace "$NAMESPACE" --timeout 10m --logs
+
+      # Printed into the log, not only collected into the artifact below: helm
+      # reports "context deadline exceeded" and nothing else, and a reader
+      # should not have to download a zip to learn that an image would not
+      # pull. Same script test_local.sh runs, so the two cannot drift.
+      - name: Why it failed
+        if: failure()
+        run: ./ci/diagnose.sh
 
       - name: Collect cluster state
         if: always()
