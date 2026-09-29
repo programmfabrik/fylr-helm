@@ -582,15 +582,36 @@ execserver:
 
 # @ignored defines the settings for the minio application
 # For more information about minio and how to use it, see: https://github.com/minio/minio/tree/master/helm/minio
+#
+# The images come from pgsty, not from minio. MinIO Inc. archived the
+# open-source server in April 2026, deleted minio/minio and minio/mc from
+# Docker Hub in September 2026, and made the quay.io copies refuse anonymous
+# pulls a fortnight later - so every fresh install of this chart failed with
+# "unauthorized: access to the requested resource is not authorized" and fylr
+# sat in its wait-for-s3 init container until helm gave up. pgsty/minio is the
+# AGPL fork the Pigsty project maintains and publishes without a registration
+# wall. It keeps /usr/bin/docker-entrypoint.sh and the minio binary, which is
+# what the subchart's hardcoded command needs, so nothing but these two lines
+# changes. Its successor tags are named pgsty/silo and install the binary as
+# `silo` instead - those need the subchart patched as well, so this stays on
+# the last tag published under the old name.
 minio:
   enabled: true
   replicas: 3
   projectName: minio
   image:
-    repository: quay.io/minio/minio
+    repository: docker.io/pgsty/minio
     pullPolicy: IfNotPresent
     # Overrides the image tag whose default is the chart appVersion.
-    tag: "RELEASE.2022-09-01T23-53-36Z"
+    tag: "RELEASE.2026-08-04T00-00-00Z"
+  # The bucket, the policy and the fylr user are created by post-install hooks
+  # that run mc, so this image is as load-bearing as the server one and was
+  # withdrawn at the same time. The hooks override the entrypoint with
+  # /bin/sh /config/<script>, so only a shell and mc are required of it.
+  mcImage:
+    repository: docker.io/pgsty/mc
+    tag: "RELEASE.2026-09-16T00-00-00Z"
+    pullPolicy: IfNotPresent
   rootUser: minio
   rootPassword: minio123
   persistence:
