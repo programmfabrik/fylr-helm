@@ -78,8 +78,8 @@ data:
         parallel: {{ .Values.fylr.execserver.parallel | default 4 }}
         pluginJobTimeoutSec: {{ .Values.fylr.execserver.pluginJobTimeoutSec | default 2400 }}
         connectTimeoutSec: {{ .Values.fylr.execserver.connectTimeoutSec | default 120 }}
-        callbackBackendInternalURL: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
-        callbackApiInternalURL: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
+        callbackBackendOwnURL: "http://{{ include "fylr.service-backend-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.backend.port }}"
+        callbackApiOwnURL: "http://{{ include "fylr.service-api-name" . }}.{{ .Release.Namespace }}.svc:{{ .Values.services.api.port }}"
         addresses:
           {{- if .Values.execserver.enabled }}
           - "http://{{ .Release.Name }}-execserver.{{ .Release.Namespace }}.svc:8070/?pretty=true"
