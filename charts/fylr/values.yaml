@@ -491,6 +491,9 @@ fylr:
     # We expect the url in the format of "http://localhost:8080".
     # # NOTE: This is merged with the execserver service address provided by the execserver helm chart, if execserver.enabled is set to true.
     addresses: []
+  # remove blocking EAS rput hosts when set to true
+  eas:
+    noBlockedHosts: false
   # -- (object) defines settings for services that fylr should start.
   services:
     # -- (object) define settings for the api service
