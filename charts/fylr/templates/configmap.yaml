@@ -89,6 +89,15 @@ data:
           {{- if .Values.fylr.execserver.addresses }}
           {{- toYaml .Values.fylr.execserver.addresses | nindent 10 }}
           {{- end }}
+      {{- if .Values.fylr.eas.noBlockedHosts }}
+      eas:
+        rput:
+          # Block /api/v1/eas/rput[/bulk] from fetching loopback,
+          # link-local and private (RFC1918 / ULA) addresses by default.
+          # See fylr.example.yml for the full documentation of this list.
+          # To disable, override with an empty list: `blockedHosts: []`.
+          blockedHosts: []
+      {{- end }}
       services+:
         webapp+:
           addr: :8080
